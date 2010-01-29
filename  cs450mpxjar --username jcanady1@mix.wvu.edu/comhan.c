@@ -10,7 +10,8 @@
  *******************************************************************************
  * Change Log:
  *
- *        1/25/2010  JDC  Original version: outline, nonfunctional
+ *        1/25/2010  JDC       Original version: outline, nonfunctional
+ *        1/28/2010  JDC, RW   Slight comhan fcn editing
  ******************************************************************************/
 
 // Included ANSI C Files
@@ -30,6 +31,9 @@
 #define SMALLBUFF 10
 #define TINYBUFF 2
 
+// Global Variables
+int err = 0;
+
 // Function Prototypes
 void err_hand(int err_code);
 int init_r1();
@@ -43,8 +47,8 @@ int comhan();
  */
 void main() {
   sys_init(MODULE_R1);
-  int err = init_r1();
-  int err = comhan();
+  err = init_r1();
+  err = comhan();
   terminate_mpx();
 }
 
@@ -52,14 +56,19 @@ void main() {
  *
  */
 int comhan() {
-  opening message
-  while not done
-    display prompt
-    accept command-sys_req(READ, TERMINAL, buffer, bufsizeptr)
-    analyze command
-    execute command
+  printf("\nWelcome to JAROS!\n");
+  char cmd[BIGBUFF]={0};
+  int bufsize = BIGBUFF, x = 1;
+  err = 0;
+  while (x) {
+    printf("\n>>");
+    //accept command
+    err = sys_req(READ, TERMINAL, cmd, &bufsize);
+    if (strcmp(cmd,"quit")==0) x = 0;
+    //analyze command
+    //execute command
   }
-  closing message
+  //closing message
   terminate_mpx();
 }
 
@@ -71,7 +80,7 @@ int disp_dir() {
   sys_open_dir(dir_name);
   char buff[SMALLBUFF];
   int bufsize = SMALLBUFF;
-  int filesize, err;
+  int filesize;
   printf("\nFile Name  Size (bytes)");
   while ((err = sys_get_entry(buff, bufsize, &filesize)) != ERR_NOENTR) {
     if(err < OK) return err;
@@ -87,13 +96,13 @@ void terminate_mpx() {
   printf("\nAre you sure you want to terminate MPX? (Y/N): ");
   char buff[TINYBUFF];
   int buffsize = TINYBUFF;
-  int err = sys_req(READ, TERMINAL, buff, &buffsize);
+  err = sys_req(READ, TERMINAL, buff, &buffsize);
   if (err < OK) {
     err_hand(err);
     return;
   }
   if (buff[0] == 'Y' || buff[0] == 'y') {
-    int err = cleanup_r1();
+    err = cleanup_r1();
     sys_exit(void);
   }
   else {
