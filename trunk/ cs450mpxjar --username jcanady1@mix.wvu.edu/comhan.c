@@ -45,11 +45,13 @@ int comhan();
 /*
  *
  */
-void main() {
+int main() {
   sys_init(MODULE_R1);
   err = init_r1();
   err = comhan();
   terminate_mpx();
+  
+  return 0;
 }
 
 /*
