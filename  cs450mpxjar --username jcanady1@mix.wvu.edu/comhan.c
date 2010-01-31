@@ -72,6 +72,7 @@ int comhan() {
   }
   //closing message
   terminate_mpx();
+  return 0;
 }
 
 /*
@@ -125,10 +126,12 @@ void err_hand(int err_code) {
  *
  */
 int init_r1() {
+return 0;
 }
 
 /*
  *
  */
 int cleanup_r1() {
+return 0;
 }
