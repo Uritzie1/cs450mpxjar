@@ -41,6 +41,7 @@ int init_r1();
 int cleanup_r1();
 int disp_dir();
 int comhan();
+void terminate_mpx();
 
 
 /*
@@ -59,19 +60,21 @@ int main() {
  *
  */
 int comhan() {
-  printf("\nWelcome to JAROS!\n");
   char cmd[BIGBUFF]={0};
   int bufsize = BIGBUFF, x = 1;
+  printf("\nWelcome to JAROS!\n");
   err = 0;
   while (x) {
     printf("\n>>");
     //accept command
     err = sys_req(READ, TERMINAL, cmd, &bufsize);
-    if (strcmp(cmd,"quit")==0) x = 0;
+    printf("\n%s",cmd);
+    if (!strcmp(cmd,"quit")) x = 0;
     //analyze command
     //execute command
   }
   //closing message
+  printf("end of loop");
   terminate_mpx();
   return 0;
 }
@@ -81,25 +84,25 @@ int comhan() {
  */
 int disp_dir() {
   char dir_name[SMALLBUFF] = {'M','P','X','F','I','L','E','S','/0'};
-  sys_open_dir(dir_name);
   char buff[SMALLBUFF];
   int bufsize = SMALLBUFF;
   int filesize;
+  sys_open_dir(dir_name);
   printf("\nFile Name  Size (bytes)");
   while ((err = sys_get_entry(buff, bufsize, &filesize)) != ERR_NOENTR) {
     if(err < OK) return err;
     printf("\n%s-9.9  %dl", buff, filesize);
   }
-  if((err = sys_close_dir(void)) != OK) err_hand(err);
+  if((err = sys_close_dir()) != OK) err_hand(err);
 }
 
 /*
  *
  */
 void terminate_mpx() {
-  printf("\nAre you sure you want to terminate MPX? (Y/N): ");
   char buff[TINYBUFF];
   int buffsize = TINYBUFF;
+  printf("\nAre you sure you want to terminate MPX? (Y/N): ");
   err = sys_req(READ, TERMINAL, buff, &buffsize);
   if (err < OK) {
     err_hand(err);
@@ -107,7 +110,7 @@ void terminate_mpx() {
   }
   if (buff[0] == 'Y' || buff[0] == 'y') {
     err = cleanup_r1();
-    sys_exit(void);
+    sys_exit();
   }
   else {
     printf("Termination cancelled.");
