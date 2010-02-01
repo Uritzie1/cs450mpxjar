@@ -25,6 +25,7 @@
 // Status and Error Codes
 #define OK	0
 #define ERR_INVCOM (-101) // Invalid command
+#define ERR_NOENTR (-113) // No more directory entries
 
 // Constants
 #define BIGBUFF 80
