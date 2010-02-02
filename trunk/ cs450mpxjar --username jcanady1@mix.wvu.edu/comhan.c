@@ -12,6 +12,8 @@
  *
  *        1/25/2010  JDC       Original version: outline, nonfunctional
  *        1/28/2010  JDC, RW   Slight comhan fcn editing
+ *        2/01/2010  JDC, RW   Solved initial errors such that it compiles
+ *        2/02/2010  JDC, RW
  ******************************************************************************/
 
 // Included ANSI C Files
@@ -31,9 +33,15 @@
 #define BIGBUFF 80
 #define SMALLBUFF 10
 #define TINYBUFF 2
+#define DATE 0
+#define HELP 1
+#define VER 2
+#define DIR 3
+#define QUIT 4
 
 // Global Variables
 int err = 0;
+char fcns[5] = {"date","help","ver","dir","quit"};
 
 // Function Prototypes
 void err_hand(int err_code);
@@ -62,6 +70,7 @@ int main() {
 int comhan() {
   char cmd[BIGBUFF]={0};
   int bufsize = BIGBUFF, x = 1;
+  
   printf("\nWelcome to JAROS!\n");
   err = 0;
   while (x) {
@@ -69,7 +78,7 @@ int comhan() {
     //accept command
     err = sys_req(READ, TERMINAL, cmd, &bufsize);
     printf("\n%s",cmd);
-    if (!strcmp(cmd,"quit")) x = 0;
+    if (!strncmp(cmd,fcns[QUIT],4)) x = 0;
     //analyze command
     //execute command
   }
