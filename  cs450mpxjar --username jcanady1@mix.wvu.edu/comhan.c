@@ -84,7 +84,7 @@ int comhan() {
     else if (!strncmp(cmd,fcns[HELP],4)) err = help(NULL);
     else if (!strncmp(cmd,fcns[DATE],4)) err = date();
     else if (!strncmp(cmd,fcns[DIR],3)) err = disp_dir();
-    else printf("\nInvalid function.");
+    else printf("Invalid function.");
     //analyze command
     //execute command
   }
@@ -116,18 +116,18 @@ int disp_dir() {
 void terminate_mpx() {
   char buff[TINYBUFF];
   int buffsize = TINYBUFF;
-  printf("\nAre you sure you want to terminate MPX? (Y/N): ");
+  printf("Are you sure you want to terminate MPX? (Y/N): ");
   err = sys_req(READ, TERMINAL, buff, &buffsize);
   if (err < OK) {
     err_hand(err);
     return;
   }
   if (buff[0] == 'Y' || buff[0] == 'y') {
-    printf("%c",buff[0]);
     err = cleanup_r1();
-  // sys_exit();
+    err_hand(err);
+    sys_exit();
   }
-  else printf("\nTermination cancelled.");
+  else printf("Termination cancelled.");
 }
 
 /*
