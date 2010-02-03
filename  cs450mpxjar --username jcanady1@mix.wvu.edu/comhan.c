@@ -27,8 +27,31 @@
 
 // Status and Error Codes
 #define OK	0
-#define ERR_INVCOM (-101) // Invalid command
-#define ERR_NOENTR (-113) // No more directory entries
+#define ERR_INVCOM (-201) // Invalid command
+
+#define ERR_SUP_INVDEV (-101) // invalid device id
+#define ERR_SUP_INVOPC (-102) // invalid op code
+#define ERR_SUP_INVPOS (-103) // invalid character position
+#define ERR_SUP_RDFAIL (-104) // read failed
+#define ERR_SUP_WRFAIL (-105) // write failed
+#define ERR_SUP_INVMEM (-106) // invalid memory block pointer
+#define ERR_SUP_FRFAIL (-107) // free failed
+#define ERR_SUP_INVDAT (-108) // invalid date
+#define ERR_SUP_DATNCH (-109) // date not changed
+#define ERR_SUP_INVDIR (-110) // invalid directory name
+#define ERR_SUP_DIROPN (-111) // directory open error
+#define ERR_SUP_DIRNOP (-112) // no directory is open
+#define ERR_SUP_NOENTR (-113) // no more directory entries
+#define ERR_SUP_NAMLNG (-114) // name too long for buffer
+#define ERR_SUP_DIRCLS (-115) // directory close error
+#define ERR_SUP_LDFAIL (-116) // program load failed
+#define ERR_SUP_FILNFD (-117) // file not found
+#define ERR_SUP_FILINV (-118) // file invalid
+#define ERR_SUP_PROGSZ (-119) // program size error
+#define ERR_SUP_LDADDR (-120) // invalid load address
+#define ERR_SUP_NOMEM  (-121) // memory allocation error
+#define ERR_SUP_MFREE  (-122) // memory free error
+#define ERR_SUP_INVHAN (-123) // invalid handler address
 
 // Constants
 #define BIGBUFF 80
@@ -83,11 +106,20 @@ int comhan() {
     err = sys_req(READ, TERMINAL, cmd, &bufsize);  //read in command
     if (!strncmp(cmd,fcns[QUIT],5)) terminate_mpx();
     else if (!strncmp(cmd,fcns[VER],4)) get_Version();
-    else if (!strncmp(cmd,fcns[HELP],5)) err = help(NULL);
-    else if (!strncmp(cmd,fcns[DATE],5)) err = date();
-    else if (!strncmp(cmd,fcns[DIR],4)) err = disp_dir();
+    else if (!strncmp(cmd,fcns[HELP],5)) {
+      err = help(NULL);
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[DATE],5)) {
+      err = date();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[DIR],4)) {
+      err = disp_dir();
+      if(err < OK) err_hand(err);
+    }
     else if (!strncmp(cmd,"\n",1)) ;
-    else printf("Invalid command.  All JAROS commands are lower case.  Type ""help"" for more info.");
+    else err_hand(ERR_INVCOM);
     //analyze command
     //execute command
   }
@@ -100,11 +132,12 @@ int comhan() {
  *
  */
 int disp_dir() {
-  char dir_name[SMALLBUFF] = {'M','P','X','F','I','L','E','S','/0'};
+  char dir_name[SMALLBUFF] = {'M','P','X','F','I','L','E','S','\0'};
   char buff[SMALLBUFF];
-  int bufsize = SMALLBUFF;
+  int bufsize = SMALLBUFF, err;
   int filesize;
-  sys_open_dir(dir_name);
+  err = sys_open_dir(dir_name);
+  if(err < OK) {printf("error");return err;}
   printf("\nFile Name     Size (bytes)");
   while ((err = sys_get_entry(buff, bufsize, &filesize)) != ERR_NOENTR) {
     if(err < OK) {printf("error");return err;}
@@ -185,12 +218,6 @@ int date() {
 /*
  *
  */
-void err_hand(int err_code) {
-}
-
-/*
- *
- */
 int init_r1() {
 return 0;
 }
@@ -200,4 +227,35 @@ return 0;
  */
 int cleanup_r1() {
 return 0;
+}
+
+/*
+ *
+ */
+void err_hand(int err_code) {
+  if(err_code == ERR_INVCOM) printf("Invalid command.  All JAROS commands are lower case.  Type ""help"" for more info.");
+  else if(err_code == ERR_SUP_INVDEV) printf("Invalid device ID.");
+  else if(err_code == ERR_SUP_INVOPC) printf("Invalid op code.");
+  else if(err_code == ERR_SUP_INVPOS) printf("Invalid character position.");
+  else if(err_code == ERR_SUP_RDFAIL) printf("Read failed.");
+  else if(err_code == ERR_SUP_WRFAIL) printf("Write failed.");
+  else if(err_code == ERR_SUP_INVMEM) printf("Invalid memory block pointer.");
+  else if(err_code == ERR_SUP_FRFAIL) printf("Free failed.");
+  else if(err_code == ERR_SUP_INVDAT) printf("Invalid date.");
+  else if(err_code == ERR_SUP_DATNCH) printf("Date not changed.");
+  else if(err_code == ERR_SUP_INVDIR) printf("Invalid directory name.");
+  else if(err_code == ERR_SUP_DIROPN) printf("Directory open error.");
+  else if(err_code == ERR_SUP_DIRNOP) printf("No directory is open.");
+  else if(err_code == ERR_SUP_NOENTR) printf("No more directory entires.");
+  else if(err_code == ERR_SUP_NAMLNG) printf("Name too long for buffer.");
+  else if(err_code == ERR_SUP_DIRCLS) printf("Directory close error.");
+  else if(err_code == ERR_SUP_LDFAIL) printf("Program load failed.");
+  else if(err_code == ERR_SUP_FILNFD) printf("File not found.");
+  else if(err_code == ERR_SUP_FILINV) printf("File invalid.");
+  else if(err_code == ERR_SUP_PROGSZ) printf("Program size error.");
+  else if(err_code == ERR_SUP_LDADDR) printf("Invalid load address.");
+  else if(err_code == ERR_SUP_NOMEM) printf("Memory allocation error.");
+  else if(err_code == ERR_SUP_MFREE) printf("Memory free error.");
+  else if(err_code == ERR_SUP_INVHAN) printf("Invalid handler address.");
+  else printf("Invalid error code.");
 }
