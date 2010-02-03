@@ -13,7 +13,7 @@
  *        1/25/2010  JDC       Original version: outline, nonfunctional
  *        1/28/2010  JDC, RW   Slight comhan fcn editing
  *        2/01/2010  JDC, RW   Solved initial errors such that it compiles
- *        2/02/2010  JDC, RW
+ *        2/02/2010  JDC, RW   Added help and version functions; improved comhan
  ******************************************************************************/
 
 // Included ANSI C Files
