@@ -41,7 +41,7 @@
 
 // Global Variables
 int err = 0;
-char fcns[5] = {"date","help","ver","dir","quit"};
+char * fcns[6] = {"date","help","ver","dir","quit",NULL};
 
 // Function Prototypes
 void err_hand(int err_code);
@@ -70,7 +70,6 @@ int main() {
 int comhan() {
   char cmd[BIGBUFF]={0};
   int bufsize = BIGBUFF, x = 1;
-  
   printf("\nWelcome to JAROS!\n");
   err = 0;
   while (x) {
@@ -78,12 +77,11 @@ int comhan() {
     //accept command
     err = sys_req(READ, TERMINAL, cmd, &bufsize);
     printf("\n%s",cmd);
-    if (!strncmp(cmd,fcns[QUIT],4)) x = 0;
+    if (!strncmp(cmd,fcns[QUIT],4)) terminate_mpx();
     //analyze command
     //execute command
   }
   //closing message
-  printf("end of loop");
   terminate_mpx();
   return 0;
 }
@@ -118,13 +116,11 @@ void terminate_mpx() {
     return;
   }
   if (buff[0] == 'Y' || buff[0] == 'y') {
+    printf("%c",buff[0]);
     err = cleanup_r1();
-    sys_exit();
+  // sys_exit();
   }
-  else {
-    printf("Termination cancelled.");
-    return;
-  }
+  else printf("\nTermination cancelled.");
 }
 void getVersion()
 {
