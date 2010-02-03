@@ -43,7 +43,7 @@
 
 // Global Variables
 int err = 0;
-char * fcns[6] = {"date","help","ver","dir","quit",NULL};
+char * fcns[6] = {"date\0","help\0","ver\0","dir\0","quit\0",NULL};
 
 // Function Prototypes
 void err_hand(int err_code);
@@ -79,11 +79,12 @@ int comhan() {
   while (1) {
     printf("\n>>");  //command prompt
     err = sys_req(READ, TERMINAL, cmd, &bufsize);  //read in command
-    if (!strncmp(cmd,fcns[QUIT],4)) terminate_mpx();
-    else if (!strncmp(cmd,fcns[VER],3)) get_Version();
-    else if (!strncmp(cmd,fcns[HELP],4)) err = help(NULL);
-    else if (!strncmp(cmd,fcns[DATE],4)) err = date();
-    else if (!strncmp(cmd,fcns[DIR],3)) err = disp_dir();
+    if (!strncmp(cmd,fcns[QUIT],5)) terminate_mpx();
+    else if (!strncmp(cmd,fcns[VER],4)) get_Version();
+    else if (!strncmp(cmd,fcns[HELP],5)) err = help(NULL);
+    else if (!strncmp(cmd,fcns[DATE],5)) err = date();
+    else if (!strncmp(cmd,fcns[DIR],4)) err = disp_dir();
+    else if (!strncmp(cmd,"/0",1)) ;
     else printf("Invalid function.");
     //analyze command
     //execute command
@@ -102,10 +103,10 @@ int disp_dir() {
   int bufsize = SMALLBUFF;
   int filesize;
   sys_open_dir(dir_name);
-  printf("\nFile Name  Size (bytes)");
+  printf("\nFile Name     Size (bytes)");
   while ((err = sys_get_entry(buff, bufsize, &filesize)) != ERR_NOENTR) {
     if(err < OK) {printf("error");return err;}
-    printf("\n%s-9.9  %dl", buff, filesize);
+    printf("\n%s-9.9     %dl", buff, filesize);
   }
   if((err = sys_close_dir()) != OK) {printf("error");return err;}
 }
@@ -174,7 +175,7 @@ int help(char *cmdName)
  *
  */
 int date() {
-  printf("\nNot yet implemented.");
+  printf("Not yet implemented.");
 }
 
 /*
