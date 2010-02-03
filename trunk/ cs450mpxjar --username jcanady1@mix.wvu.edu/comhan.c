@@ -43,6 +43,7 @@
 
 // Global Variables
 int err = 0;
+int prompt = 1;
 char * fcns[6] = {"date\n","help\n","ver\n","dir\n","quit\n",NULL};
 
 // Function Prototypes
@@ -77,15 +78,16 @@ int comhan() {
   printf("\nWelcome to JAROS!\n");
   err = 0;
   while (1) {
-    printf("\n>>");  //command prompt
+    if (prompt==1) printf("\n>>");  //command prompt
+    prompt = 1;
     err = sys_req(READ, TERMINAL, cmd, &bufsize);  //read in command
     if (!strncmp(cmd,fcns[QUIT],5)) terminate_mpx();
     else if (!strncmp(cmd,fcns[VER],4)) get_Version();
     else if (!strncmp(cmd,fcns[HELP],5)) err = help(NULL);
     else if (!strncmp(cmd,fcns[DATE],5)) err = date();
     else if (!strncmp(cmd,fcns[DIR],4)) err = disp_dir();
-    else if (!strncmp(cmd,"/n",1)) ;
-    else printf("Invalid function.");
+    else if (!strncmp(cmd,"\n",1)) ;
+    else printf("Invalid command.  All JAROS commands are lower case.  Type ""help"" for more info.");
     //analyze command
     //execute command
   }
@@ -130,6 +132,7 @@ void terminate_mpx() {
     sys_exit();
   }
   else printf("Termination cancelled.");
+  prompt = 0;
 }
 
 /*
