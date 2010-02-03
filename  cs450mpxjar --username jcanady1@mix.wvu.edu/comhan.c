@@ -43,7 +43,7 @@
 
 // Global Variables
 int err = 0;
-char * fcns[6] = {"date\0","help\0","ver\0","dir\0","quit\0",NULL};
+char * fcns[6] = {"date\n","help\n","ver\n","dir\n","quit\n",NULL};
 
 // Function Prototypes
 void err_hand(int err_code);
@@ -84,7 +84,7 @@ int comhan() {
     else if (!strncmp(cmd,fcns[HELP],5)) err = help(NULL);
     else if (!strncmp(cmd,fcns[DATE],5)) err = date();
     else if (!strncmp(cmd,fcns[DIR],4)) err = disp_dir();
-    else if (!strncmp(cmd,"/0",1)) ;
+    else if (!strncmp(cmd,"/n",1)) ;
     else printf("Invalid function.");
     //analyze command
     //execute command
@@ -106,6 +106,7 @@ int disp_dir() {
   printf("\nFile Name     Size (bytes)");
   while ((err = sys_get_entry(buff, bufsize, &filesize)) != ERR_NOENTR) {
     if(err < OK) {printf("error");return err;}
+    printf("in loop");
     printf("\n%s-9.9     %dl", buff, filesize);
   }
   if((err = sys_close_dir()) != OK) {printf("error");return err;}
