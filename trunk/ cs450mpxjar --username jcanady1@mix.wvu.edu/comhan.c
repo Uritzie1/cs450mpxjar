@@ -126,8 +126,37 @@ void terminate_mpx() {
     return;
   }
 }
-
-
+void getVersion()
+{
+ printf("JAROS current version: %f",ver);
+}
+int Help(char *cmdName)
+{   
+    FILE *fptr;
+    int i = 0;
+    char file_name[11] = {0,0,0,0,0,0,'.','t','x','t','\0'};
+    char test[80] = {0};
+    
+    printf("Help: %s\n", cmdName);
+    for (i;i<6;i++)
+    {
+        file_name[i] = cmdName[i];
+    }
+    
+    
+//    printf("file name: %s\n",file_name);
+    fptr = fopen(file_name,"r");
+    
+    i = 0;
+    while(fgets(test,80,fptr))
+    {
+     if(i == 24)
+     {
+     i = 0;
+     }                                           
+    printf("%s",test);
+    i++;
+}
 
 /*
  *
