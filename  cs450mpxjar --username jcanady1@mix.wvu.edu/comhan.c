@@ -104,10 +104,10 @@ int disp_dir() {
   sys_open_dir(dir_name);
   printf("\nFile Name  Size (bytes)");
   while ((err = sys_get_entry(buff, bufsize, &filesize)) != ERR_NOENTR) {
-    if(err < OK) return err;
+    if(err < OK) {printf("error");return err;}
     printf("\n%s-9.9  %dl", buff, filesize);
   }
-  if((err = sys_close_dir()) != OK) err_hand(err);
+  if((err = sys_close_dir()) != OK) {printf("error");return err;}
 }
 
 /*
