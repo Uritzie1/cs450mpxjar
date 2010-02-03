@@ -122,10 +122,18 @@ void terminate_mpx() {
   }
   else printf("\nTermination cancelled.");
 }
+
+/*
+ *
+ */
 void getVersion()
 {
  printf("JAROS current version: %f",ver);
 }
+
+/*
+ *
+ */
 int Help(char *cmdName)
 {   
     FILE *fptr;
