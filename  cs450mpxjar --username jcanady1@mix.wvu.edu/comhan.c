@@ -38,6 +38,7 @@
 #define VER 2
 #define DIR 3
 #define QUIT 4
+#define VERSION 1.0
 
 // Global Variables
 int err = 0;
@@ -50,6 +51,9 @@ int cleanup_r1();
 int disp_dir();
 int comhan();
 void terminate_mpx();
+int help(char *cmdName);
+void get_Version();
+int date();
 
 
 /*
@@ -60,7 +64,7 @@ int main() {
   err = init_r1();
   err = comhan();
   terminate_mpx();
-  
+
   return 0;
 }
 
@@ -78,6 +82,10 @@ int comhan() {
     err = sys_req(READ, TERMINAL, cmd, &bufsize);
     printf("\n%s",cmd);
     if (!strncmp(cmd,fcns[QUIT],4)) terminate_mpx();
+    if (!strncmp(cmd,fcns[VER],3)) get_Version();
+    if (!strncmp(cmd,fcns[HELP],4)) help(NULL);
+    if (!strncmp(cmd,fcns[DATE],4)) date();
+    if (!strncmp(cmd,fcns[DIR],3)) disp_dir();
     //analyze command
     //execute command
   }
@@ -126,40 +134,48 @@ void terminate_mpx() {
 /*
  *
  */
-void getVersion()
+void get_Version()
 {
- printf("JAROS current version: %f",ver);
+ printf("JAROS current version: %f",VERSION);
 }
 
 /*
  *
  */
-int Help(char *cmdName)
-{   
+int help(char *cmdName)
+{
     FILE *fptr;
     int i = 0;
     char file_name[11] = {0,0,0,0,0,0,'.','t','x','t','\0'};
     char test[80] = {0};
-    
+
     printf("Help: %s\n", cmdName);
     for (i;i<6;i++)
     {
-        file_name[i] = cmdName[i];
+	file_name[i] = cmdName[i];
     }
-    
-    
+
+
 //    printf("file name: %s\n",file_name);
     fptr = fopen(file_name,"r");
-    
+
     i = 0;
     while(fgets(test,80,fptr))
     {
      if(i == 24)
      {
      i = 0;
-     }                                           
+     }
     printf("%s",test);
     i++;
+    }
+}
+
+/*
+ *
+ */
+int date() {
+  printf("\nNot yet implemented.");
 }
 
 /*
