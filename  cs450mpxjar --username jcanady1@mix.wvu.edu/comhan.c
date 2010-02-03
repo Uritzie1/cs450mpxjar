@@ -14,6 +14,7 @@
  *        1/28/2010  JDC, RW   Slight comhan fcn editing
  *        2/01/2010  JDC, RW   Solved initial errors such that it compiles
  *        2/02/2010  JDC, RW   Added help and version functions; improved comhan
+ *        2/03/2010  
  ******************************************************************************/
 
 // Included ANSI C Files
@@ -64,7 +65,6 @@ int main() {
   err = init_r1();
   err = comhan();
   terminate_mpx();
-
   return 0;
 }
 
@@ -73,19 +73,18 @@ int main() {
  */
 int comhan() {
   char cmd[BIGBUFF]={0};
-  int bufsize = BIGBUFF, x = 1;
+  int bufsize = BIGBUFF;
   printf("\nWelcome to JAROS!\n");
   err = 0;
-  while (x) {
-    printf("\n>>");
-    //accept command
-    err = sys_req(READ, TERMINAL, cmd, &bufsize);
-    printf("\n%s",cmd);
+  while (1) {
+    printf("\n>>");  //command prompt
+    err = sys_req(READ, TERMINAL, cmd, &bufsize);  //read in command
     if (!strncmp(cmd,fcns[QUIT],4)) terminate_mpx();
-    if (!strncmp(cmd,fcns[VER],3)) get_Version();
-    if (!strncmp(cmd,fcns[HELP],4)) help(NULL);
-    if (!strncmp(cmd,fcns[DATE],4)) date();
-    if (!strncmp(cmd,fcns[DIR],3)) disp_dir();
+    else if (!strncmp(cmd,fcns[VER],3)) get_Version();
+    else if (!strncmp(cmd,fcns[HELP],4)) err = help(NULL);
+    else if (!strncmp(cmd,fcns[DATE],4)) err = date();
+    else if (!strncmp(cmd,fcns[DIR],3)) err = disp_dir();
+    else printf("\nInvalid function.");
     //analyze command
     //execute command
   }
