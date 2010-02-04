@@ -14,7 +14,7 @@
  *        1/28/2010  JDC, RW   Slight comhan fcn editing
  *        2/01/2010  JDC, RW   Solved initial errors such that it compiles
  *        2/02/2010  JDC, RW   Added version and partial help functions; improved comhan
- *        2/03/2010  JDC       Completed dir and err_hand functions and comhan; R1 operational minus date and help functions
+ *        2/03/2010  JDC       Completed dir, date, and err_hand functions and comhan; R1 operational minus help function
  *        
  ******************************************************************************/
 
@@ -28,6 +28,9 @@
 
 // Status and Error Codes
 #define ERR_INVCOM (-201) // Invalid command
+#define ERR_INVYR (-202) // Invalid year
+#define ERR_INVMON (-203) // Invalid month
+#define ERR_INVDAY (-204) // Invalid day
 
 // Constants
 #define BIGBUFF 80
@@ -54,6 +57,7 @@ void terminate_mpx();
 int help(char *cmdName);
 void get_Version();
 int date();
+int valid_date(int yr, int mo, int day);
 
 
 /*
@@ -76,6 +80,7 @@ int comhan() {
   printf("\nWelcome to JAROS!\n");
   while (1) {
     x = 0;
+    bufsize = BIGBUFF;
     printf("\n>>");  //command prompt
     err = sys_req(READ, TERMINAL, cmd, &bufsize);  //read in command
     if (!strncmp(cmd,fcns[QUIT],5) && !x) {
@@ -103,10 +108,7 @@ int comhan() {
     }
     else if (!strncmp(cmd,"\n",1) && !x) x = 1;
     else if (!x) err_hand(ERR_INVCOM);
-    //analyze command
-    //execute command
   }
-  //closing message
   terminate_mpx();
   return 0;
 }
@@ -193,8 +195,9 @@ int help(char *cmdName)
  *
  */
 int date() {
-  char buff[TINYBUFF];
-  int buffsize = TINYBUFF;
+  char buff[SMALLBUFF];
+  int buffsize = SMALLBUFF;
+  int x = 1, temp;
   date_rec *date_p;
   sys_get_date(date_p);
   printf("The current date is (MM/DD/YYYY): %d/%d/%d",date_p->month,date_p->day,date_p->year);
@@ -202,24 +205,57 @@ int date() {
   err = sys_req(READ, TERMINAL, buff, &buffsize);
   if (err < OK) return err;
   if (buff[0] == 'Y' || buff[0] == 'y') {
-    printf("Please enter the new month (YYYY): ");
-    err = sys_req(READ, TERMINAL, buff, &buffsize);
-    if (err < OK) return err;
-    date_p->year = atoi(buff);
+    while (x) {
+      printf("Please enter the new year (YYYY): ");
+      err = sys_req(READ, TERMINAL, buff, &buffsize);
+      if (err < OK) return err;
+      temp = atoi(buff);
+      if (temp >= 0 && temp < 10000) x = 0;
+      else err_hand(ERR_INVYR);
+    }
+    x = 1;
+    date_p->year = temp;
     
-    printf("Please enter the new month (MM): ");
-    err = sys_req(READ, TERMINAL, buff, &buffsize);
-    if (err < OK) return err;
-    date_p->month = atoi(buff);
+    while(x) {
+      printf("Please enter the new month (MM): ");
+      err = sys_req(READ, TERMINAL, buff, &buffsize);
+      if (err < OK) return err;
+      temp = atoi(buff);
+      if (temp >= 1 && temp <= 12) x = 0;
+      else err_hand(ERR_INVMON);
+    }
+    x = 1;
+    date_p->month = temp;
     
-    printf("Please enter the new day (DD): ");
-    err = sys_req(READ, TERMINAL, buff, &buffsize);
-    if (err < OK) return err;
-    date_p->day = atoi(buff);
+    while(x) {
+      printf("Please enter the new day (DD): ");
+      err = sys_req(READ, TERMINAL, buff, &buffsize);
+      if (err < OK) return err;
+      temp = atoi(buff);
+      printf("You input %d/%d/%d",date_p->month,temp,date_p->year);
+      if (valid_date(date_p->year,date_p->month,temp)) x = 0;
+      else err_hand(ERR_INVDAY);
+    }
+    date_p->day = temp;
     
+    err = sys_set_date(date_p);
+    if (err < OK) return err;
     printf("The new date is (MM/DD/YYYY): %d/%d/%d",date_p->month,date_p->day,date_p->year);
   }
+  else printf("Date change aborted.");
   return err;
+}
+
+/*
+ *
+ */
+int valid_date(int yr, int mo, int day) {
+  int leap = 0, valid = 1;
+  if (((yr % 4 == 0) && (yr % 100 != 0)) || (yr % 400 == 0)) leap = 1;  //determine if leap year
+  if ((mo == 1 || mo == 3 || mo == 5 || mo == 7 || mo == 8 || mo == 10 || mo == 12 || mo == 14) && (day >= 1 && day <= 31)) return valid; //check 31-day months
+  else if ((mo == 4 || mo == 6 || mo == 9 || mo == 11 || mo == 13) && (day >= 1 && day <= 30)) return valid; //check 30-day months
+  else if ((mo == 2 && leap && (day >= 1 && day <= 29)) || (mo == 2 && !leap && (day >= 1 && day <= 28))) return valid; //check February
+  else return !valid;
 }
 
 /*
@@ -241,6 +277,9 @@ return 0;
  */
 void err_hand(int err_code) {
   if(err_code == ERR_INVCOM) printf("Invalid command.  All JAROS commands are lower case.  Type ""help"" for more info.");
+  else if(err_code == ERR_INVYR) printf("Invalid year parameter.  Please enter a year from 0-9999\n");
+  else if(err_code == ERR_INVMON) printf("Invalid month parameter.  Please enter a month from 1-12\n");
+  else if(err_code == ERR_INVDAY) printf("Invalid day parameter.  Please enter a day from 1-31 depending on the month.\n");
   else if(err_code == ERR_SUP_INVDEV) printf("Invalid device ID.");
   else if(err_code == ERR_SUP_INVOPC) printf("Invalid op code.");
   else if(err_code == ERR_SUP_INVPOS) printf("Invalid character position.");
