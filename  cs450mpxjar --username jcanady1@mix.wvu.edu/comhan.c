@@ -132,19 +132,17 @@ int comhan() {
  *
  */
 int disp_dir() {
-  char dir_name[SMALLBUFF] = {'M','P','X','F','I','L','E','S','\0'};
-  char buff[SMALLBUFF];
-  int bufsize = SMALLBUFF, err;
-  int filesize;
-  err = sys_open_dir(dir_name);
+  char namebuff[SMALLBUFF];
+  int err, filesize;
+  err = sys_open_dir(NULL);
   if(err < OK) return err;
   printf("\nFile Name     Size (bytes)");
-  while ((err = sys_get_entry(buff, bufsize, &filesize)) != ERR_SUP_NOENTR) {
-    if(err < OK) return err;
-    printf("in loop");
+  while ((err = sys_get_entry(namebuff, SMALLBUFF, &filesize)) == OK) {
     printf("\n%s-9.9     %dl", buff, filesize);
   }
-  if((err = sys_close_dir()) != OK) return err;
+  if(err < OK) return err;
+  err = sys_close_dir(); 
+  return err;
 }
 
 /*
