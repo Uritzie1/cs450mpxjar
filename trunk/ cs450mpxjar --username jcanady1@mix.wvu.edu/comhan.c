@@ -133,15 +133,17 @@ int comhan() {
  */
 int disp_dir() {
   char namebuff[SMALLBUFF];
-  int err, filesize;
-  err = sys_open_dir(NULL);
+  int err; 
+  long filesize;
+  err = sys_open_dir("C:\\Docume~1\\XPMUser\\Desktop\\SVN\\MPXFILES");
   if(err < OK) return err;
   printf("\nFile Name     Size (bytes)");
   while ((err = sys_get_entry(namebuff, SMALLBUFF, &filesize)) == OK) {
-    printf("\n%s-9.9     %dl", namebuff, filesize);
+    printf("\n%-9.9s     %dl", namebuff, filesize);
   }
-  if(err < OK) return err;
-  err = sys_close_dir(); 
+  if(err < OK && err != ERR_SUP_NOENTR) return err;
+  err = sys_close_dir();
+  printf("\n"); 
   return err;
 }
 
@@ -244,7 +246,7 @@ void err_hand(int err_code) {
   else if(err_code == ERR_SUP_INVDIR) printf("Invalid directory name.");
   else if(err_code == ERR_SUP_DIROPN) printf("Directory open error.");
   else if(err_code == ERR_SUP_DIRNOP) printf("No directory is open.");
-  else if(err_code == ERR_SUP_NOENTR) printf("No more directory entires.");
+  else if(err_code == ERR_SUP_NOENTR) printf("No more directory entries.");
   else if(err_code == ERR_SUP_NAMLNG) printf("Name too long for buffer.");
   else if(err_code == ERR_SUP_DIRCLS) printf("Directory close error.");
   else if(err_code == ERR_SUP_LDFAIL) printf("Program load failed.");
