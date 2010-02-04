@@ -10,11 +10,12 @@
  *******************************************************************************
  * Change Log:
  *
- *        1/25/2010  JDC       Original version: outline, nonfunctional
- *        1/28/2010  JDC, RW   Slight comhan fcn editing
- *        2/01/2010  JDC, RW   Solved initial errors such that it compiles
- *        2/02/2010  JDC, RW   Added version and partial help functions; improved comhan
- *        2/03/2010  JDC       Completed dir, date, and err_hand functions and comhan; R1 operational minus help function
+ *        1/25/2010  JC           Original version: outline, nonfunctional
+ *        1/28/2010  JC, RW       Slight comhan fcn editing
+ *        2/01/2010  JC, RW       Solved initial errors such that it compiles
+ *        2/02/2010  JC, RW       Added version and partial help functions; improved comhan
+ *        2/03/2010  JC           Completed dir, date, and err_hand functions and comhan; R1 operational minus help function
+ *        2/04/2010  JC, RW, AT   
  *        
  ******************************************************************************/
 
@@ -76,38 +77,29 @@ int main() {
  */
 int comhan() {
   char cmd[BIGBUFF]={0};
-  int bufsize = BIGBUFF, x = 0;
+  int bufsize = BIGBUFF;
   printf("\nWelcome to JAROS!\n");
   while (1) {
-    x = 0;
     bufsize = BIGBUFF;
+    memset(cmd, '\0', BIGBUFF);
     printf("\n>>");  //command prompt
     err = sys_req(READ, TERMINAL, cmd, &bufsize);  //read in command
-    if (!strncmp(cmd,fcns[QUIT],5) && !x) {
-      terminate_mpx();
-      x = 1;
-    }
-    else if (!strncmp(cmd,fcns[VER],4) && !x) {
-      get_Version();
-      x = 1;
-    }
-    else if (!strncmp(cmd,fcns[HELP],5) && !x) {
+    if (!strncmp(cmd,fcns[QUIT],5)) terminate_mpx();
+    else if (!strncmp(cmd,fcns[VER],4)) get_Version();
+    else if (!strncmp(cmd,fcns[HELP],5)) {
       err = help(NULL);
       if(err < OK) err_hand(err);
-      x = 1;
     }
-    else if (!strncmp(cmd,fcns[DATE],5) && !x) {
+    else if (!strncmp(cmd,fcns[DATE],5)) {
       err = date();
       if(err < OK) err_hand(err);
-      x = 1;
     }
-    else if (!strncmp(cmd,fcns[DIR],4) && !x) {
+    else if (!strncmp(cmd,fcns[DIR],4)) {
       err = disp_dir();
       if(err < OK) err_hand(err);
-      x = 1;
     }
-    else if (!strncmp(cmd,"\n",1) && !x) x = 1;
-    else if (!x) err_hand(ERR_INVCOM);
+    else if (!strncmp(cmd,"\n",1)) ;
+    else err_hand(ERR_INVCOM);
   }
   terminate_mpx();
   return 0;
