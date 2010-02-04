@@ -138,7 +138,7 @@ int disp_dir() {
   if(err < OK) return err;
   printf("\nFile Name     Size (bytes)");
   while ((err = sys_get_entry(namebuff, SMALLBUFF, &filesize)) == OK) {
-    printf("\n%s-9.9     %dl", buff, filesize);
+    printf("\n%s-9.9     %dl", namebuff, filesize);
   }
   if(err < OK) return err;
   err = sys_close_dir(); 
