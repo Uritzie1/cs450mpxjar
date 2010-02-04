@@ -127,8 +127,8 @@ int disp_dir() {
  *
  */
 void terminate_mpx() {
-  char buff[TINYBUFF];
-  int buffsize = TINYBUFF;
+  char buff[SMALLBUFF];
+  int buffsize = SMALLBUFF;
   printf("Are you sure you want to terminate MPX? (Y/N): ");
   err = sys_req(READ, TERMINAL, buff, &buffsize);
   if (err < OK) {
