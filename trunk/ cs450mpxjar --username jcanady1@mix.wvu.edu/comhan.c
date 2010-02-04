@@ -13,8 +13,9 @@
  *        1/25/2010  JDC       Original version: outline, nonfunctional
  *        1/28/2010  JDC, RW   Slight comhan fcn editing
  *        2/01/2010  JDC, RW   Solved initial errors such that it compiles
- *        2/02/2010  JDC, RW   Added help and version functions; improved comhan
- *        2/03/2010  
+ *        2/02/2010  JDC, RW   Added version and partial help functions; improved comhan
+ *        2/03/2010  JDC       Completed dir and err_hand functions and comhan; R1 operational minus date and help functions
+ *        
  ******************************************************************************/
 
 // Included ANSI C Files
@@ -26,32 +27,7 @@
 #include "mpx_supt.h"
 
 // Status and Error Codes
-#define OK	0
 #define ERR_INVCOM (-201) // Invalid command
-
-#define ERR_SUP_INVDEV (-101) // invalid device id
-#define ERR_SUP_INVOPC (-102) // invalid op code
-#define ERR_SUP_INVPOS (-103) // invalid character position
-#define ERR_SUP_RDFAIL (-104) // read failed
-#define ERR_SUP_WRFAIL (-105) // write failed
-#define ERR_SUP_INVMEM (-106) // invalid memory block pointer
-#define ERR_SUP_FRFAIL (-107) // free failed
-#define ERR_SUP_INVDAT (-108) // invalid date
-#define ERR_SUP_DATNCH (-109) // date not changed
-#define ERR_SUP_INVDIR (-110) // invalid directory name
-#define ERR_SUP_DIROPN (-111) // directory open error
-#define ERR_SUP_DIRNOP (-112) // no directory is open
-#define ERR_SUP_NOENTR (-113) // no more directory entries
-#define ERR_SUP_NAMLNG (-114) // name too long for buffer
-#define ERR_SUP_DIRCLS (-115) // directory close error
-#define ERR_SUP_LDFAIL (-116) // program load failed
-#define ERR_SUP_FILNFD (-117) // file not found
-#define ERR_SUP_FILINV (-118) // file invalid
-#define ERR_SUP_PROGSZ (-119) // program size error
-#define ERR_SUP_LDADDR (-120) // invalid load address
-#define ERR_SUP_NOMEM  (-121) // memory allocation error
-#define ERR_SUP_MFREE  (-122) // memory free error
-#define ERR_SUP_INVHAN (-123) // invalid handler address
 
 // Constants
 #define BIGBUFF 80
@@ -66,7 +42,6 @@
 
 // Global Variables
 int err = 0;
-int prompt = 1;
 char * fcns[6] = {"date\n","help\n","ver\n","dir\n","quit\n",NULL};
 
 // Function Prototypes
@@ -97,29 +72,37 @@ int main() {
  */
 int comhan() {
   char cmd[BIGBUFF]={0};
-  int bufsize = BIGBUFF;
+  int bufsize = BIGBUFF, x = 0;
   printf("\nWelcome to JAROS!\n");
-  err = 0;
   while (1) {
-    if (prompt==1) printf("\n>>");  //command prompt
-    prompt = 1;
+    x = 0;
+    printf("\n>>");  //command prompt
     err = sys_req(READ, TERMINAL, cmd, &bufsize);  //read in command
-    if (!strncmp(cmd,fcns[QUIT],5)) terminate_mpx();
-    else if (!strncmp(cmd,fcns[VER],4)) get_Version();
-    else if (!strncmp(cmd,fcns[HELP],5)) {
+    if (!strncmp(cmd,fcns[QUIT],5) && !x) {
+      terminate_mpx();
+      x = 1;
+    }
+    else if (!strncmp(cmd,fcns[VER],4) && !x) {
+      get_Version();
+      x = 1;
+    }
+    else if (!strncmp(cmd,fcns[HELP],5) && !x) {
       err = help(NULL);
       if(err < OK) err_hand(err);
+      x = 1;
     }
-    else if (!strncmp(cmd,fcns[DATE],5)) {
+    else if (!strncmp(cmd,fcns[DATE],5) && !x) {
       err = date();
       if(err < OK) err_hand(err);
+      x = 1;
     }
-    else if (!strncmp(cmd,fcns[DIR],4)) {
+    else if (!strncmp(cmd,fcns[DIR],4) && !x) {
       err = disp_dir();
       if(err < OK) err_hand(err);
+      x = 1;
     }
-    else if (!strncmp(cmd,"\n",1)) ;
-    else err_hand(ERR_INVCOM);
+    else if (!strncmp(cmd,"\n",1) && !x) x = 1;
+    else if (!x) err_hand(ERR_INVCOM);
     //analyze command
     //execute command
   }
@@ -133,7 +116,6 @@ int comhan() {
  */
 int disp_dir() {
   char namebuff[SMALLBUFF];
-  int err; 
   long filesize;
   err = sys_open_dir("C:\\Docume~1\\XPMUser\\Desktop\\SVN\\MPXFILES");
   if(err < OK) return err;
@@ -161,11 +143,10 @@ void terminate_mpx() {
   }
   if (buff[0] == 'Y' || buff[0] == 'y') {
     err = cleanup_r1();
-    err_hand(err);
+    if (err < OK) err_hand(err);
     sys_exit();
   }
   else printf("Termination cancelled.");
-  prompt = 0;
 }
 
 /*
@@ -212,7 +193,33 @@ int help(char *cmdName)
  *
  */
 int date() {
-  printf("Not yet implemented.");
+  char buff[TINYBUFF];
+  int buffsize = TINYBUFF;
+  date_rec *date_p;
+  sys_get_date(date_p);
+  printf("The current date is (MM/DD/YYYY): %d/%d/%d",date_p->month,date_p->day,date_p->year);
+  printf("\nWould you like to change the date (Y/N)? ");
+  err = sys_req(READ, TERMINAL, buff, &buffsize);
+  if (err < OK) return err;
+  if (buff[0] == 'Y' || buff[0] == 'y') {
+    printf("Please enter the new month (YYYY): ");
+    err = sys_req(READ, TERMINAL, buff, &buffsize);
+    if (err < OK) return err;
+    date_p->year = atoi(buff);
+    
+    printf("Please enter the new month (MM): ");
+    err = sys_req(READ, TERMINAL, buff, &buffsize);
+    if (err < OK) return err;
+    date_p->month = atoi(buff);
+    
+    printf("Please enter the new day (DD): ");
+    err = sys_req(READ, TERMINAL, buff, &buffsize);
+    if (err < OK) return err;
+    date_p->day = atoi(buff);
+    
+    printf("The new date is (MM/DD/YYYY): %d/%d/%d",date_p->month,date_p->day,date_p->year);
+  }
+  return err;
 }
 
 /*
@@ -258,4 +265,5 @@ void err_hand(int err_code) {
   else if(err_code == ERR_SUP_MFREE) printf("Memory free error.");
   else if(err_code == ERR_SUP_INVHAN) printf("Invalid handler address.");
   else printf("Invalid error code.");
+  err = 0;
 }
