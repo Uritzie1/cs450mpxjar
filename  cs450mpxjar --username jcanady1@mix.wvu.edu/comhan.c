@@ -224,7 +224,7 @@ int date() {
       err = sys_req(READ, TERMINAL, buff, &buffsize);
       if (err < OK) return err;
       temp = atoi(buff);
-      printf("You input %d/%d/%d\n",date_p->month,temp,date_p->year);
+      //printf("You input %d/%d/%d\n",date_p->month,temp,date_p->year);
       if (valid_date(date_p->year,date_p->month,temp)) x = 0;
       else err_hand(ERR_INVDAY);
     }
