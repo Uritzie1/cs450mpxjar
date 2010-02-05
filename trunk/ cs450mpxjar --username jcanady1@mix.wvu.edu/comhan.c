@@ -64,8 +64,12 @@ int date();
 int valid_date(int yr, int mo, int day);
 
 
-/*
- *
+/* Procedure Name: 
+ * Params: name,type,purpose
+ * Returns: 
+ * Procedures Called: 
+ * Globals Used: 
+ * Description/Purpose: 
  */
 int main() {
   sys_init(MODULE_R1);
@@ -75,8 +79,12 @@ int main() {
   return 0;
 }
 
-/*
- *
+/* Procedure Name: 
+ * Params: name,type,purpose
+ * Returns: 
+ * Procedures Called: 
+ * Globals Used: 
+ * Description/Purpose: 
  */
 int comhan() {
   char cmd[BIGBUFF]={0};
@@ -109,8 +117,12 @@ int comhan() {
   return 0;
 }
 
-/*
- *
+/* Procedure Name: 
+ * Params: name,type,purpose
+ * Returns: 
+ * Procedures Called: 
+ * Globals Used: 
+ * Description/Purpose: 
  */
 int disp_dir() {
   char namebuff[SMALLBUFF];
@@ -128,8 +140,12 @@ int disp_dir() {
   return err;
 }
 
-/*
- *
+/* Procedure Name: 
+ * Params: name,type,purpose
+ * Returns: 
+ * Procedures Called: 
+ * Globals Used: 
+ * Description/Purpose: 
  */
 void terminate_mpx() {
   char buff[SMALLBUFF];
@@ -149,16 +165,24 @@ void terminate_mpx() {
   else printf("Termination cancelled.");
 }
 
-/*
- *
+/* Procedure Name: 
+ * Params: name,type,purpose
+ * Returns: 
+ * Procedures Called: 
+ * Globals Used: 
+ * Description/Purpose: 
  */
 void get_Version()
 {
  printf("JAROS current version: %f",VERSION);
 }
 
-/*
- *
+/* Procedure Name: 
+ * Params: name,type,purpose
+ * Returns: 
+ * Procedures Called: 
+ * Globals Used: 
+ * Description/Purpose: 
  */
  void trim(char ary[BIGBUFF])
 {
@@ -183,7 +207,13 @@ void get_Version()
       }
 }
 
-
+/* Procedure Name: 
+ * Params: name,type,purpose
+ * Returns: 
+ * Procedures Called: 
+ * Globals Used: 
+ * Description/Purpose: 
+ */
 int help()
 {
     FILE *fptr;
@@ -243,8 +273,12 @@ int help()
     }*/
 }
 
-/*
- *
+/* Procedure Name: 
+ * Params: name,type,purpose
+ * Returns: 
+ * Procedures Called: 
+ * Globals Used: 
+ * Description/Purpose: 
  */
 int date() {
   char buff[SMALLBUFF];
@@ -298,8 +332,12 @@ int date() {
   return err;
 }
 
-/*
- *
+/* Procedure Name: 
+ * Params: name,type,purpose
+ * Returns: 
+ * Procedures Called: 
+ * Globals Used: 
+ * Description/Purpose: 
  */
 int valid_date(int yr, int mo, int day) {
   int leap = 0, valid = 1;
@@ -310,22 +348,34 @@ int valid_date(int yr, int mo, int day) {
   else return !valid;
 }
 
-/*
- *
+/* Procedure Name: 
+ * Params: name,type,purpose
+ * Returns: 
+ * Procedures Called: 
+ * Globals Used: 
+ * Description/Purpose: 
  */
 int init_r1() {
 return 0;
 }
 
-/*
- *
+/* Procedure Name: 
+ * Params: name,type,purpose
+ * Returns: 
+ * Procedures Called: 
+ * Globals Used: 
+ * Description/Purpose: 
  */
 int cleanup_r1() {
 return 0;
 }
 
-/*
- *
+/* Procedure Name: 
+ * Params: name,type,purpose
+ * Returns: 
+ * Procedures Called: 
+ * Globals Used: 
+ * Description/Purpose: 
  */
 void err_hand(int err_code) {
   if(err_code == ERR_INVCOM) printf("Invalid command. All JAROS commands are lower case. Type \"help\" for more info.");
