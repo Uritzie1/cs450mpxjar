@@ -292,7 +292,8 @@ int date() {
       err = sys_req(READ, TERMINAL, buff, &buffsize);
       if (err < OK) return err;
       temp = atoi(buff);
-      if (temp >= 0 && temp < 10000) x = 0;
+      if (temp==0) err_hand(ERR_INVYR);
+      else if (temp >= 0 && temp < 10000) x = 0;
       else err_hand(ERR_INVYR);
     }
     x = 1;
@@ -303,7 +304,8 @@ int date() {
       err = sys_req(READ, TERMINAL, buff, &buffsize);
       if (err < OK) return err;
       temp = atoi(buff);
-      if (temp >= 1 && temp <= 12) x = 0;
+      if (temp==0) err_hand(ERR_INVMON);
+      else if (temp >= 1 && temp <= 12) x = 0;
       else err_hand(ERR_INVMON);
     }
     x = 1;
@@ -314,8 +316,11 @@ int date() {
       err = sys_req(READ, TERMINAL, buff, &buffsize);
       if (err < OK) return err;
       temp = atoi(buff);
-      printf("You input %d/%d/%d\n",date_p->month,temp,date_p->year);
-      if (valid_date(date_p->year,date_p->month,temp)) x = 0;
+      if (temp==0) err_hand(ERR_INVDAY);
+      else if (valid_date(date_p->year,date_p->month,temp)) {
+        x = 0;
+        printf("You input %d/%d/%d\n",date_p->month,temp,date_p->year);
+      }
       else err_hand(ERR_INVDAY);
     }
     date_p->day = temp;
