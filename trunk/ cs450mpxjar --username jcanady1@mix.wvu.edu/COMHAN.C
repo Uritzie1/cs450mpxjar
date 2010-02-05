@@ -1,10 +1,9 @@
 /*******************************************************************************
  * File Name: comhan.c
  *
- * Author(s): Jonroy Canady, Adam Trainer, Rob Wayland   
- * Date Last Modified: 2/04/2010
- * Author(s): Jonroy Canady,
- * Version: 1.61
+ * \author Jonroy Canady, Adam Trainer, Rob Wayland   
+ * \date Last Modified: 2/04/2010
+ * \version: 1.61
  *
  * Components:
  *
@@ -66,11 +65,11 @@ void trim(char ary[BIGBUFF]);
 
 
 /* Procedure Name: main
- * Params: none
- * Returns: an integer that is 0 if successful (which it always is)
+ * \param none
+ * \return an integer that is 0 if successful (which it always is)
  * Procedures Called: sys_init, init_r1, comhan, cleanup_r1, terminate_mpx
  * Globals Used: err
- * Description/Purpose: Main simply initializes the system, calls comhan, and
+ * \detials Description/Purpose: Main simply initializes the system, calls comhan, and
  *   then cleans up and terminates (though it never actually reaches cleanup or
  *   terminate)
  */
@@ -84,12 +83,12 @@ int main() {
 }
 
 /* Procedure Name: comhan
- * Params: none
- * Returns: an integer that is 0 if successful (which it always is)
+ * \param none
+ * \return an integer that is 0 if successful (which it always is)
  * Procedures Called: memset, sys_req, trim, strncmp, help, err_hand, date,
  *   disp_dir, terminate_mpx
  * Globals Used: err, fcns
- * Description/Purpose: comhan is the heart of the R1 module. It runs the
+ * \details Description/Purpose: comhan is the heart of the R1 module. It runs the
  *  central loop of the command handler.  It accepts commands entered by the
  *  user, analyzes them, and calls the proper functions.  It also receives all
  *  error codes returned by the functions, passing them to the error handler.
@@ -127,11 +126,11 @@ int comhan() {
 }
 
 /* Procedure Name: disp_dir
- * Params: none
- * Returns: an integer error code
+ * \param none
+ * \return err an integer error code
  * Procedures Called: memset, sys_open_dir, sys_get_entry, sys_close_dir
  * Globals Used: err
- * Description/Purpose: disp_dir neatly prints a list of .mpx files found in
+ * \biref Description/Purpose: disp_dir neatly prints a list of .mpx files found in
  *   the MPXFILES folder as well as their sizes in bytes.
  */
 int disp_dir() {
@@ -151,11 +150,11 @@ int disp_dir() {
 }
 
 /* Procedure Name: terminate_mpx
- * Params: none
- * Returns: none
+ * \Param none
+ * \return none
  * Procedures Called: memset, sys_req, err_hand, cleanup_r1, sys_exit
  * Globals Used: err
- * Description/Purpose: confirms that the user really wishes to terminate MPX.
+ * \brief Description/Purpose: confirms that the user really wishes to terminate MPX.
  *   If yes, it cleans up and exits. If no, it tells the user such and returns.
  */
 void terminate_mpx() {
@@ -179,11 +178,11 @@ void terminate_mpx() {
 }
 
 /* Procedure Name: get_Version
- * Params: none
- * Returns: none
+ * \param none
+ * \return none
  * Procedures Called: printf
  * Globals Used: none
- * Description/Purpose: simply prints a single line with the version constant
+ * \brief Description/Purpose: simply prints a single line with the version constant
  */
 void get_Version()
 {
@@ -191,11 +190,11 @@ void get_Version()
 }
 
 /* Procedure Name: trim
- * Params: ary is a character array that holds the string to be trimmed
- * Returns: none
+ * \praram ary is a character array that holds the string to be trimmed
+ * \return none
  * Procedures Called: isspace
  * Globals Used: none
- * Description/Purpose: trims all white space AND newlines from the entirety of
+ * \brief Description/Purpose: trims all white space AND newlines from the entirety of
  *   the string passed in.
  */
  void trim(char ary[BIGBUFF]) {
@@ -214,11 +213,11 @@ void get_Version()
 }
 
 /* Procedure Name: help
- * Params: none
- * Returns: an integer error code
+ * \param none
+ * \return err an integer error code
  * Procedures Called: sys_req, err_hand, trim, strcat, fopen, fgets, fclose
  * Globals Used: err, fcns
- * Description/Purpose: displays a list of available functions and a short
+ * \brief Description/Purpose: displays a list of available functions and a short
  *   description of each.  It then asks the user to input a function name if
  *   s/he wants a more detailed description.
  */
@@ -266,11 +265,11 @@ int help() {
 }
 
 /* Procedure Name: date
- * Params: none
- * Returns: an integer error code
+ * \param: none
+ * \return err an integer error code
  * Procedures Called: sys_get_date, sys_req, atoi, err_hand, valid_date, sys_set_date
  * Globals Used: err
- * Description/Purpose: displays the current date in MM/DD/YYYY format. It then
+ *\brief Description/Purpose: displays the current date in MM/DD/YYYY format. It then
  *   asks the user if s/he wants to set a new date. If so, it asks for a new
  *   year, then a new month, and lastly a new day. Determines date validity.
  */
@@ -334,12 +333,14 @@ int date() {
 }
 
 /* Procedure Name: valid_date
- * Params: accepts three integers, yr, mo, and day, which represent the date
+ * \param yr int representing the year
+ * \param mo int reresenting a month of the year
+ * \param day int representing a day of the month
  *   to be validated
- * Returns: an integer that's 1 if the date is valid, 0 if not
+ * \return int an integer that's 1 if the date is valid, 0 if not
  * Procedures Called: none
  * Globals Used: none
- * Description/Purpose: validates the date passed in, checking that the day is
+ * \brief Description/Purpose: validates the date passed in, checking that the day is
  *   within the range allowed by the month. Accounts for leap years.
  */
 int valid_date(int yr, int mo, int day) {
@@ -352,11 +353,11 @@ int valid_date(int yr, int mo, int day) {
 }
 
 /* Procedure Name: init_r1
- * Params: none
- * Returns: an integer error code (0 for now)
+ * \param none
+ * \return err an integer error code (0 for now)
  * Procedures Called: _getdcwd
  * Globals Used: wd
- * Description/Purpose: finds the working directory and writes it to the global
+ * \brief Description/Purpose: finds the working directory and writes it to the global
  */
 int init_r1() {
   _getdcwd(3,wd,sizeof(wd));
@@ -364,22 +365,22 @@ int init_r1() {
 }
 
 /* Procedure Name: init_r1
- * Params: none
- * Returns: an integer error code (0 for now)
+ * \param none
+ * \return  an integer error code (0 for now)
  * Procedures Called: none
  * Globals Used: none
- * Description/Purpose: none for now
+ * \brief Description/Purpose: none for now
  */
 int cleanup_r1() {
   return 0;
 }
 
 /* Procedure Name: toLowerCase
- * Params: a character array called str that is to be lowered in case
- * Returns: none
+ * \param[in] str character array called str that is to be lowered in case
+ * \return none
  * Procedures Called: tolower
  * Globals Used: none
- * Description/Purpose: converts the input string to all lowercase
+ * \brief Description/Purpose: converts the input string to all lowercase
  */
 void toLowerCase(char str[BIGBUFF]) {
   int i = 0;
@@ -387,11 +388,11 @@ void toLowerCase(char str[BIGBUFF]) {
 }
 
 /* Procedure Name: err_hand
- * Params: an integer err_code that corresponds to a textual error
- * Returns: none
+ * \param[in] err an integer err_code that corresponds to a textual error
+ * \return none
  * Procedures Called: printf
  * Globals Used: none
- * Description/Purpose: prints out an error message based on the error code passed in
+ * \brief Description/Purpose: prints out an error message based on the error code passed in
  */
 void err_hand(int err_code) {
   if(err_code == ERR_INVCOM) printf("Invalid command. Type \"help\" for more info.");
