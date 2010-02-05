@@ -64,27 +64,34 @@ int date();
 int valid_date(int yr, int mo, int day);
 
 
-/* Procedure Name: 
- * Params: name,type,purpose
- * Returns: 
- * Procedures Called: 
- * Globals Used: 
- * Description/Purpose: 
+/* Procedure Name: main
+ * Params: none
+ * Returns: an integer that is 0 if successful (which it always is)
+ * Procedures Called: sys_init, init_r1, comhan, cleanup_r1, terminate_mpx
+ * Globals Used: err
+ * Description/Purpose: Main simply initializes the system, calls comhan, and
+ *   then cleans up and terminates (though it never actually reaches cleanup or
+ *   terminate)
  */
 int main() {
   sys_init(MODULE_R1);
   err = init_r1();
   err = comhan();
+  err = cleanup_r1();
   terminate_mpx();
   return 0;
 }
 
-/* Procedure Name: 
- * Params: name,type,purpose
- * Returns: 
- * Procedures Called: 
- * Globals Used: 
- * Description/Purpose: 
+/* Procedure Name: comhan
+ * Params: none
+ * Returns: an integer that is 0 if successful (which it always is)
+ * Procedures Called: memset, sys_req, trim, strncmp, help, err_hand, date,
+ *   disp_dir, terminate_mpx
+ * Globals Used: err, fcns
+ * Description/Purpose: comhan is the heart of the R1 module. It runs the
+ *  central loop of the command handler.  It accepts commands entered by the
+ *  user, analyzes them, and calls the proper functions.  It also receives all
+ *  error codes returned by the functions, passing them to the error handler.
  */
 int comhan() {
   char cmd[BIGBUFF]={0};
@@ -117,12 +124,13 @@ int comhan() {
   return 0;
 }
 
-/* Procedure Name: 
- * Params: name,type,purpose
- * Returns: 
- * Procedures Called: 
- * Globals Used: 
- * Description/Purpose: 
+/* Procedure Name: disp_dir
+ * Params: none
+ * Returns: an integer error code
+ * Procedures Called: memset, sys_open_dir, sys_get_entry, sys_close_dir
+ * Globals Used: err
+ * Description/Purpose: disp_dir neatly prints a list of .mpx files found in
+ *   the MPXFILES folder as well as their sizes in bytes.
  */
 int disp_dir() {
   char namebuff[SMALLBUFF];
@@ -140,12 +148,13 @@ int disp_dir() {
   return err;
 }
 
-/* Procedure Name: 
- * Params: name,type,purpose
- * Returns: 
- * Procedures Called: 
- * Globals Used: 
- * Description/Purpose: 
+/* Procedure Name: terminate_mpx
+ * Params: none
+ * Returns: none
+ * Procedures Called: memset, sys_req, err_hand, cleanup_r1, sys_exit
+ * Globals Used: err
+ * Description/Purpose: confirms that the user really wishes to terminate MPX.
+ *   If yes, it cleans up and exits. If no, it tells the user such and returns.
  */
 void terminate_mpx() {
   char buff[SMALLBUFF];
@@ -165,24 +174,25 @@ void terminate_mpx() {
   else printf("Termination cancelled.");
 }
 
-/* Procedure Name: 
- * Params: name,type,purpose
- * Returns: 
- * Procedures Called: 
- * Globals Used: 
- * Description/Purpose: 
+/* Procedure Name: get_Version
+ * Params: none
+ * Returns: none
+ * Procedures Called: printf
+ * Globals Used: none
+ * Description/Purpose: simply prints a single line with the version constant
  */
 void get_Version()
 {
  printf("JAROS current version: %f",VERSION);
 }
 
-/* Procedure Name: 
- * Params: name,type,purpose
- * Returns: 
- * Procedures Called: 
- * Globals Used: 
- * Description/Purpose: 
+/* Procedure Name: trim
+ * Params: ary is a character array that holds the string to be trimmed
+ * Returns: none
+ * Procedures Called: isspace
+ * Globals Used: none
+ * Description/Purpose: trims all white space AND newlines from the entirety of
+ *   the string passed in.
  */
  void trim(char ary[BIGBUFF])
 {
@@ -193,7 +203,7 @@ void get_Version()
       {
 	if(!isspace(ary[i]))
 	{
-	 if(ary[i] == 12)
+	 if(ary[i] == 12)   //trims newlines
 	   j++;
 	 else{
 	  temp[j] = ary[i];
@@ -207,12 +217,14 @@ void get_Version()
       }
 }
 
-/* Procedure Name: 
- * Params: name,type,purpose
- * Returns: 
- * Procedures Called: 
- * Globals Used: 
- * Description/Purpose: 
+/* Procedure Name: help
+ * Params: none
+ * Returns: an integer error code
+ * Procedures Called: sys_req, err_hand, trim, strcat, fopen, fgets, fclose
+ * Globals Used: err, fcns
+ * Description/Purpose: displays a list of available functions and a short
+ *   description of each.  It then asks the user to input a function name if 
+ *   s/he wants a more detailed description.
  */
 int help()
 {
@@ -273,12 +285,14 @@ int help()
     }*/
 }
 
-/* Procedure Name: 
- * Params: name,type,purpose
- * Returns: 
- * Procedures Called: 
- * Globals Used: 
- * Description/Purpose: 
+/* Procedure Name: date
+ * Params: none
+ * Returns: an integer error code
+ * Procedures Called: sys_get_date, sys_req, atoi, err_hand, valid_date, sys_set_date
+ * Globals Used: err
+ * Description/Purpose: displays the current date in MM/DD/YYYY format. It then
+ *   asks the user if s/he wants to set a new date. If so, it asks for a new
+ *   year, then a new month, and lastly a new day. Determines date validity.
  */
 int date() {
   char buff[SMALLBUFF];
@@ -332,12 +346,14 @@ int date() {
   return err;
 }
 
-/* Procedure Name: 
- * Params: name,type,purpose
- * Returns: 
- * Procedures Called: 
- * Globals Used: 
- * Description/Purpose: 
+/* Procedure Name: valid_date
+ * Params: accepts three integers, yr, mo, and day, which represent the date
+ *   to be validated
+ * Returns: an integer that's 1 if the date is valid, 0 if not
+ * Procedures Called: none
+ * Globals Used: none
+ * Description/Purpose: validates the date passed in, checking that the day is
+ *   within the range allowed by the month. Accounts for leap years.
  */
 int valid_date(int yr, int mo, int day) {
   int leap = 0, valid = 1;
@@ -348,34 +364,34 @@ int valid_date(int yr, int mo, int day) {
   else return !valid;
 }
 
-/* Procedure Name: 
- * Params: name,type,purpose
- * Returns: 
- * Procedures Called: 
- * Globals Used: 
- * Description/Purpose: 
+/* Procedure Name: init_r1
+ * Params: none
+ * Returns: an integer error code (0 for now)
+ * Procedures Called: none
+ * Globals Used: none
+ * Description/Purpose: none for now
  */
 int init_r1() {
 return 0;
 }
 
-/* Procedure Name: 
- * Params: name,type,purpose
- * Returns: 
- * Procedures Called: 
- * Globals Used: 
- * Description/Purpose: 
+/* Procedure Name: init_r1
+ * Params: none
+ * Returns: an integer error code (0 for now)
+ * Procedures Called: none
+ * Globals Used: none
+ * Description/Purpose: none for now
  */
 int cleanup_r1() {
 return 0;
 }
 
-/* Procedure Name: 
- * Params: name,type,purpose
- * Returns: 
- * Procedures Called: 
- * Globals Used: 
- * Description/Purpose: 
+/* Procedure Name: err_hand
+ * Params: an integer err_code that corresponds to a textual error
+ * Returns: none
+ * Procedures Called: printf
+ * Globals Used: none
+ * Description/Purpose: prints out an error message based on the error code passed in
  */
 void err_hand(int err_code) {
   if(err_code == ERR_INVCOM) printf("Invalid command. All JAROS commands are lower case. Type \"help\" for more info.");
@@ -405,6 +421,6 @@ void err_hand(int err_code) {
   else if(err_code == ERR_SUP_NOMEM) printf("Memory allocation error.");
   else if(err_code == ERR_SUP_MFREE) printf("Memory free error.");
   else if(err_code == ERR_SUP_INVHAN) printf("Invalid handler address.");
-  else printf("Invalid error code.");
+  else printf("Invalid error code %d", err_code);
   err = 0;
 }
