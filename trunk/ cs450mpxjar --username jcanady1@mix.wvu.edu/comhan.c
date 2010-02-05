@@ -4,11 +4,20 @@
  * Author(s): Jonroy Canady, Adam Trainer, Rob Wayland 
  * Version: 1.3    
  * Date Last Modified: 2/04/2010
- * 
- * Components: 
+ * Author(s): Jonroy Canady,
+ * Version: 1.0
+ * Date Last Modified: 1/25/2010
+ *
+ * Components:
  *
  *******************************************************************************
  * Change Log:
+ *
+ *        1/25/2010  JDC       Original version: outline, nonfunctional
+ *        1/28/2010  JDC, RW   Slight comhan fcn editing
+ *        2/01/2010  JDC, RW   Solved initial errors such that it compiles
+ *        2/02/2010  JDC, RW   Added version and partial help functions; improved comhan
+ *        2/03/2010  JDC       Completed dir, date, and err_hand functions and comhan; R1 operational minus help function
  *
  *        1/25/2010  JC           Original version: outline, nonfunctional
  *        1/28/2010  JC, RW       Slight comhan fcn editing
@@ -22,6 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 // Included Support Files
 #include "mpx_supt.h"
@@ -120,7 +130,7 @@ int disp_dir() {
   }
   if(err < OK && err != ERR_SUP_NOENTR) return err;
   err = sys_close_dir();
-  printf("\n"); 
+  printf("\n");
   return err;
 }
 
@@ -156,23 +166,70 @@ void get_Version()
 /*
  *
  */
-int help(char *cmdName)
+ void trim(char ary[BIGBUFF])
+{
+      char temp[BIGBUFF] = {0};
+      int i,j = 0;
+
+      for(i = 0;i<BIGBUFF;i++)
+      {
+	if(!isspace(ary[i]))
+	{
+	 if(ary[i] == 12)
+	   j++;
+	 else{
+	  temp[j] = ary[i];
+	  j++;
+	 }
+	}
+      }
+      for(i = 0;i < BIGBUFF;i++)
+      {
+       ary[i] = temp[i];
+      }
+
+}
+
+
+int help()
 {
     FILE *fptr;
     int i = 0;
-    char file_name[11] = {0,0,0,0,0,0,'.','t','x','t','\0'};
-    char test[80] = {0};
+    int *bufsize = BIGBUFF;
+    char buffer[BIGBUFF] = {0};
 
-    printf("Help: %s\n", cmdName);
+    printf("Enter a command for help: ");
+    if ((err = sys_req(READ, TERMINAL, buffer, &bufsize)) < OK)
+    {
+    printf("%i",err);
+      err_hand(err);
+    }
+    else
+    {
+      trim(buffer);
+      strcat(buffer,".txt");
+      printf("%s",buffer);
+    }
+    /*
     for (i;i<6;i++)
     {
 	file_name[i] = cmdName[i];
     }
 
-
 //    printf("file name: %s\n",file_name);
-    fptr = fopen(file_name,"r");
+    if (!(fptr = fopen(file_name,"r"))){
 
+       i = 0;
+       while(fgets(test,80,fptr))
+       {
+        printf("%s",test);
+        i++;
+        if(i == 24)
+        {
+         printf("Press any key to continue");
+         err = sys_req(READ, TERMINAL, test, &bufsize);
+         i = 0;
+         }    
     i = 0;
     while(fgets(test,80,fptr))
     {
@@ -184,6 +241,13 @@ int help(char *cmdName)
     printf("%s",test);
     i++;
     }
+       fclose(fptr);
+       }
+    else
+    {   
+    printf("Help: ");
+	err_hand(ERR_SUP_FILENF);
+    }*/
 }
 
 /*
@@ -210,7 +274,7 @@ int date() {
     }
     x = 1;
     date_p->year = temp;
-    
+
     while(x) {
       printf("Please enter the new month (MM): ");
       err = sys_req(READ, TERMINAL, buff, &buffsize);
@@ -221,7 +285,7 @@ int date() {
     }
     x = 1;
     date_p->month = temp;
-    
+
     while(x) {
       printf("Please enter the new day (DD): ");
       err = sys_req(READ, TERMINAL, buff, &buffsize);
@@ -232,7 +296,7 @@ int date() {
       else err_hand(ERR_INVDAY);
     }
     date_p->day = temp;
-    
+
     err = sys_set_date(date_p);
     if (err < OK) return err;
     printf("The new date is (MM/DD/YYYY): %d/%d/%d",date_p->month,date_p->day,date_p->year);
