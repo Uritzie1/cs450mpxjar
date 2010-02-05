@@ -48,6 +48,7 @@
 // Global Variables
 int err = 0;
 char * fcns[6] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0",NULL};
+char wd[BIGBUFF*2] = {0};
 
 // Function Prototypes
 void err_hand(int err_code);
@@ -134,8 +135,8 @@ int comhan() {
  */
 int disp_dir() {
   char namebuff[SMALLBUFF];
-  memset(namebuff, '\0', SMALLBUFF);
   long filesize;
+  memset(namebuff, '\0', SMALLBUFF);
   err = sys_open_dir("C:\\Docume~1\\XPMUser\\Desktop\\SVN\\MPXFILES");
   if(err < OK) return err;
   printf("\nFile Name     Size (bytes)");
@@ -158,8 +159,8 @@ int disp_dir() {
  */
 void terminate_mpx() {
   char buff[SMALLBUFF];
-  memset(buff, '\0', SMALLBUFF);
   int buffsize = SMALLBUFF;
+  memset(buff, '\0', SMALLBUFF);
   printf("Are you sure you want to terminate MPX? (Y/N): ");
   err = sys_req(READ, TERMINAL, buff, &buffsize);
   if (err < OK) {
