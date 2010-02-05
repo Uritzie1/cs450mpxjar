@@ -15,8 +15,7 @@
  *        2/01/2010  JC, RW       Solved initial errors such that it compiles
  *        2/02/2010  JC, RW       Added version and partial help functions; improved comhan
  *        2/03/2010  JC           Completed dir, date, and err_hand functions and comhan; R1 operational minus help function
- *        2/04/2010  JC, RW, AT   
- *        
+ *        2/04/2010  JC, RW, AT   Completed help; finished commentation; R1 fully operational with many improvements to come      
  ******************************************************************************/
 
 // Included ANSI C Files
@@ -46,7 +45,7 @@
 
 // Global Variables
 int err = 0;
-char * fcns[6] = {"date\n","help\n","ver\n","dir\n","quit\n",NULL};
+char * fcns[6] = {"date\0","help\0","ver\0","dir\0","quit\0",NULL};
 
 // Function Prototypes
 void err_hand(int err_code);
@@ -84,6 +83,7 @@ int comhan() {
     memset(cmd, '\0', BIGBUFF);
     printf("\n>>");  //command prompt
     err = sys_req(READ, TERMINAL, cmd, &bufsize);  //read in command
+    trim(cmd);
     if (!strncmp(cmd,fcns[QUIT],5)) terminate_mpx();
     else if (!strncmp(cmd,fcns[VER],4)) get_Version();
     else if (!strncmp(cmd,fcns[HELP],5)) {
@@ -177,6 +177,7 @@ int help(char *cmdName)
      if(i == 24)
      {
      i = 0;
+     
      }
     printf("%s",test);
     i++;
