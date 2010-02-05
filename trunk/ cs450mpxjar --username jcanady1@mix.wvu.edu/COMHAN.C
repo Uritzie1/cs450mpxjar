@@ -47,7 +47,7 @@
 
 // Global Variables
 int err = 0;
-char * fcns[6] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0",NULL};
+char * fcns[7] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0",NULL};
 char wd[BIGBUFF*2] = {0};
 
 // Function Prototypes
@@ -121,8 +121,8 @@ int comhan() {
     else if (!strncmp(cmd,"\n",1)) ;
     else err_hand(ERR_INVCOM);
   }
-  terminate_mpx();
-  return 0;
+  //terminate_mpx();
+  //return 0;
 }
 
 /* Procedure Name: disp_dir
