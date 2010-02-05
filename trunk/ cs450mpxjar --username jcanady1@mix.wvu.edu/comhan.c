@@ -1,9 +1,9 @@
 /*******************************************************************************
  * File Name: comhan.c
  *
- * Author(s): Jonroy Canady, 
- * Version: 1.0    
- * Date Last Modified: 1/25/2010
+ * Author(s): Jonroy Canady, Adam Trainer, Rob Wayland 
+ * Version: 1.3    
+ * Date Last Modified: 2/04/2010
  * 
  * Components: 
  *
@@ -28,7 +28,7 @@
 
 // Status and Error Codes
 #define ERR_INVCOM (-201) // Invalid command
-#define ERR_INVYR (-202) // Invalid year
+#define ERR_INVYR (-202)  // Invalid year
 #define ERR_INVMON (-203) // Invalid month
 #define ERR_INVDAY (-204) // Invalid day
 
@@ -41,7 +41,7 @@
 #define VER 2
 #define DIR 3
 #define QUIT 4
-#define VERSION 1.0
+#define VERSION 1.3
 
 // Global Variables
 int err = 0;
