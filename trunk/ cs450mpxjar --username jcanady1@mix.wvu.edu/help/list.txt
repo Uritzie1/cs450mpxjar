@@ -1,0 +1,12 @@
+Funtion list:
+
+Name:		usage:		Description:
+Version		ver		list the current version
+
+Help		help		displays help information
+
+Directory	dir		list contents of current directory
+
+Date		date		displays date and allows changes
+
+Quit		quit		quits JAROS :'(

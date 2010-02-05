@@ -1,0 +1,9 @@
+Function Help
+
+Name: Version
+
+Usage: ver
+
+Inputs: none
+
+Description: Version returns the current version number of JAROS.
