@@ -61,7 +61,7 @@ int help(char *cmdName);
 void get_Version();
 int date();
 int valid_date(int yr, int mo, int day);
-void toLowerCase(char str[BIGBUFF*2]);
+void toLowerCase(char str[BIGBUFF]);
 void trim(char ary[BIGBUFF]);
 
 
@@ -104,6 +104,7 @@ int comhan() {
     printf("\n>>");                                   //command prompt
     err = sys_req(READ, TERMINAL, cmd, &bufsize);     //read in command
     trim(cmd);
+    toLowerCase(cmd);
     if (!strncmp(cmd,fcns[QUIT],5)) terminate_mpx();
     else if (!strncmp(cmd,fcns[VER],4)) get_Version();
     else if (!strncmp(cmd,fcns[HELP],5)) {
@@ -366,7 +367,7 @@ return 0;
  * Globals Used: none
  * Description/Purpose: converts the input string to all lowercase
  */
-void toLowerCase(char str[BIGBUFF*2]) {
+void toLowerCase(char str[BIGBUFF]) {
   int i = 0;
   for(i;i<strlen(str);i++) str[i] = tolower(str[i]);
 }
