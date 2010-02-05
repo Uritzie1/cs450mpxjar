@@ -2,7 +2,7 @@
  * File Name: comhan.c
  *
  * Author(s): Jonroy Canady, Adam Trainer, Rob Wayland 
- * Version: 1.3    
+ * Version: 1.39    
  * Date Last Modified: 2/04/2010
  * Author(s): Jonroy Canady,
  * Version: 1.0
@@ -12,12 +12,6 @@
  *
  *******************************************************************************
  * Change Log:
- *
- *        1/25/2010  JDC       Original version: outline, nonfunctional
- *        1/28/2010  JDC, RW   Slight comhan fcn editing
- *        2/01/2010  JDC, RW   Solved initial errors such that it compiles
- *        2/02/2010  JDC, RW   Added version and partial help functions; improved comhan
- *        2/03/2010  JDC       Completed dir, date, and err_hand functions and comhan; R1 operational minus help function
  *
  *        1/25/2010  JC           Original version: outline, nonfunctional
  *        1/28/2010  JC, RW       Slight comhan fcn editing
@@ -51,7 +45,7 @@
 #define VER 2
 #define DIR 3
 #define QUIT 4
-#define VERSION 1.3
+#define VERSION 1.39
 
 // Global Variables
 int err = 0;
@@ -91,8 +85,8 @@ int comhan() {
   while (1) {
     bufsize = BIGBUFF;
     memset(cmd, '\0', BIGBUFF);
-    printf("\n>>");  //command prompt
-    err = sys_req(READ, TERMINAL, cmd, &bufsize);  //read in command
+    printf("\n>>");                                   //command prompt
+    err = sys_req(READ, TERMINAL, cmd, &bufsize);     //read in command
     trim(cmd);
     if (!strncmp(cmd,fcns[QUIT],5)) terminate_mpx();
     else if (!strncmp(cmd,fcns[VER],4)) get_Version();
@@ -187,7 +181,6 @@ void get_Version()
       {
        ary[i] = temp[i];
       }
-
 }
 
 
