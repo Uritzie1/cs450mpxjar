@@ -217,7 +217,7 @@ void get_Version()
  * Procedures Called: sys_req, err_hand, trim, strcat, fopen, fgets, fclose
  * Globals Used: err, fcns
  * Description/Purpose: displays a list of available functions and a short
- *   description of each.  It then asks the user to input a function name if 
+ *   description of each.  It then asks the user to input a function name if
  *   s/he wants a more detailed description.
  */
 int help() {
@@ -227,14 +227,15 @@ int help() {
   char buffer[BIGBUFF] = {0};
   char wdc[BIGBUFF*2] = {0};
   char tbuffer[9] = "\\help\\";
-  for(i = 0; i < BIGBUFF * 2; i++) wdc[i] = wd[i];
+  for(i = 0; i < BIGBUFF * 2; i++)
+  wdc[i] = wd[i];
 
 
   printf("Help: enter command (or list for command list): ");
   if ((err = sys_req(READ, TERMINAL, buffer, &bufsize)) < OK) return err;
   trim(buffer);
   for(i = 0; i < 6;i++) if(!strncmp(fcns[i],buffer, strlen(fcns[i]))) j++;
-  if(j > 0)
+  if(j > 0){
     strcat(wdc,tbuffer);
     strcat(wdc,buffer);
     strcat(wdc,".txt");
