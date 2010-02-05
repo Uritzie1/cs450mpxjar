@@ -159,15 +159,17 @@ int disp_dir() {
  *   If yes, it cleans up and exits. If no, it tells the user such and returns.
  */
 void terminate_mpx() {
-  char buff[SMALLBUFF];
-  int buffsize = SMALLBUFF;
-  memset(buff, '\0', SMALLBUFF);
+  char buff[BIGBUFF];
+  int buffsize = BIGBUFF;
+  memset(buff, '\0', BIGBUFF);
   printf("Are you sure you want to terminate MPX? (Y/N): ");
   err = sys_req(READ, TERMINAL, buff, &buffsize);
   if (err < OK) {
     err_hand(err);
     return;
   }
+  trim(buff);
+  toLowerCase(buff);
   if (buff[0] == 'y') {
     err = cleanup_r1();
     if (err < OK) err_hand(err);
@@ -234,6 +236,7 @@ int help() {
   printf("Help: enter command (or list for command list): ");
   if ((err = sys_req(READ, TERMINAL, buffer, &bufsize)) < OK) return err;
   trim(buffer);
+  toLowerCase(buffer);
   for(i = 0; i < 6;i++) if(!strncmp(fcns[i],buffer, strlen(fcns[i]))) j++;
   if(j > 0){
     strcat(wdc,tbuffer);
@@ -272,8 +275,8 @@ int help() {
  *   year, then a new month, and lastly a new day. Determines date validity.
  */
 int date() {
-  char buff[SMALLBUFF];
-  int buffsize = SMALLBUFF;
+  char buff[BIGBUFF];
+  int buffsize = BIGBUFF;
   int x = 1, temp;
   date_rec *date_p;
   sys_get_date(date_p);
@@ -281,6 +284,8 @@ int date() {
   printf("\nWould you like to change the date (Y/N)? ");
   err = sys_req(READ, TERMINAL, buff, &buffsize);
   if (err < OK) return err;
+  trim(buff);
+  toLowerCase(buff);
   if (buff[0] == 'y') {
     while (x) {
       printf("Please enter the new year (YYYY): ");
@@ -361,7 +366,7 @@ int init_r1() {
  * Description/Purpose: none for now
  */
 int cleanup_r1() {
-return 0;
+  return 0;
 }
 
 /* Procedure Name: toLowerCase
