@@ -1,8 +1,10 @@
-/*******************************************************************************
+/**
  * File Name: comhan.c
- *
- * \author Jonroy Canady, Adam Trainer, Rob Wayland   
- * \date Last Modified: 2/04/2010
+ * \title JAROS
+ * \author Jonroy Canady
+ * \author Adam Trainer
+ * \author Rob Wayland   
+ * \date 2/04/2010
  * \version: 1.61
  *
  * Components:
@@ -16,7 +18,7 @@
  *        2/02/2010  JC, RW       Added version and partial help functions; improved comhan
  *        2/03/2010  JC           Completed dir, date, and err_hand functions and comhan; R1 operational minus help function
  *        2/04/2010  JC, RW, AT   Completed help; finished commentation; R1 fully operational with many improvements to come      
- ******************************************************************************/
+ */
 
 // Included ANSI C Files
 #include <stdio.h>
@@ -64,11 +66,12 @@ void toLowerCase(char str[BIGBUFF]);
 void trim(char ary[BIGBUFF]);
 
 
-/* Procedure Name: main
+/** Procedure Name: main
  * \param none
  * \return an integer that is 0 if successful (which it always is)
  * Procedures Called: sys_init, init_r1, comhan, cleanup_r1, terminate_mpx
- * Globals Used: err
+ * Globals Used: 
+ * @var err
  * \details Description/Purpose: Main simply initializes the system, calls comhan, and
  *   then cleans up and terminates (though it never actually reaches cleanup or
  *   terminate)
@@ -82,12 +85,14 @@ int main() {
   return 0;
 }
 
-/* Procedure Name: comhan
+/** Procedure Name: comhan
  * \param none
  * \return an integer that is 0 if successful (which it always is)
  * Procedures Called: memset, sys_req, trim, strncmp, help, err_hand, date,
  *   disp_dir, terminate_mpx
- * Globals Used: err, fcns
+ * Globals Used: 
+ * @var err
+   @var fcns
  * \details Description/Purpose: comhan is the heart of the R1 module. It runs the
  *  central loop of the command handler.  It accepts commands entered by the
  *  user, analyzes them, and calls the proper functions.  It also receives all
@@ -125,12 +130,13 @@ int comhan() {
   //return 0;
 }
 
-/* Procedure Name: disp_dir
+/** Procedure Name: disp_dir
  * \param none
  * \return err an integer error code
  * Procedures Called: memset, sys_open_dir, sys_get_entry, sys_close_dir
- * Globals Used: err
- * \brief Description/Purpose: disp_dir neatly prints a list of .mpx files found in
+ * Globals Used: 
+ * @var err
+ * \details Description/Purpose: disp_dir neatly prints a list of .mpx files found in
  *   the MPXFILES folder as well as their sizes in bytes.
  */
 int disp_dir() {
@@ -149,12 +155,13 @@ int disp_dir() {
   return err;
 }
 
-/* Procedure Name: terminate_mpx
+/** Procedure Name: terminate_mpx
  * \Param none
  * \return none
  * Procedures Called: memset, sys_req, err_hand, cleanup_r1, sys_exit
- * Globals Used: err
- * \brief Description/Purpose: confirms that the user really wishes to terminate MPX.
+ * Globals Used: 
+ * @var err
+ * \details Description/Purpose: confirms that the user really wishes to terminate MPX.
  *   If yes, it cleans up and exits. If no, it tells the user such and returns.
  */
 void terminate_mpx() {
@@ -177,7 +184,7 @@ void terminate_mpx() {
   else printf("Termination cancelled.");
 }
 
-/* Procedure Name: get_Version
+/** Procedure Name: get_Version
  * \param none
  * \return none
  * Procedures Called: printf
@@ -189,12 +196,12 @@ void get_Version()
  printf("JAROS current version: %f",VERSION);
 }
 
-/* Procedure Name: trim
+/** Procedure Name: trim
  * \praram ary is a character array that holds the string to be trimmed
  * \return none
  * Procedures Called: isspace
  * Globals Used: none
- * \brief Description/Purpose: trims all white space AND newlines from the entirety of
+ * \details Description/Purpose: trims all white space AND newlines from the entirety of
  *   the string passed in.
  */
  void trim(char ary[BIGBUFF]) {
@@ -212,12 +219,14 @@ void get_Version()
    for(i = 0;i < BIGBUFF;i++) ary[i] = temp[i];
 }
 
-/* Procedure Name: help
+/** Procedure Name: help
  * \param none
  * \return err an integer error code
  * Procedures Called: sys_req, err_hand, trim, strcat, fopen, fgets, fclose
- * Globals Used: err, fcns
- * \brief Description/Purpose: displays a list of available functions and a short
+ * Globals Used: 
+ * @var fcns
+ * @var err
+ * \details Description/Purpose: displays a list of available functions and a short
  *   description of each.  It then asks the user to input a function name if
  *   s/he wants a more detailed description.
  */
@@ -264,12 +273,13 @@ int help() {
   return err;
 }
 
-/* Procedure Name: date
+/** Procedure Name: date
  * \param: none
  * \return err an integer error code
  * Procedures Called: sys_get_date, sys_req, atoi, err_hand, valid_date, sys_set_date
- * Globals Used: err
- *\brief Description/Purpose: displays the current date in MM/DD/YYYY format. It then
+ * Globals Used: 
+ * @var err
+ *\details Description/Purpose: displays the current date in MM/DD/YYYY format. It then
  *   asks the user if s/he wants to set a new date. If so, it asks for a new
  *   year, then a new month, and lastly a new day. Determines date validity.
  */
@@ -332,7 +342,7 @@ int date() {
   return err;
 }
 
-/* Procedure Name: valid_date
+/** Procedure Name: valid_date
  * \param yr int representing the year
  * \param mo int reresenting a month of the year
  * \param day int representing a day of the month
@@ -340,7 +350,7 @@ int date() {
  * \return int an integer that's 1 if the date is valid, 0 if not
  * Procedures Called: none
  * Globals Used: none
- * \brief Description/Purpose: validates the date passed in, checking that the day is
+ * \details Description/Purpose: validates the date passed in, checking that the day is
  *   within the range allowed by the month. Accounts for leap years.
  */
 int valid_date(int yr, int mo, int day) {
@@ -352,11 +362,12 @@ int valid_date(int yr, int mo, int day) {
   else return !valid;
 }
 
-/* Procedure Name: init_r1
+/** Procedure Name: init_r1
  * \param none
  * \return err an integer error code (0 for now)
  * Procedures Called: _getdcwd
- * Globals Used: wd
+ * Globals Used: 
+ * @var wd
  * \brief Description/Purpose: finds the working directory and writes it to the global
  */
 int init_r1() {
@@ -364,7 +375,7 @@ int init_r1() {
   return 0;
 }
 
-/* Procedure Name: init_r1
+/** Procedure Name: init_r1
  * \param none
  * \return  an integer error code (0 for now)
  * Procedures Called: none
@@ -375,7 +386,7 @@ int cleanup_r1() {
   return 0;
 }
 
-/* Procedure Name: toLowerCase
+/** Procedure Name: toLowerCase
  * \param[in] str character array called str that is to be lowered in case
  * \return none
  * Procedures Called: tolower
@@ -387,7 +398,7 @@ void toLowerCase(char str[BIGBUFF]) {
   for(i;i<strlen(str);i++) str[i] = tolower(str[i]);
 }
 
-/* Procedure Name: err_hand
+/** Procedure Name: err_hand
  * \param[in] err an integer err_code that corresponds to a textual error
  * \return none
  * Procedures Called: printf
