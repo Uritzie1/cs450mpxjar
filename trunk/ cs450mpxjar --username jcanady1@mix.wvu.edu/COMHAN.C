@@ -395,7 +395,7 @@ void toLowerCase(char str[BIGBUFF]) {
  */
 void err_hand(int err_code) {
   if(err_code == ERR_INVCOM) printf("Invalid command. Type \"help\" for more info.");
-  else if(err_code == ERR_INVYR) printf("Invalid year parameter.  Please enter a year from 0-9999\n");
+  else if(err_code == ERR_INVYR) printf("Invalid year parameter.  Please enter a year from 1-9999\n");
   else if(err_code == ERR_INVMON) printf("Invalid month parameter.  Please enter a month from 1-12\n");
   else if(err_code == ERR_INVDAY) printf("Invalid day parameter.  Please enter a day from 1-31 depending on the month.\n");
   else if(err_code == ERR_SUP_INVDEV) printf("Invalid device ID.");
