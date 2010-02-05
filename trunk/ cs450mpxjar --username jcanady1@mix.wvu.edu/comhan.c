@@ -49,7 +49,7 @@
 
 // Global Variables
 int err = 0;
-char * fcns[6] = {"date\0","help\0","ver\0","dir\0","quit\0",NULL};
+char * fcns[6] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0",NULL};
 
 // Function Prototypes
 void err_hand(int err_code);
@@ -386,6 +386,18 @@ int cleanup_r1() {
 return 0;
 }
 
+/* Procedure Name: toLowerCase
+ * Params: 
+ * Returns: 
+ * Procedures Called:
+ * Globals Used:
+ * Description/Purpose:
+ */
+void toLowerCase(char str[BIGBUFF*2]) {
+  int i = 0;
+  for(i;i<strlen(str);i++) str[i] = tolower(str[i]);
+}
+
 /* Procedure Name: err_hand
  * Params: an integer err_code that corresponds to a textual error
  * Returns: none
@@ -394,7 +406,7 @@ return 0;
  * Description/Purpose: prints out an error message based on the error code passed in
  */
 void err_hand(int err_code) {
-  if(err_code == ERR_INVCOM) printf("Invalid command. All JAROS commands are lower case. Type \"help\" for more info.");
+  if(err_code == ERR_INVCOM) printf("Invalid command. Type \"help\" for more info.");
   else if(err_code == ERR_INVYR) printf("Invalid year parameter.  Please enter a year from 0-9999\n");
   else if(err_code == ERR_INVMON) printf("Invalid month parameter.  Please enter a month from 1-12\n");
   else if(err_code == ERR_INVDAY) printf("Invalid day parameter.  Please enter a day from 1-31 depending on the month.\n");
