@@ -168,7 +168,7 @@ void terminate_mpx() {
     err_hand(err);
     return;
   }
-  if (buff[0] == 'Y' || buff[0] == 'y') {
+  if (buff[0] == 'y') {
     err = cleanup_r1();
     if (err < OK) err_hand(err);
     sys_exit();
@@ -277,7 +277,7 @@ int date() {
   printf("\nWould you like to change the date (Y/N)? ");
   err = sys_req(READ, TERMINAL, buff, &buffsize);
   if (err < OK) return err;
-  if (buff[0] == 'Y' || buff[0] == 'y') {
+  if (buff[0] == 'y') {
     while (x) {
       printf("Please enter the new year (YYYY): ");
       err = sys_req(READ, TERMINAL, buff, &buffsize);
