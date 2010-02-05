@@ -221,31 +221,34 @@ void get_Version()
  *   s/he wants a more detailed description.
  */
 int help() {
-  FILE *fptr;
+  FILE *fptr = 0;
   int i,j = 0;
   int *bufsize = BIGBUFF;
   char buffer[BIGBUFF] = {0};
+  char wdc[BIGBUFF*2] = {0};
   char tbuffer[9] = "\\help\\";
+  for(i = 0; i < BIGBUFF * 2; i++) wdc[i] = wd[i];
+
 
   printf("Help: enter command (or list for command list): ");
   if ((err = sys_req(READ, TERMINAL, buffer, &bufsize)) < OK) return err;
   trim(buffer);
   for(i = 0; i < 6;i++) if(!strncmp(fcns[i],buffer, strlen(fcns[i]))) j++;
-  if(j > 0){
-    strcat(wd,tbuffer);
-    strcat(wd,buffer);
-    strcat(wd,".txt");
+  if(j > 0)
+    strcat(wdc,tbuffer);
+    strcat(wdc,buffer);
+    strcat(wdc,".txt");
     //printf("%s",wd);
-    if ((fptr = fopen(wd,"r")) > 0) {
+    if ((fptr = fopen(wdc,"r")) > 0) {
       i = 0;
       while(fgets(buffer,BIGBUFF,fptr)) {
-        printf("%s",buffer);
-        i++;
-        if(i == 24) {
-          printf("Press any key to continue");
-          err = sys_req(READ, TERMINAL, buffer, &bufsize);
-          i = 0;
-        }
+	printf("%s",buffer);
+	i++;
+	if(i == 24) {
+	  printf("Press any key to continue");
+	  err = sys_req(READ, TERMINAL, buffer, &bufsize);
+	  i = 0;
+	}
       }
     }
     else {
