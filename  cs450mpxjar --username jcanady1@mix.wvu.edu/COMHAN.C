@@ -69,7 +69,7 @@ void trim(char ary[BIGBUFF]);
  * \return an integer that is 0 if successful (which it always is)
  * Procedures Called: sys_init, init_r1, comhan, cleanup_r1, terminate_mpx
  * Globals Used: err
- * \detials Description/Purpose: Main simply initializes the system, calls comhan, and
+ * \details Description/Purpose: Main simply initializes the system, calls comhan, and
  *   then cleans up and terminates (though it never actually reaches cleanup or
  *   terminate)
  */
@@ -130,7 +130,7 @@ int comhan() {
  * \return err an integer error code
  * Procedures Called: memset, sys_open_dir, sys_get_entry, sys_close_dir
  * Globals Used: err
- * \biref Description/Purpose: disp_dir neatly prints a list of .mpx files found in
+ * \brief Description/Purpose: disp_dir neatly prints a list of .mpx files found in
  *   the MPXFILES folder as well as their sizes in bytes.
  */
 int disp_dir() {
