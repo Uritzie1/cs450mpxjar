@@ -110,12 +110,13 @@ int comhan() {
  */
 int disp_dir() {
   char namebuff[SMALLBUFF];
+  memset(namebuff, '\0', SMALLBUFF);
   long filesize;
   err = sys_open_dir("C:\\Docume~1\\XPMUser\\Desktop\\SVN\\MPXFILES");
   if(err < OK) return err;
   printf("\nFile Name     Size (bytes)");
   while ((err = sys_get_entry(namebuff, SMALLBUFF, &filesize)) == OK) {
-    printf("\n%-9.9s     %dl", namebuff, filesize);
+    printf("\n%-9.9s     %ld", namebuff, filesize);
   }
   if(err < OK && err != ERR_SUP_NOENTR) return err;
   err = sys_close_dir();
@@ -128,6 +129,7 @@ int disp_dir() {
  */
 void terminate_mpx() {
   char buff[SMALLBUFF];
+  memset(buff, '\0', SMALLBUFF);
   int buffsize = SMALLBUFF;
   printf("Are you sure you want to terminate MPX? (Y/N): ");
   err = sys_req(READ, TERMINAL, buff, &buffsize);
