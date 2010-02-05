@@ -1,0 +1,9 @@
+Funtion Help
+
+Name:  List Directory
+
+Usage: dir
+
+Inputs: none
+
+Description:  Lists all the files in the current directory

@@ -1,0 +1,10 @@
+Function Help
+
+Name: Date
+
+Usage: date
+
+Inputs: Day, Month and Year of new date, or nothing to display only date.
+
+Description:  Using the date command prompts the user for a new 
+date if desired or simply displays the current date.

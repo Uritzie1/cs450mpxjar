@@ -1,0 +1,9 @@
+Function Help
+
+Name: quit
+
+Usage: quit
+
+Inputs: none
+
+Description:  Quits JAROS after confirmation.
