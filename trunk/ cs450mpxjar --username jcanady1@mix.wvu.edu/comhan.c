@@ -1,9 +1,6 @@
 /*******************************************************************************
  * File Name: comhan.c
  *
- * Author(s): Jonroy Canady, Adam Trainer, Rob Wayland 
- * Version: 1.39    
- * Date Last Modified: 2/04/2010
  * Author(s): Jonroy Canady,
  * Version: 1.0
  * Date Last Modified: 1/25/2010
@@ -13,12 +10,12 @@
  *******************************************************************************
  * Change Log:
  *
- *        1/25/2010  JC           Original version: outline, nonfunctional
- *        1/28/2010  JC, RW       Slight comhan fcn editing
- *        2/01/2010  JC, RW       Solved initial errors such that it compiles
- *        2/02/2010  JC, RW       Added version and partial help functions; improved comhan
- *        2/03/2010  JC           Completed dir, date, and err_hand functions and comhan; R1 operational minus help function
- *        2/04/2010  JC, RW, AT   Completed help; finished commentation; R1 fully operational with many improvements to come      
+ *        1/25/2010  JDC       Original version: outline, nonfunctional
+ *        1/28/2010  JDC, RW   Slight comhan fcn editing
+ *        2/01/2010  JDC, RW   Solved initial errors such that it compiles
+ *        2/02/2010  JDC, RW   Added version and partial help functions; improved comhan
+ *        2/03/2010  JDC       Completed dir, date, and err_hand functions and comhan; R1 operational minus help function
+ *
  ******************************************************************************/
 
 // Included ANSI C Files
@@ -26,13 +23,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <direct.h>
 
 // Included Support Files
 #include "mpx_supt.h"
 
 // Status and Error Codes
 #define ERR_INVCOM (-201) // Invalid command
-#define ERR_INVYR (-202)  // Invalid year
+#define ERR_INVYR (-202) // Invalid year
 #define ERR_INVMON (-203) // Invalid month
 #define ERR_INVDAY (-204) // Invalid day
 
@@ -45,11 +43,13 @@
 #define VER 2
 #define DIR 3
 #define QUIT 4
-#define VERSION 1.39
+#define VERSION 1.0
 
 // Global Variables
 int err = 0;
 char * fcns[6] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0",NULL};
+char * fcns[6] = {"date\n","help\n","ver\n","dir\n","quit\n",NULL};
+char wd[160] = {0};
 
 // Function Prototypes
 void err_hand(int err_code);
@@ -66,6 +66,8 @@ int valid_date(int yr, int mo, int day);
 
 /* Procedure Name: main
  * Params: none
+/*
+ *
  * Returns: an integer that is 0 if successful (which it always is)
  * Procedures Called: sys_init, init_r1, comhan, cleanup_r1, terminate_mpx
  * Globals Used: err
@@ -92,36 +94,46 @@ int main() {
  *  central loop of the command handler.  It accepts commands entered by the
  *  user, analyzes them, and calls the proper functions.  It also receives all
  *  error codes returned by the functions, passing them to the error handler.
+/*
+ *
  */
 int comhan() {
   char cmd[BIGBUFF]={0};
-  int bufsize = BIGBUFF;
+  int bufsize = BIGBUFF, x = 0;
   printf("\nWelcome to JAROS!\n");
   while (1) {
+    x = 0;
     bufsize = BIGBUFF;
-    memset(cmd, '\0', BIGBUFF);
-    printf("\n>>");                                   //command prompt
-    err = sys_req(READ, TERMINAL, cmd, &bufsize);     //read in command
-    trim(cmd);
-    if (!strncmp(cmd,fcns[QUIT],5)) terminate_mpx();
-    else if (!strncmp(cmd,fcns[VER],4)) get_Version();
-    else if (!strncmp(cmd,fcns[HELP],5)) {
+    printf("\n>>");  //command prompt
+    err = sys_req(READ, TERMINAL, cmd, &bufsize);  //read in command
+    if (!strncmp(cmd,fcns[QUIT],5) && !x) {
+      terminate_mpx();
+      x = 1;
+    }
+    else if (!strncmp(cmd,fcns[VER],4) && !x) {
+      get_Version();
+      x = 1;
+    }
+    else if (!strncmp(cmd,fcns[HELP],5) && !x) {
       err = help(NULL);
       if(err < OK) err_hand(err);
+      x = 1;
     }
-    else if (!strncmp(cmd,fcns[DATE],5)) {
+    else if (!strncmp(cmd,fcns[DATE],5) && !x) {
       err = date();
       if(err < OK) err_hand(err);
+      x = 1;
     }
-    else if (!strncmp(cmd,fcns[DIR],4)) {
+    else if (!strncmp(cmd,fcns[DIR],4) && !x) {
       err = disp_dir();
       if(err < OK) err_hand(err);
+      x = 1;
     }
-    else if (!strncmp(cmd,"\n",1)) ;
-    else err_hand(ERR_INVCOM);
+    else if (!strncmp(cmd,"\n",1) && !x) x = 1;
+    else if (!x) err_hand(ERR_INVCOM);
   }
-  terminate_mpx();
-  return 0;
+ //terminate_mpx();
+  //return 0;
 }
 
 /* Procedure Name: disp_dir
@@ -131,16 +143,17 @@ int comhan() {
  * Globals Used: err
  * Description/Purpose: disp_dir neatly prints a list of .mpx files found in
  *   the MPXFILES folder as well as their sizes in bytes.
+/*
+ *
  */
 int disp_dir() {
   char namebuff[SMALLBUFF];
-  memset(namebuff, '\0', SMALLBUFF);
   long filesize;
   err = sys_open_dir("C:\\Docume~1\\XPMUser\\Desktop\\SVN\\MPXFILES");
   if(err < OK) return err;
   printf("\nFile Name     Size (bytes)");
   while ((err = sys_get_entry(namebuff, SMALLBUFF, &filesize)) == OK) {
-    printf("\n%-9.9s     %ld", namebuff, filesize);
+    printf("\n%-9.9s     %dl", namebuff, filesize);
   }
   if(err < OK && err != ERR_SUP_NOENTR) return err;
   err = sys_close_dir();
@@ -155,11 +168,12 @@ int disp_dir() {
  * Globals Used: err
  * Description/Purpose: confirms that the user really wishes to terminate MPX.
  *   If yes, it cleans up and exits. If no, it tells the user such and returns.
+/*
+ *
  */
 void terminate_mpx() {
-  char buff[SMALLBUFF];
-  memset(buff, '\0', SMALLBUFF);
-  int buffsize = SMALLBUFF;
+  char buff[TINYBUFF];
+  int buffsize = TINYBUFF;
   printf("Are you sure you want to terminate MPX? (Y/N): ");
   err = sys_req(READ, TERMINAL, buff, &buffsize);
   if (err < OK) {
@@ -180,6 +194,8 @@ void terminate_mpx() {
  * Procedures Called: printf
  * Globals Used: none
  * Description/Purpose: simply prints a single line with the version constant
+/*
+ *
  */
 void get_Version()
 {
@@ -193,6 +209,8 @@ void get_Version()
  * Globals Used: none
  * Description/Purpose: trims all white space AND newlines from the entirety of
  *   the string passed in.
+/*
+ *
  */
  void trim(char ary[BIGBUFF])
 {
@@ -211,10 +229,11 @@ void get_Version()
 	 }
 	}
       }
-      for(i = 0;i < BIGBUFF;i++)
+      for(i = 0; i < BIGBUFF;i++)
       {
-       ary[i] = temp[i];
+	ary[i] = temp[i];
       }
+
 }
 
 /* Procedure Name: help
@@ -226,63 +245,64 @@ void get_Version()
  *   description of each.  It then asks the user to input a function name if 
  *   s/he wants a more detailed description.
  */
+
 int help()
 {
     FILE *fptr;
-    int i = 0;
+    int i,j = 0;
     int *bufsize = BIGBUFF;
     char buffer[BIGBUFF] = {0};
+    char tbuffer[9] = "\\help\\";
 
-    printf("Enter a command for help: ");
+    printf("Help: enter command (or list for command list): ");
     if ((err = sys_req(READ, TERMINAL, buffer, &bufsize)) < OK)
     {
-    printf("%i",err);
-      err_hand(err);
+     printf("%i",err);
+     err_hand(err);
     }
     else
     {
       trim(buffer);
-      strcat(buffer,".txt");
-      printf("%s",buffer);
-    }
-    /*
-    for (i;i<6;i++)
-    {
-	file_name[i] = cmdName[i];
-    }
-
-//    printf("file name: %s\n",file_name);
-    if (!(fptr = fopen(file_name,"r"))){
-
-       i = 0;
-       while(fgets(test,80,fptr))
-       {
-        printf("%s",test);
-        i++;
-        if(i == 24)
-        {
-         printf("Press any key to continue");
-         err = sys_req(READ, TERMINAL, test, &bufsize);
-         i = 0;
-         }    
-    i = 0;
-    while(fgets(test,80,fptr))
-    {
-     if(i == 24)
-     {
-     i = 0;
-     
-     }
-    printf("%s",test);
-    i++;
-    }
-       fclose(fptr);
+      for(i = 0; i < 6;i++)
+      {
+	if(!strncmp(fcns[i],buffer, strlen(fcns[i])))
+	{
+	 j++;
+	// printf("%s %d",fcns[i],j);
+	}
+      }
+      if(j > 0){
+      strcat(wd,tbuffer);
+      strcat(wd,buffer);
+      strcat(wd,".txt");
+      //printf("%s",wd);
+       if ((fptr = fopen(wd,"r")) > 0){
+	  i = 0;
+	  while(fgets(buffer,BIGBUFF,fptr))
+	  {
+	      printf("%s",buffer);
+	       i++;
+	       if(i == 24)
+	       {
+	       printf("Press any key to continue");
+	       err = sys_req(READ, TERMINAL, buffer, &bufsize);
+	       i = 0;
+	       }
+	  }
+	}
+	else
+	{
+	 printf("Help: ");
+	 err_hand(ERR_SUP_FILNFD);
+	 }
+	}
+	else
+	{
+	 err_hand(ERR_INVCOM);
+	}
        }
-    else
-    {   
-    printf("Help: ");
-	err_hand(ERR_SUP_FILENF);
-    }*/
+    fclose(fptr);
+    return err;
 }
 
 /* Procedure Name: date
@@ -293,6 +313,8 @@ int help()
  * Description/Purpose: displays the current date in MM/DD/YYYY format. It then
  *   asks the user if s/he wants to set a new date. If so, it asks for a new
  *   year, then a new month, and lastly a new day. Determines date validity.
+/*
+ *
  */
 int date() {
   char buff[SMALLBUFF];
@@ -332,7 +354,7 @@ int date() {
       err = sys_req(READ, TERMINAL, buff, &buffsize);
       if (err < OK) return err;
       temp = atoi(buff);
-      //printf("You input %d/%d/%d\n",date_p->month,temp,date_p->year);
+      printf("You input %d/%d/%d",date_p->month,temp,date_p->year);
       if (valid_date(date_p->year,date_p->month,temp)) x = 0;
       else err_hand(ERR_INVDAY);
     }
@@ -354,6 +376,8 @@ int date() {
  * Globals Used: none
  * Description/Purpose: validates the date passed in, checking that the day is
  *   within the range allowed by the month. Accounts for leap years.
+/*
+ *
  */
 int valid_date(int yr, int mo, int day) {
   int leap = 0, valid = 1;
@@ -370,8 +394,13 @@ int valid_date(int yr, int mo, int day) {
  * Procedures Called: none
  * Globals Used: none
  * Description/Purpose: none for now
+/*
+ *
  */
 int init_r1() {
+_getdcwd(3,wd,sizeof(wd));
+
+
 return 0;
 }
 
@@ -379,6 +408,8 @@ return 0;
  * Params: none
  * Returns: an integer error code (0 for now)
  * Procedures Called: none
+/*
+ *
  * Globals Used: none
  * Description/Purpose: none for now
  */
@@ -392,6 +423,8 @@ return 0;
  * Procedures Called:
  * Globals Used:
  * Description/Purpose:
+/*
+ *
  */
 void toLowerCase(char str[BIGBUFF*2]) {
   int i = 0;
@@ -407,6 +440,7 @@ void toLowerCase(char str[BIGBUFF*2]) {
  */
 void err_hand(int err_code) {
   if(err_code == ERR_INVCOM) printf("Invalid command. Type \"help\" for more info.");
+  if(err_code == ERR_INVCOM) printf("Invalid command.  All JAROS commands are lower case.  Type ""help"" for more info.");
   else if(err_code == ERR_INVYR) printf("Invalid year parameter.  Please enter a year from 0-9999\n");
   else if(err_code == ERR_INVMON) printf("Invalid month parameter.  Please enter a month from 1-12\n");
   else if(err_code == ERR_INVDAY) printf("Invalid day parameter.  Please enter a day from 1-31 depending on the month.\n");
