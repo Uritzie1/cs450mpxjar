@@ -1,4 +1,4 @@
-Funtion list:
+Function list:
 
 Name:		usage:		Description:
 Version		ver		list the current version
