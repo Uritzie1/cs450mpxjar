@@ -4,7 +4,7 @@
  * Author(s): Jonroy Canady, Adam Trainer, Rob Wayland   
  * Date Last Modified: 2/04/2010
  * Author(s): Jonroy Canady,
- * Version: 1.4
+ * Version: 1.61
  *
  * Components:
  *
@@ -43,7 +43,7 @@
 #define VER 2
 #define DIR 3
 #define QUIT 4
-#define VERSION 1.39
+#define VERSION 1.61
 
 // Global Variables
 int err = 0;
