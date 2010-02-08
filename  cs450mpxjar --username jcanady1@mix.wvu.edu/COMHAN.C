@@ -5,7 +5,7 @@
  * \author Adam Trainer
  * \author Rob Wayland   
  * \date 2/04/2010
- * \version: 1.61
+ * \version: 1.71
  *
  * Components:
  *
@@ -17,7 +17,8 @@
  *        2/01/2010  JC, RW       Solved initial errors such that it compiles
  *        2/02/2010  JC, RW       Added version and partial help functions; improved comhan
  *        2/03/2010  JC           Completed dir, date, and err_hand functions and comhan; R1 operational minus help function
- *        2/04/2010  JC, RW, AT   Completed help; finished commentation; R1 fully operational with many improvements to come      
+ *        2/04/2010  JC, RW, AT   Completed help; finished commentation; R1 fully operational with many improvements to come
+ *        2/08/2010  JC           Edited dir function for operation on any computer      
  */
 
 // Included ANSI C Files
@@ -44,12 +45,12 @@
 #define VER 2
 #define DIR 3
 #define QUIT 4
-#define VERSION 1.61
+#define VERSION 1.71
 
 // Global Variables
-int err = 0;
-char * fcns[7] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0",NULL};
-char wd[BIGBUFF*2] = {0};
+int err = 0;  //error code
+char * fcns[7] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0",NULL};  //functions list
+char wd[BIGBUFF*2] = {0};  //working directory
 
 // Function Prototypes
 void err_hand(int err_code);
@@ -102,14 +103,15 @@ int comhan() {
   char cmd[BIGBUFF]={0};
   int bufsize = BIGBUFF;
   printf("\nWelcome to JAROS!\n");
+  
   while (1) {
     bufsize = BIGBUFF;
-    memset(cmd, '\0', BIGBUFF);
+    memset(cmd, '\0', BIGBUFF);                       //clear buffer
     printf("\n>>");                                   //command prompt
     err = sys_req(READ, TERMINAL, cmd, &bufsize);     //read in command
     trim(cmd);
     toLowerCase(cmd);
-    if (!strncmp(cmd,fcns[QUIT],5)) terminate_mpx();
+    if (!strncmp(cmd,fcns[QUIT],5)) terminate_mpx();  //call corresponding function
     else if (!strncmp(cmd,fcns[VER],4)) get_Version();
     else if (!strncmp(cmd,fcns[HELP],5)) {
       err = help(NULL);
@@ -143,9 +145,13 @@ int disp_dir() {
   char namebuff[SMALLBUFF];
   long filesize;
   memset(namebuff, '\0', SMALLBUFF);
-  err = sys_open_dir("C:\\Docume~1\\XPMUser\\Desktop\\SVN\\MPXFILES");
+  char wdc[BIGBUFF*2] = {0};
+  for(i = 0; i < BIGBUFF * 2; i++) wdc[i] = wd[i];
+  strcat(wdc,"\\MPXFILES\\");   //build directory from current working directory
+  
+  err = sys_open_dir(wdc);
   if(err < OK) return err;
-  printf("\nFile Name     Size (bytes)");
+  printf("\nFile Name     Size (bytes)");  //print list of MPX files
   while ((err = sys_get_entry(namebuff, SMALLBUFF, &filesize)) == OK) {
     printf("\n%-9.9s     %ld", namebuff, filesize);
   }
@@ -168,6 +174,7 @@ void terminate_mpx() {
   char buff[BIGBUFF];
   int buffsize = BIGBUFF;
   memset(buff, '\0', BIGBUFF);
+  
   printf("Are you sure you want to terminate MPX? (Y/N): ");
   err = sys_req(READ, TERMINAL, buff, &buffsize);
   if (err < OK) {
@@ -240,13 +247,12 @@ int help() {
   for(i = 0; i < BIGBUFF * 2; i++)
   wdc[i] = wd[i];
 
-
   printf("Help: enter command (or list for command list): ");
   if ((err = sys_req(READ, TERMINAL, buffer, &bufsize)) < OK) return err;
   trim(buffer);
   toLowerCase(buffer);
   for(i = 0; i < 6;i++) if(!strncmp(fcns[i],buffer, strlen(fcns[i]))) j++;
-  if(j > 0){
+  if(j > 0){                //build file path
     strcat(wdc,tbuffer);
     strcat(wdc,buffer);
     strcat(wdc,".txt");
@@ -254,13 +260,13 @@ int help() {
     if ((fptr = fopen(wdc,"r")) > 0) {
       i = 0;
       while(fgets(buffer,BIGBUFF,fptr)) {
-	printf("%s",buffer);
-	i++;
-	if(i == 24) {
-	  printf("Press any key to continue");
-	  err = sys_req(READ, TERMINAL, buffer, &bufsize);
-	  i = 0;
-	}
+	    printf("%s",buffer);
+	    i++;
+	    if(i == 24) {        //paging
+	      printf("Press any key to continue");
+	      err = sys_req(READ, TERMINAL, buffer, &bufsize);
+	      i = 0;
+	    }
       }
     }
     else {
@@ -288,7 +294,8 @@ int date() {
   int buffsize = BIGBUFF;
   int x = 1, temp;
   date_rec *date_p;
-  sys_get_date(date_p);
+  
+  sys_get_date(date_p);      //show current date and prompt for change
   printf("The current date is (MM/DD/YYYY): %d/%d/%d",date_p->month,date_p->day,date_p->year);
   printf("\nWould you like to change the date (Y/N)? ");
   err = sys_req(READ, TERMINAL, buff, &buffsize);
@@ -296,40 +303,38 @@ int date() {
   trim(buff);
   toLowerCase(buff);
   if (buff[0] == 'y') {
-    while (x) {
+    while (x) {  //change year prompt
       printf("Please enter the new year (YYYY): ");
       err = sys_req(READ, TERMINAL, buff, &buffsize);
       if (err < OK) return err;
       temp = atoi(buff);
-      if (temp==0) err_hand(ERR_INVYR);
+      if (temp==0) err_hand(ERR_INVYR);  //validate input
       else if (temp >= 0 && temp < 10000) x = 0;
       else err_hand(ERR_INVYR);
     }
     x = 1;
-    date_p->year = temp;
+    date_p->year = temp; 
 
-    while(x) {
+    while(x) {  //change month prompt
       printf("Please enter the new month (MM): ");
       err = sys_req(READ, TERMINAL, buff, &buffsize);
       if (err < OK) return err;
       temp = atoi(buff);
-      if (temp==0) err_hand(ERR_INVMON);
+      if (temp==0) err_hand(ERR_INVMON);  //validate input
       else if (temp >= 1 && temp <= 12) x = 0;
       else err_hand(ERR_INVMON);
     }
     x = 1;
     date_p->month = temp;
 
-    while(x) {
+    while(x) {  //change day prompt
       printf("Please enter the new day (DD): ");
       err = sys_req(READ, TERMINAL, buff, &buffsize);
       if (err < OK) return err;
       temp = atoi(buff);
-      if (temp==0) err_hand(ERR_INVDAY);
-      else if (valid_date(date_p->year,date_p->month,temp)) {
-        x = 0;
-        printf("You input %d/%d/%d\n",date_p->month,temp,date_p->year);
-      }
+      if (temp==0) err_hand(ERR_INVDAY);  //validate input
+      printf("You input %d/%d/%d\n",date_p->month,temp,date_p->year);
+      else if (valid_date(date_p->year,date_p->month,temp)) x = 0;
       else err_hand(ERR_INVDAY);
     }
     date_p->day = temp;
