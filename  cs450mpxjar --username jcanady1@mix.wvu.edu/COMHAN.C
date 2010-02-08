@@ -5,9 +5,10 @@
  * \author Adam Trainer
  * \author Rob Wayland   
  * \date 2/04/2010
- * \version: 1.71
+ * \version: 1.72
  *
- * Components:
+ * Components: err_hand, init_r1, cleanup_r1, disp_dir, comhan, terminate_mpx,
+ *             help, get_Version, date, valid_date, toLowerCase, trim
  *
  *******************************************************************************
  * Change Log:
@@ -18,7 +19,7 @@
  *        2/02/2010  JC, RW       Added version and partial help functions; improved comhan
  *        2/03/2010  JC           Completed dir, date, and err_hand functions and comhan; R1 operational minus help function
  *        2/04/2010  JC, RW, AT   Completed help; finished commentation; R1 fully operational with many improvements to come
- *        2/08/2010  JC           Edited dir function for operation on any computer      
+ *        2/08/2010  JC           Edited dir function for operation on any computer and added some comments     
  */
 
 // Included ANSI C Files
@@ -45,7 +46,7 @@
 #define VER 2
 #define DIR 3
 #define QUIT 4
-#define VERSION 1.71
+#define VERSION 1.72
 
 // Global Variables
 int err = 0;  //error code
@@ -144,8 +145,9 @@ int comhan() {
 int disp_dir() {
   char namebuff[SMALLBUFF];
   long filesize;
-  memset(namebuff, '\0', SMALLBUFF);
   char wdc[BIGBUFF*2] = {0};
+  int i;
+  memset(namebuff, '\0', SMALLBUFF);
   for(i = 0; i < BIGBUFF * 2; i++) wdc[i] = wd[i];
   strcat(wdc,"\\MPXFILES\\");   //build directory from current working directory
   
@@ -332,8 +334,8 @@ int date() {
       err = sys_req(READ, TERMINAL, buff, &buffsize);
       if (err < OK) return err;
       temp = atoi(buff);
-      if (temp==0) err_hand(ERR_INVDAY);  //validate input
       printf("You input %d/%d/%d\n",date_p->month,temp,date_p->year);
+      if (temp==0) err_hand(ERR_INVDAY);  //validate input
       else if (valid_date(date_p->year,date_p->month,temp)) x = 0;
       else err_hand(ERR_INVDAY);
     }
