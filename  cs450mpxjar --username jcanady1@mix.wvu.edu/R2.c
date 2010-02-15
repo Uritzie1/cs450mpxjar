@@ -116,7 +116,7 @@ int block() { //temp command
   if (err < OK) return err;
   trim(buff);
   toLowerCase(buff);
-  err = findPCB(temppcb);
+  err = findPCB(buff, temppcb);
   if (err < OK) return err;
   if(temppcb->state != BLOCKED) {
 		removePCB(temppcb);
@@ -139,7 +139,7 @@ int unblock() {
   if (err < OK) return err;
   trim(buff);
   toLowerCase(buff);
-  err = findPCB(temppcb);
+  err = findPCB(buff, temppcb);
   if (err < OK) return err;
   if(temppcb->state == BLOCKED) {
 		removePCB(temppcb);
@@ -162,7 +162,7 @@ int suspend() {
   if (err < OK) return err;
   trim(buff);
   toLowerCase(buff);
-  err = findPCB(temppcb);
+  err = findPCB(buff, temppcb);
   if (err < OK) return err;
   if(temppcb->state != SUSP) temppcb->suspended = SUSP;
   return err;
@@ -181,7 +181,7 @@ int resume() {
   if (err < OK) return err;
   trim(buff);
   toLowerCase(buff);
-  err = findPCB(temppcb);
+  err = findPCB(buff, temppcb);
   if (err < OK) return err;
   if(temppcb->state == BLOCKED) temppcb->suspended = NOTSUSP;
   return err;
@@ -200,13 +200,13 @@ int set_Priority() {
   if (err < OK) return err;
   trim(buff);
   toLowerCase(buff);
-  err = findPCB(temppcb);
+  err = findPCB(buff, temppcb);
   if (err < OK) return err;
   printf("Please enter the new priority level (-128 to 127): ");
   err = sys_req(READ, TERMINAL, buff, &buffsize);
   if (err < OK) return err;
   temp = atoi(buff);
-  if (temp==0) err = ERR_INVPRI;  //validate input
+  if (temp==0) err = ERR_INVPRI;  //validate input ???***
   else if (temp >= -128 && temp <= 127) {
     removePCB(temppcb);
     temppcb->priority = temp;
@@ -214,5 +214,90 @@ int set_Priority() {
     printf("Priority for %s successfully set to %d",temppcb->name,temppcb->priority);
   }
   else err = ERR_INVPRI;
+  return err;
+}
+
+/**
+  */
+int show_PCB() {
+  char buff[BIGBUFF];
+  int buffsize = BIGBUFF;
+  PCB* temppcb;
+  memset(buff, '\0', BIGBUFF);
+  
+  printf("Please enter a process name: ");
+  err = sys_req(READ, TERMINAL, buff, &buffsize);
+  if (err < OK) return err;
+  trim(buff);
+  toLowerCase(buff);
+  err = findPCB(buff, temppcb);
+  if (err < OK) return err;
+  printf("\nPROCESS PROPERTIES\n------------------------");
+  printf("\nName: %s", temppcb->name);
+  if(temppcb->proc_class == SYSTEM) printf("\nClass: System");
+  else printf("\nClass: Application");
+  printf("\nPriority: %d", temppcb->priority;
+  if(temppcb->state == READY) printf("\nState: Ready");
+  else if(temppcb->state == RUNNING) printf("\nState: Running"); 
+  else printf("\nState: Blocked");
+  if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
+  else printf("\nSuspended?: No");
+  return err;
+}
+
+/**
+  */
+int show_All() {
+  PCB* temppcb; 
+  //set temppcb to queue root
+  //implement paging
+  //hit all queues
+  printf("\nPROCESS PROPERTIES\n------------------------");
+  while(temppcb->next != NULL) {
+    printf("\nName: %s", temppcb->name);
+    if(temppcb->state == READY) printf("\nState: Ready");
+    else if(temppcb->state == RUNNING) printf("\nState: Running"); 
+    else printf("\nState: Blocked");
+    if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
+    else printf("\nSuspended?: No\n");
+    temppcb = temppcb->next;
+  }
+  return err;
+}
+
+/**
+  */
+int show_Ready() {
+  PCB* temppcb; 
+  //set temppcb to queue root
+  //implement paging
+  printf("\nPROCESS PROPERTIES\n------------------------");
+  while(temppcb->next != NULL) {
+    if(temppcb->state == READY) {
+      printf("\nName: %s", temppcb->name);
+      printf("\nPriority: %d", temppcb->priority;
+      if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
+      else printf("\nSuspended?: No\n");
+    }
+    temppcb = temppcb->next;
+  }
+  return err;
+}
+
+/**
+  */
+int show_Blocked() {
+  PCB* temppcb; 
+  //set temppcb to queue root
+  //implement paging
+  printf("\nPROCESS PROPERTIES\n------------------------");
+  while(temppcb->next != NULL) {
+    if(temppcb->state == BLOCKED) {
+      printf("\nName: %s", temppcb->name);
+      if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
+      else printf("\nSuspended?: No\n");
+    }
+    temppcb = temppcb->next;
+  }
   return err;
 }
