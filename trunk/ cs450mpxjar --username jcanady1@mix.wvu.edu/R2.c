@@ -25,12 +25,38 @@
 #include "mpx_supt.h"
 
 // Status and Error Codes
-
+#define ERR_INVPRI (-205)
 
 // Constants
-
+#define PROCESS_NAME_LENGTH 10
+#define SYSTEM 1
+#define APP 0
+#define READY 0
+#define RUNNING 1
+#define BLOCKED 2
+#define NOTSUSP 0
+#define SUSP 1
 
 // Global Variables
+
+// Structures
+/** \struct PCB
+  * The PCB represents a process control block, containing all information about a process and pointers to the next/prev PCBs in a queue.
+  */
+typedef struct PCB {
+	char name[PROCESS_NAME_LENGTH];         /**<Process Name*/
+	int proc_class;						    /**<Process Class*/
+	int priority;					        /**<Priority Value (-128 to 127)*/
+	int state;						        /**<Process State Flag (Running, Ready, Blocked)*/
+	int suspended;					        /**<Process Suspended Flag*/
+	unsigned char * stack_base;				/**<Pointer to base of stack*/
+	unsigned char * stack_top;				/**<Pointer to top of stack*/
+	int mem_size;							/**<Memory size*/
+	unsigned char * load_address;			/**<Pointer to loading address*/
+	unsigned char * execution_address;		/**<Pointer to execution address*/
+	struct PCB *prev;				        /**<Pointer to previous PCB node*/
+	struct PCB *next;				       	/**<Pointer to next PCB node*/
+} PCB;
 
 // Function Prototypes
 int init_r2();
@@ -77,3 +103,116 @@ int cleanup_r2() {
   return 0;
 }
 
+/**
+  */
+int block() { //temp command
+  char buff[BIGBUFF];
+  int buffsize = BIGBUFF;
+  PCB* temppcb;
+  memset(buff, '\0', BIGBUFF);
+  
+  printf("Please enter the name of the process to be blocked: ");
+  err = sys_req(READ, TERMINAL, buff, &buffsize);
+  if (err < OK) return err;
+  trim(buff);
+  toLowerCase(buff);
+  err = findPCB(temppcb);
+  if (err < OK) return err;
+  if(temppcb->state != BLOCKED) {
+		removePCB(temppcb);
+		temppcb->state = BLOCKED;
+		insertPCB(temppcb);
+  }
+  return err;
+}
+
+/**
+  */
+int unblock() {
+  char buff[BIGBUFF];
+  int buffsize = BIGBUFF;
+  PCB* temppcb;
+  memset(buff, '\0', BIGBUFF);
+  
+  printf("Please enter the name of the process to be unblocked: ");
+  err = sys_req(READ, TERMINAL, buff, &buffsize);
+  if (err < OK) return err;
+  trim(buff);
+  toLowerCase(buff);
+  err = findPCB(temppcb);
+  if (err < OK) return err;
+  if(temppcb->state == BLOCKED) {
+		removePCB(temppcb);
+		temppcb->state = READY;
+		insertPCB(temppcb);
+  }
+  return err;
+}
+
+/**
+  */
+int suspend() {
+  char buff[BIGBUFF];
+  int buffsize = BIGBUFF;
+  PCB* temppcb;
+  memset(buff, '\0', BIGBUFF);
+  
+  printf("Please enter the name of the process to be suspended: ");
+  err = sys_req(READ, TERMINAL, buff, &buffsize);
+  if (err < OK) return err;
+  trim(buff);
+  toLowerCase(buff);
+  err = findPCB(temppcb);
+  if (err < OK) return err;
+  if(temppcb->state != SUSP) temppcb->suspended = SUSP;
+  return err;
+}
+
+/**
+  */
+int resume() {
+  char buff[BIGBUFF];
+  int buffsize = BIGBUFF;
+  PCB* temppcb;
+  memset(buff, '\0', BIGBUFF);
+  
+  printf("Please enter the name of the process to be resumed: ");
+  err = sys_req(READ, TERMINAL, buff, &buffsize);
+  if (err < OK) return err;
+  trim(buff);
+  toLowerCase(buff);
+  err = findPCB(temppcb);
+  if (err < OK) return err;
+  if(temppcb->state == BLOCKED) temppcb->suspended = NOTSUSP;
+  return err;
+}
+
+/**
+  */
+int set_Priority() {
+  char buff[BIGBUFF];
+  int buffsize = BIGBUFF, temp;
+  PCB* temppcb;
+  memset(buff, '\0', BIGBUFF);
+  
+  printf("Please enter the name of the process to be reprioritized: ");
+  err = sys_req(READ, TERMINAL, buff, &buffsize);
+  if (err < OK) return err;
+  trim(buff);
+  toLowerCase(buff);
+  err = findPCB(temppcb);
+  if (err < OK) return err;
+  printf("Please enter the new priority level (-128 to 127): ");
+  err = sys_req(READ, TERMINAL, buff, &buffsize);
+  if (err < OK) return err;
+  temp = atoi(buff);
+  if (temp==0) err = ERR_INVPRI;  //validate input
+  else if (temp >= -128 && temp <= 127) {
+    removePCB(temppcb);
+    temppcb->priority = temp;
+    insertPCB(temppcb);
+    printf("Priority for %s successfully set to %d",temppcb->name,temppcb->priority);
+  }
+  else err = ERR_INVPRI;
+  return err;
+}
