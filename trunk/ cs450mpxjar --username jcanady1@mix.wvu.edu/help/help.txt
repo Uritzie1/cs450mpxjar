@@ -1,12 +1,11 @@
-Function list:
+Function Help
 
-Name:		usage:		Description:
-Version		ver		list the current version
+Name: Help
 
-Help		help		displays help information
+Usage: help
 
-Directory	dir		list contents of current directory
+Inputs: function name to show help for it, 
+or "list" to give limited help on all functions
 
-Date		date		displays date and allows changes
-
-Quit		quit		quits JAROS :'(
+Description:  Using the help command prompts the user for a 
+function name and then displays detailed help on that function.
