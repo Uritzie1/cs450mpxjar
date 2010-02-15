@@ -13,6 +13,8 @@
  * Change Log:
  *
  *        2/12/2010  JC           File created with placeholders
+ *        2/15/2010  JC           block, unblock, suspend, resume, set_Priority, 
+ *                                 show_PCB, show_All, show_Ready, show_Blocked functions all added
  */
 
 // Included ANSI C Files
