@@ -103,7 +103,7 @@ int main() {
 int comhan() {
   char cmd[BIGBUFF]={0};
   int bufsize = BIGBUFF;
-  printf("\nWelcome to JAROS!\n");
+	printf("\nWelcome to JAROS!\n");
   
   while (1) {
     bufsize = BIGBUFF;
