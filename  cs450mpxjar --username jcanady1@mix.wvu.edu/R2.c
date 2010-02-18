@@ -65,14 +65,23 @@ typedef struct PCB {
 // Function Prototypes
 int init_r2();
 int cleanup_r2();
+int block();
+int unblock();
+int suspend();
+int resume();
+int set_Priority();
+int show_PCB();
+int show_All();
+int show_Ready();
+int show_Blocked();
 struct PCB * allocate_PCB();
 struct PCB * setup_PCB(char [], int, int);
-void free_PCB(struct PCB *);
-void create_PCB(char [], int class, int priority);
-void delete_PCB(char name[]);
+int free_PCB(struct PCB *);
+int create_PCB(char [], int class, int priority);
+int delete_PCB(char name[]);
 
 
-/** Procedure Name: init_r1
+/** Procedure Name: init_r2
 * \param none
 * \return err an integer error code (0 for now)
 * Procedures Called: _getdcwd
@@ -84,7 +93,7 @@ int init_r2() {
 	return 0;
 }
 
-/** Procedure Name: init_r1
+/** Procedure Name: init_r2
 * \param none
 * \return  an integer error code (0 for now)
 * Procedures Called: none
@@ -246,20 +255,29 @@ int show_PCB() {
 /**
 */
 int show_All() {
-	PCB* temppcb; 
+	PCB* temppcb;
+    int *bufsize = BIGBUFF;
+    int i = 2;
+    char buffer[BIGBUFF] = {0};
+   
 	//set temppcb to queue root
-	//implement paging
 	//hit all queues
-	printf("\nPROCESS PROPERTIES\n------------------------");
+	printf("\nPROCESS PROPERTIES------------------------");
 	while(temppcb->next != NULL) 
 	{
-		printf("\nName: %s", temppcb->name);
+		printf("\n\nName: %s", temppcb->name);
 		if(temppcb->state == READY) printf("\nState: Ready");
 		else if(temppcb->state == RUNNING) printf("\nState: Running"); 
 		else printf("\nState: Blocked");
 		if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
 		else printf("\nSuspended?: No\n");
 		temppcb = temppcb->next;
+		i=i+4;
+		if(i > 20) {        //paging
+	      printf("Press any key to continue");
+	      err = sys_req(READ, TERMINAL, buffer, &bufsize);
+	      i = 0;
+	    }
 	}
 	return err;
 }
@@ -267,18 +285,28 @@ int show_All() {
 /**
 */
 int show_Ready() {
-	PCB* temppcb; 
+	PCB* temppcb;
+    int *bufsize = BIGBUFF;
+    int i = 2;
+    char buffer[BIGBUFF] = {0};
+     
 	//set temppcb to queue root
-	//implement paging
+
 	printf("\nPROCESS PROPERTIES\n------------------------");
 	while(temppcb->next != NULL) {
-	if(temppcb->state == READY) {
-	printf("\nName: %s", temppcb->name);
-	printf("\nPriority: %d", temppcb->priority;
-	if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
-	else printf("\nSuspended?: No\n");
-	}
-		   temppcb = temppcb->next;
+	  if(temppcb->state == READY) {
+	    printf("\n\nName: %s", temppcb->name);
+	    printf("\nPriority: %d", temppcb->priority;
+	    if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
+	    else printf("\nSuspended?: No\n");
+	  }
+      temppcb = temppcb->next;
+      i=i+4;
+	  if(i > 20) {        //paging
+        printf("Press any key to continue");
+        err = sys_req(READ, TERMINAL, buffer, &bufsize);
+        i = 0;
+      }
 	}
 	return err;
 }
@@ -286,24 +314,34 @@ int show_Ready() {
 /**
 */
 int show_Blocked() {
-	PCB* temppcb; 
+	PCB* temppcb;
+    int *bufsize = BIGBUFF;
+    int i = 2;
+    char buffer[BIGBUFF] = {0};
+     
 	//set temppcb to queue root
-	//implement paging
+
 	printf("\nPROCESS PROPERTIES\n------------------------");
-	while(temppcb->next != NULL) 
-	{
-		if(temppcb->state == BLOCKED) 
-		{
-			printf("\nName: %s", temppcb->name);
-			if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
-			else printf("\nSuspended?: No\n");
-		}
-		temppcb = temppcb->next;
+	while(temppcb->next != NULL) {
+	  if(temppcb->state == BLOCKED) {
+	    printf("\n\nName: %s", temppcb->name);
+	    if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
+	    else printf("\nSuspended?: No\n");
+	  }
+	  temppcb = temppcb->next;
+	  i=i+3;
+	  if(i > 21) {        //paging
+        printf("Press any key to continue");
+        err = sys_req(READ, TERMINAL, buffer, &bufsize);
+        i = 0;
+      }
 	}
 	
 	return err;
 }
-	   
+
+/**
+*/	   
 int create_PCB(char process[], int class, int priority) {
 	PCB *newPCBptr = NULL;
 	newPCBptr = setup_PCB(process, class, priority);
@@ -317,20 +355,27 @@ int create_PCB(char process[], int class, int priority) {
 		//Insert PCB
 		
 	}
+	return err;
 }
 
+/**
+*/
 struct PCB * allocate_PCB () {
 	struct PCB *newPCBptr;
 	newPCBptr = (PCB*)sys.alloc.mem((sizeof(PCB)));
-	
 	return newPCBptr;
 }
 
-void free_PCB (struct PCB *PCBptr) {
+/**
+*/
+int free_PCB (struct PCB *PCBptr) {
 	err = sys_free_mem(PCBptr->stackBase);
 	err = sys_free_mem(PCBptr);
+	return err;
 }
 
+/**
+*/
 struct PCB * setup_PCB (char name[], int class, int priority) {
 	PCB *PCBptr = NULL;
 }
