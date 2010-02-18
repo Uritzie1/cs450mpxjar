@@ -71,7 +71,7 @@ void trim(char ary[BIGBUFF]);
 /** Procedure Name: main
  * \param none
  * \return an integer that is 0 if successful (which it always is)
- * Procedures Called: sys_init, init_r1, comhan, cleanup_r1, terminate_mpx
+ * Procedures Called: sys_init, init_r1, init_r2, comhan, cleanup_r1, cleanup_r2, terminate_mpx
  * Globals Used: 
  * @var err
  * \details Description/Purpose: Main simply initializes the system, calls comhan, and
@@ -81,8 +81,10 @@ void trim(char ary[BIGBUFF]);
 int main() {
   sys_init(MODULE_R2);
   err = init_r1();
+  err = init_r2();
   err = comhan();
   err = cleanup_r1();
+  err = cleanup_r2();
   terminate_mpx();
   return 0;
 }
@@ -187,6 +189,7 @@ void terminate_mpx() {
   toLowerCase(buff);
   if (buff[0] == 'y') {
     err = cleanup_r1();
+    err = cleanup_r2();
     if (err < OK) err_hand(err);
     sys_exit();
   }
