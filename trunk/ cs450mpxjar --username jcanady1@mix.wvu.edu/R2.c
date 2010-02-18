@@ -47,8 +47,7 @@
 /** \struct PCB
 * The PCB represents a process control block, containing all information about a process and pointers to the next/prev PCBs in a queue.
 */
-typedef struct PCB 
-{
+typedef struct PCB {
 	char name[PROCESS_NAME_LENGTH];         /**<Process Name*/
 	int proc_class;						    /**<Process Class*/
 	int priority;					        /**<Priority Value (-128 to 127)*/
@@ -61,7 +60,7 @@ typedef struct PCB
 	unsigned char * execution_address;		/**<Pointer to execution address*/
 	struct PCB *prev;				        /**<Pointer to previous PCB node*/
 	struct PCB *next;				       	/**<Pointer to next PCB node*/
-}PCB;
+} PCB;
 
 // Function Prototypes
 int init_r2();
@@ -72,23 +71,6 @@ void free_PCB(struct PCB *);
 void create_PCB(char [], int class, int priority);
 void delete_PCB(char name[]);
 
-/** Procedure Name: main
-* \param none
-* \return an integer that is 0 if successful (which it always is)
-* Procedures Called: sys_init, init_r1, comhan, cleanup_r1, terminate_mpx
-* Globals Used: 
-* @var err
-* \details Description/Purpose: Main simply initializes the system, calls comhan, and
-*   then cleans up and terminates (though it never actually reaches cleanup or
-*   terminate)
-*/
-int main() 
-{
-	sys_init(MODULE_R2);
-	init_r2();
-	cleanup_r2();
-	return 0;
-}
 
 /** Procedure Name: init_r1
 * \param none
@@ -98,8 +80,7 @@ int main()
 * @var wd
 * \brief Description/Purpose: finds the working directory and writes it to the global
 */
-int init_r2() 
-{
+int init_r2() {
 	return 0;
 }
 
@@ -110,15 +91,13 @@ int init_r2()
 * Globals Used: none
 * \brief Description/Purpose: none for now
 */
-int cleanup_r2() 
-{
+int cleanup_r2() {
 	return 0;
 }
 
 /**
 */
-int block() //temp command
-{
+int block() {  //temp command
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	PCB* temppcb;
@@ -143,8 +122,7 @@ int block() //temp command
 
 /**
 */
-int unblock() 
-{
+int unblock() {
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	PCB* temppcb;
@@ -169,8 +147,7 @@ int unblock()
 
 /**
 */
-int suspend() 
-{
+int suspend() {
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	PCB* temppcb;
@@ -189,8 +166,7 @@ int suspend()
 
 /**
 */
-int resume() 
-{
+int resume() {
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	PCB* temppcb;
@@ -209,8 +185,7 @@ int resume()
 
 /**
 */
-int set_Priority() 
-{
+int set_Priority() {
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF, temp;
 	PCB* temppcb;
@@ -243,8 +218,7 @@ int set_Priority()
 
 /**
 */
-int show_PCB() 
-{
+int show_PCB() {
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	PCB* temppcb;
@@ -271,8 +245,7 @@ int show_PCB()
 
 /**
 */
-int show_All() 
-{
+int show_All() {
 	PCB* temppcb; 
 	//set temppcb to queue root
 	//implement paging
@@ -293,8 +266,7 @@ int show_All()
 
 /**
 */
-int show_Ready() 
-{
+int show_Ready() {
 	PCB* temppcb; 
 	//set temppcb to queue root
 	//implement paging
@@ -313,8 +285,7 @@ int show_Ready()
 
 /**
 */
-int show_Blocked() 
-{
+int show_Blocked() {
 	PCB* temppcb; 
 	//set temppcb to queue root
 	//implement paging
@@ -333,8 +304,7 @@ int show_Blocked()
 	return err;
 }
 	   
-int create_PCB(char process[], int class, int priority)
-{
+int create_PCB(char process[], int class, int priority) {
 	PCB *newPCBptr = NULL;
 	newPCBptr = setup_PCB(process, class, priority);
 	if (newPCBptr == NULL)
@@ -349,20 +319,18 @@ int create_PCB(char process[], int class, int priority)
 	}
 }
 
-struct PCB * allocate_PCB ()
-{
+struct PCB * allocate_PCB () {
 	struct PCB *newPCBptr;
 	newPCBptr = (PCB*)sys.alloc.mem((sizeof(PCB)));
 	
 	return newPCBptr;
 }
 
-void free_PCB (struct PCB *PCBptr)
-{
+void free_PCB (struct PCB *PCBptr) {
 	err = sys_free_mem(PCBptr->stackBase);
 	err = sys_free_mem(PCBptr);
 }
 
-struct PCB * setup_PCB (char name[], int class, int priority)
-{
+struct PCB * setup_PCB (char name[], int class, int priority) {
 	PCB *PCBptr = NULL;
+}
