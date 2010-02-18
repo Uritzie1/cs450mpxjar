@@ -42,13 +42,14 @@
 #define SUSP 1
 
 // Global Variables
-PCB *tail1,*tail2,*head1,*head2;
+PCB *tail1, *tail2, *head1, *head2;
 
 // Structures
 /** \struct PCB
 * The PCB represents a process control block, containing all information about a process and pointers to the next/prev PCBs in a queue.
 */
-typedef struct PCB {
+typedef struct PCB 
+{
 	char name[PROCESS_NAME_LENGTH];         /**<Process Name*/
 	int proc_class;						    /**<Process Class*/
 	int priority;					        /**<Priority Value (-128 to 127)*/
@@ -90,7 +91,8 @@ int delete_PCB(char name[]);
 * @var wd
 * \brief Description/Purpose: finds the working directory and writes it to the global
 */
-int init_r2() {
+int init_r2() 
+{
 	return 0;
 }
 
@@ -101,7 +103,8 @@ int init_r2() {
 * Globals Used: none
 * \brief Description/Purpose: none for now
 */
-int cleanup_r2() {
+int cleanup_r2() 
+{
 	return 0;
 }
 
@@ -115,16 +118,20 @@ int block() {  //temp command
 
 	printf("Please enter the name of the process to be blocked: ");
 	err = sys_req(READ, TERMINAL, buff, &buffsize);
+	
 	if (err < OK) return err;
+	
 	trim(buff);
 	toLowerCase(buff);
 	err = findPCB(buff, temppcb);
+	
 	if (err < OK) return err;
-	if(temppcb->state != BLOCKED) 
+	
+	if (temppcb->state != BLOCKED) 
 	{
-	removePCB(temppcb);
-	temppcb->state = BLOCKED;
-	insertPCB(temppcb);
+		removePCB(temppcb);
+		temppcb->state = BLOCKED;
+		insertPCB(temppcb);
 	}
 
 	return err;
@@ -132,7 +139,8 @@ int block() {  //temp command
 
 /**
 */
-int unblock() {
+int unblock() 
+{
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	PCB* temppcb;
@@ -140,12 +148,16 @@ int unblock() {
 
 	printf("Please enter the name of the process to be unblocked: ");
 	err = sys_req(READ, TERMINAL, buff, &buffsize);
+	
 	if (err < OK) return err;
+	
 	trim(buff);
 	toLowerCase(buff);
 	err = findPCB(buff, temppcb);
+	
 	if (err < OK) return err;
-	if(temppcb->state == BLOCKED) 
+	
+	if (temppcb->state == BLOCKED) 
 	{
 		removePCB(temppcb);
 		temppcb->state = READY;
@@ -157,7 +169,8 @@ int unblock() {
 
 /**
 */
-int suspend() {
+int suspend() 
+{
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	PCB* temppcb;
@@ -165,18 +178,23 @@ int suspend() {
 
 	printf("Please enter the name of the process to be suspended: ");
 	err = sys_req(READ, TERMINAL, buff, &buffsize);
+	
 	if (err < OK) return err;
 	trim(buff);
 	toLowerCase(buff);
 	err = findPCB(buff, temppcb);
+	
 	if (err < OK) return err;
-	if(temppcb->state != SUSP) temppcb->suspended = SUSP;
+	
+	if (temppcb->state != SUSP) temppcb->suspended = SUSP;
+	
 	return err;
 }
 
 /**
 */
-int resume() {
+int resume() 
+{
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	PCB* temppcb;
@@ -195,7 +213,8 @@ int resume() {
 
 /**
 */
-int set_Priority() {
+int set_Priority() 
+{
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF, temp;
 	PCB* temppcb;
@@ -341,45 +360,6 @@ int show_Blocked() {
 	return err;
 }
 
-/**
-*/	   
-int create_PCB(char process[], int class, int priority) {
-	PCB *newPCBptr = NULL;
-	newPCBptr = setup_PCB(process, class, priority);
-	if (newPCBptr == NULL)
-	{
-		// NULL ERROR THROWN
-	}
-	
-	else 
-	{
-		//Insert PCB
-		
-	}
-	return err;
-}
-
-/**
-*/
-struct PCB * allocate_PCB () {
-	struct PCB *newPCBptr;
-	newPCBptr = (PCB*)sys.alloc.mem((sizeof(PCB)));
-	return newPCBptr;
-}
-
-/**
-*/
-int free_PCB (struct PCB *PCBptr) {
-	err = sys_free_mem(PCBptr->stackBase);
-	err = sys_free_mem(PCBptr);
-	return err;
-}
-
-/**
-*/
-struct PCB * setup_PCB (char name[], int class, int priority) {
-	PCB *PCBptr = NULL;
-}
 int isEmpty(int q)
 {
 	int ret = 0;
@@ -512,5 +492,3 @@ int qDelete(int name,int q)
 	}
 	return err;
 }
-
-
