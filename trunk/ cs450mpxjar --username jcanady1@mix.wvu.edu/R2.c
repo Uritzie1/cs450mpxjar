@@ -42,6 +42,7 @@
 #define SUSP 1
 
 // Global Variables
+PCB *tail1,*tail2,*head1,*head2;
 
 // Structures
 /** \struct PCB
@@ -379,3 +380,121 @@ int free_PCB (struct PCB *PCBptr) {
 struct PCB * setup_PCB (char name[], int class, int priority) {
 	PCB *PCBptr = NULL;
 }
+
+int findPCB(int name, int *q, PCB PCBptr)
+{
+
+}
+int isEmpty(int q)
+{
+	int ret = 0;
+	if(q == 1)
+	{
+		if(head1 == null && tail1 == null) ret = 1;
+	}
+	else
+	{
+		if(head2 == null && tail2 == null) ret = 1;
+	}
+	return ret;
+}
+
+int insert(struct PCB *newPCB,int q)
+{
+	PCB tmp;
+	if(q == 1){
+		if(isEmpty(q))
+		{
+			tail1 = newPCB;
+			head1 = tail1;
+		}
+		else
+		{
+			tmp = tail1;
+			while((newPCB->priority) > (tmp->priority)){
+				(if tmp->next == head)
+				{
+					(tmp->next) = newPCB;
+					(newPCB->prev) = tmp;
+					head = newPCB;
+				}
+				else tmp = (tmp->next);}
+
+			if(head != newPCB)
+			{
+				((tmp->previous)->next) = newPCB;
+				(newPCB->prev) = (tmp->prev);
+				(tmp->prev) = newPCB;
+				(newPCB->next)= tmp;
+			}
+		}
+	}
+	else{
+		if(isEmpty(q))
+		{
+			tail2 = newPCB;
+			head2 = tail2;
+		}
+		else
+		{
+			tmp = tail1;
+			while((newPCB->priority) > (tmp->priority)){
+				(if tmp->next == head)
+				{
+					(tmp->next) = newPCB;
+					(newPCB->prev) = tmp;
+					head = newPCB;
+				}
+				else tmp = (tmp->next);}
+
+			if(head != newPCB)
+			{
+				((tmp->previous)->next) = newPCB;
+				(newPCB->prev) = (tmp->prev);
+				(tmp->prev) = newPCB;
+				(newPCB->next)= tmp;
+			}
+		}
+	}
+	return err;
+}
+//find pcb
+int qDelete(int name,int q)
+{
+	PCB del; // = findPCB(name);
+	if(q == 1){
+		if(isEmpty(q))
+		{
+			err = 2; //queue is empty
+		}
+		else //delete from proper queue
+		{
+			((del->prev)->next) = (del->next);
+			((del->next)->prev) = (del->prev);
+			(del->next) = null;
+			(del->prev) = null;
+
+			free_PCB(del)
+
+		}
+	}
+	else{
+				if(isEmpty(q))
+		{
+			err = 2; //queue is empty
+		}
+		else //delete from proper queue
+		{
+			((del->prev)->next) = (del->next);
+			((del->next)->prev) = (del->prev);
+			(del->next) = null;
+			(del->prev) = null;
+
+			free_PCB(del)
+
+		}
+	}
+	return err;
+}
+
+
