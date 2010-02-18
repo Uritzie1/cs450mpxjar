@@ -401,6 +401,7 @@ int isEmpty(int q)
 
 int insert(struct PCB *newPCB,int q)
 {
+	err  = 0;
 	PCB tmp;
 	if(q == 1){
 		if(isEmpty(q))
@@ -459,8 +460,28 @@ int insert(struct PCB *newPCB,int q)
 	return err;
 }
 //find pcb
+int findPCB(int name,PCB PCBptr)
+{
+	err = 0;
+	PCB tmp = tail1;
+
+	while((tmp != null) && (tmp->name) != name)
+		tmp = (tmp->next);
+	PCBptr = tmp;
+	tmp = tail2;
+
+	while((tmp != null) && (tmp->name) != name)
+		tmp = (tmp->next);
+
+	if(tmp == null && PCBptr == null)
+		err = 2; //PCB not found
+	else if(tmp != null) PCBptr = tmp;
+
+	return err;
+}
 int qDelete(int name,int q)
 {
+	err = 0;
 	PCB del; // = findPCB(name);
 	if(q == 1){
 		if(isEmpty(q))
