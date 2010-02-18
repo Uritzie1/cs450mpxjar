@@ -380,11 +380,6 @@ int free_PCB (struct PCB *PCBptr) {
 struct PCB * setup_PCB (char name[], int class, int priority) {
 	PCB *PCBptr = NULL;
 }
-
-int findPCB(int name, int *q, PCB PCBptr)
-{
-
-}
 int isEmpty(int q)
 {
 	int ret = 0;
@@ -460,7 +455,7 @@ int insert(struct PCB *newPCB,int q)
 	return err;
 }
 //find pcb
-int findPCB(int name,PCB PCBptr)
+int findPCB(int name,PCB *PCBptr)
 {
 	err = 0;
 	PCB tmp = tail1;
