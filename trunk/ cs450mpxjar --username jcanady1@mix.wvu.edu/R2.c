@@ -482,35 +482,16 @@ int findPCB(char *name, PCB *PCBptr) {
 
 /**
 */
-int qRemove(char *name,int q,PCB set) {
-	PCB del;
+int qRemove(char *name,PCB *set) {
+	PCB *del;
     err = findPCB(name,del);
-    if(q == 1) {
-      if(isEmpty(q)) err = 2; //queue is empty
-      else { //delete from proper queue
-        ((del->prev)->next) = (del->next);
-        ((del->next)->prev) = (del->prev);
-        (del->next) = null;
-        (del->prev) = null;
-      }
-	}
-	else {
-	  if(isEmpty(q)) err = 2; //queue is empty
-	  else { //delete from proper queue
-	    ((del->prev)->next) = (del->next);
-	    ((del->next)->prev) = (del->prev);
-	    (del->next) = null;
-	    (del->prev) = null;
-	  }
-	else {
-	  if(isEmpty(q)) err = 2; //queue is empty
-	  else { //delete from proper queue
-	    ((del->prev)->next) = (del->next);
-	    ((del->next)->prev) = (del->prev);
-	    (del->next) = null;
-	    (del->prev) = null;
-	  }
-	}
-	set = del;
+	
+	if(err < OK){
+    ((del->prev)->next) = (del->next);
+    ((del->next)->prev) = (del->prev);
+    (del->next) = null;
+	(del->prev) = null;
+	set = del;}
+    
 	return err;
 }
