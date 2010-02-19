@@ -513,6 +513,9 @@ int create_PCB() { //temp fcn
 	  if (errx < OK) return errx;
 	  errx = insert(newPCBptr,RUNNING);
 
+printf("Press enter to delete ");
+	errx = sys_req(READ, TERMINAL, buff, &buffsize);
+	free_PCB(newPCBptr);
 	  //temppcb = findPCB(newPCBptr->name, temppcb);
 	  //printf("\ncreate:%s",temppcb->name);
 	}
