@@ -87,7 +87,7 @@ int show_Ready();
 int show_Blocked();
 struct PCB * allocate_PCB();
 struct PCB * setup_PCB(char [], int, int);
-int free_PCB(struct PCB *);
+int free_PCB(PCB*);
 int create_PCB(char [], int class, int priority);
 int delete_PCB(char name[]);
 
@@ -312,6 +312,25 @@ int show_Ready() {
 	}
 	return err;
 }
+int delete()//temp function
+{	
+	char buff[BIGBUFF];
+	PCB tmp;
+	int buffsize = BIGBUFF;
+	memset(buff, '\0', BIGBUFF);
+
+	printf("Please enter the name of the PCB to delete: ");
+	err = sys_req(READ, TERMINAL, buff, &buffsize);	
+	
+	if(err < OK)
+	{
+		trim(buff);
+		remove(buff,tmp);
+		free_PCB(tmp);
+	}
+
+	return err;
+}
 
 /**
 */
@@ -363,7 +382,6 @@ PCB * allocate_PCB () {
 /**
 */
 int free_PCB (PCB *PCBptr) {
-	err = sys_free_mem(PCBptr->stackBase);
 	err = sys_free_mem(PCBptr);
 	return err;
 }
@@ -465,8 +483,9 @@ int findPCB(char *name, PCB *PCBptr) {
 
 /**
 */
-int qRemove(int name,int q) {
-    PCB del; // = findPCB(name);
+int qRemove(char *name,int q,PCB set) {
+	PCB del;
+    err = findPCB(name,del);
     if(q == 1) {
       if(isEmpty(q)) err = 2; //queue is empty
       else { //delete from proper queue
@@ -474,7 +493,6 @@ int qRemove(int name,int q) {
         ((del->next)->prev) = (del->prev);
         (del->next) = null;
         (del->prev) = null;
-        free_PCB(del);
       }
 	}
 	else{
@@ -489,8 +507,6 @@ int qRemove(int name,int q) {
 			(del->next) = null;
 			(del->prev) = null;
 
-			free_PCB(del)
-
 		}
 	else {
 	  if(isEmpty(q)) err = 2; //queue is empty
@@ -499,8 +515,8 @@ int qRemove(int name,int q) {
 	    ((del->next)->prev) = (del->prev);
 	    (del->next) = null;
 	    (del->prev) = null;
-        free_PCB(del);
 	  }
 	}
+	set = del;
 	return err;
 }
