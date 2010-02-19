@@ -182,7 +182,7 @@ int block() {  //temp command
 	if (errx < OK) return errx;
 	trimx(buff);
 	toLowerCasex(buff);
-	//errx = findPCB(buff, temppcb);
+	temppcb = findPCB(buff, temppcb);
 	if (errx < OK) return errx;
 	if(temppcb->state != BLOCKED) {
 	  errx = qRemove(buff, temppcb);
@@ -211,7 +211,7 @@ int unblock() {
     if (errx < OK) return errx;
     trimx(buff);
     toLowerCasex(buff);
-    //errx = findPCB(buff, temppcb);
+    temppcb = findPCB(buff, temppcb);
     if (errx < OK) return errx;
     if(temppcb->state == BLOCKED) {
         errx = qRemove(buff, temppcb);
@@ -240,7 +240,7 @@ int suspend() {
     if (errx < OK) return errx;
     trimx(buff);
     toLowerCasex(buff);
-    //errx = findPCB(buff, temppcb);
+    temppcb = findPCB(buff, temppcb);
     if (errx < OK) return errx;
     if(temppcb->state != SUSP) temppcb->suspended = SUSP;
     return errx;
@@ -265,7 +265,7 @@ int resume() {
 	if (errx < OK) return errx;
 	trimx(buff);
 	toLowerCasex(buff);
-	//errx = findPCB(buff, temppcb);
+	temppcb = findPCB(buff, temppcb);
 	if (errx < OK) return errx;
 	if(temppcb->state == BLOCKED) temppcb->suspended = NOTSUSP;
 	return errx;
@@ -290,7 +290,7 @@ int set_Priority() {
 	if (errx < OK) return errx;
 	trimx(buff);
 	toLowerCasex(buff);
-	//errx = findPCB(buff, temppcb);
+	temppcb = findPCB(buff, temppcb);
 	if (errx < OK) return errx;
 	printf("Please enter the new priority level where 127 is the highest(-128 to 127): ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
@@ -323,7 +323,6 @@ int show_PCB() {
 	if (errx < OK) return errx;
 	trimx(buff);
 	toLowerCasex(buff);
-	//errx = findPCB(buff, temppcb);
 	temppcb = findPCB(buff,temppcb);
 	if (errx < OK) return errx;
 	printf("\nPROCESS PROPERTIES\n------------------------");
@@ -514,8 +513,8 @@ int create_PCB() { //temp fcn
 	  if (errx < OK) return errx;
 	  errx = insert(newPCBptr,RUNNING);
 
-	  temppcb = findPCB(newPCBptr->name, temppcb);
-	  printf("\ncreate:%s",temppcb->name);
+	  //temppcb = findPCB(newPCBptr->name, temppcb);
+	  //printf("\ncreate:%s",temppcb->name);
 	}
 	return errx;
 }
@@ -645,8 +644,8 @@ int insert(struct PCB *newPCB,int q) {
         }
       }
     }
-    printf("\ntail1:%s",tail1->name);
-    printf("\ntail2:%s",tail2->name);
+    //printf("\ntail1:%s",tail1->name);
+    //printf("\ntail2:%s",tail2->name);
     return errx;
 }
 
@@ -669,7 +668,7 @@ struct PCB* findPCB(char *name,struct PCB *PCBptr) {
       if(tmp == NULL) errx = ERR_PCBNF; //PCB not found
       else if(tmp != NULL) PCBptr = tmp;
     }
-    if(PCBptr != NULL) printf("\nfind:%d",*PCBptr->name);
+    //if(PCBptr != NULL) printf("\nfind:%d",*PCBptr->name);
     return PCBptr;
 }
 
