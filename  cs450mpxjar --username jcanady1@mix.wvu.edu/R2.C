@@ -124,7 +124,7 @@ int delete_PCB();
 int isEmpty(int q);
 int insert(struct PCB *newPCB,int q);
 struct PCB* findPCB(char *name, struct PCB *PCBptr);
-int qRemove(char *name, struct PCB *set);
+struct PCB* qRemove(char *name, struct PCB *set);
 void toLowerCasex(char str[BIGBUFF]);
 void trimx(char ary[BIGBUFF]);
 
@@ -429,7 +429,7 @@ int delete_PCB() { //temp function
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);	
 	if(errx >= OK) {
 		trimx(buff);
-		qRemove(buff,tmp);
+		tmp = qRemove(buff,tmp);
 		free_PCB(tmp);
 	}
 	return errx;
@@ -681,20 +681,18 @@ struct PCB* findPCB(char *name,struct PCB *PCBptr) {
 * Globals Used: err
 * \breif Description: removes a PCB from queue
 */
-int qRemove(char *name,struct PCB *set) {
+struct PCB* qRemove(char *name,struct PCB *set) {
 	struct PCB  *del;
 	errx = 0;
-    //errx = findPCB(name,del);
-
-	if(errx >= OK){
+    del = findPCB(name,del);
+	if(errx >= OK) {
       ((del->prev)->next) = (del->next);
       ((del->next)->prev) = (del->prev);
       (del->next) = NULL;
 	  (del->prev) = NULL;
-	  set = del;
-    }
-    
-	return errx;
+	  //set = del;
+    }  
+	return del;
 }
 
 void toLowerCasex(char str[BIGBUFF]) {
