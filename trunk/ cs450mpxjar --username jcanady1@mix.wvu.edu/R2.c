@@ -341,8 +341,8 @@ int show_Blocked() {
 /**
 */	   
 int create_PCB(char process[], int class, int priority) {
-	PCB *newPCBptr = NULL;
-	newPCBptr = setup_PCB(process, class, priority);
+	PCB *newPCBptr = allocate_PCB();
+	err = setup_PCB(newPCBptr, process, class, priority);
 	if (newPCBptr == NULL)
 	{
 		err = ERR_UCPCB;
@@ -358,9 +358,9 @@ int create_PCB(char process[], int class, int priority) {
 
 /**
 */
-struct PCB * allocate_PCB () {
+PCB * allocate_PCB () {
 	PCB *newPCBptr;
-	newPCBptr = (PCB*)sys.alloc.mem((sizeof(PCB)));
+	newPCBptr = (PCB*)sys_alloc_mem((sizeof(PCB)));
 	return newPCBptr;
 }
 
