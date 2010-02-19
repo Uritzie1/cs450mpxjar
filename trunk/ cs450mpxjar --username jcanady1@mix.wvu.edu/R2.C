@@ -186,6 +186,7 @@ int block() {  //temp command
 	if (errx < OK) return errx;
 	if(temppcb->state != BLOCKED) {
 	  temppcb = qRemove(buff, temppcb);
+	  printf("\nblock:%s",temppcb->name);
 	  temppcb->state = BLOCKED;
 	  insert(temppcb, BLOCKED);
 	}
