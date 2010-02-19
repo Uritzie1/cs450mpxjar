@@ -15,7 +15,7 @@
 *        2/12/2010  JC           File created with placeholders
 *        2/15/2010  JC           block, unblock, suspend, resume, set_Priority, 
 *                                show_PCB, show_All, show_Ready, show_Blocked functions all added
-*		 2/16/2010  AT			 create_PCB, free_PCB, allocate_PCB
+*		 2/16/2010  AT			 create_PCB, free_PCB, allocate_PCB, delete_PCB, setup_PCB
 */
 
 
