@@ -30,10 +30,10 @@
 
 // Included Support Files
 #include "mpx_supt.h"
-#include "COMHAN.h"
-#include "R2.h"
+//#include "COMHAN.h"
+//#include "R2.h"
 
-/*
+
 // Status and Error Codes
 #define ERR_INVCOM (-201) // Invalid command
 #define ERR_INVYR (-202)  // Invalid year
@@ -68,7 +68,7 @@ int err = 0;  //error code
 char * fcns[18] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","createpcb\0","deletepcb\0","block\0","unblock\0","suspend\0","resume\0","setpriority\0","showpcb\0","showall\0","showready\0","showblocked\0",NULL};  //functions list
 char wd[BIGBUFF*2] = {0};  //working directory
 
-/*// Function Prototypes
+// Function Prototypes
 void err_hand(int err_code);
 int init_r1();
 int cleanup_r1();
@@ -80,7 +80,7 @@ void get_Version();
 int date();
 int valid_date(int yr, int mo, int day);
 void toLowerCase(char str[BIGBUFF]);
-void trim(char ary[BIGBUFF]);      */
+void trim(char ary[BIGBUFF]);
 
 
 /** Procedure Name: main
