@@ -215,7 +215,6 @@ int unblock() {
     if(temppcb->state == BLOCKED) {
 	  temppcb = qRemove(buff, temppcb);
       temppcb->state = READY;
-      printf("\nunblock:%s",temppcb->name);
 	  insert(temppcb, RUNNING);
     }
     return errx;
