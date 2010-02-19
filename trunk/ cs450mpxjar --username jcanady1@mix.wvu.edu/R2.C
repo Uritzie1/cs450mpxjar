@@ -171,6 +171,7 @@ int cleanup_r2() {
 * \brief Description: moves a PCB from ready to blocked queue 
 */
 int block() {  //temp command
+    errx = 0;
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	struct PCB *temppcb;
@@ -199,6 +200,7 @@ int block() {  //temp command
 * \brief Description: moves a PCB from blocked to ready queue 
 */
 int unblock() {
+    errx = 0;
     char buff[BIGBUFF];
     int buffsize = BIGBUFF;
     struct PCB *temppcb;
@@ -227,6 +229,7 @@ int unblock() {
 * \brief Description: suspends a PCB
 */
 int suspend() {
+    errx = 0;
     char buff[BIGBUFF];
     int buffsize = BIGBUFF;
     struct PCB *temppcb;
@@ -251,6 +254,7 @@ int suspend() {
 * \brief Description: sets PCB to not suspended 
 */
 int resume() {
+    errx = 0;
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	struct PCB *temppcb;
@@ -275,6 +279,7 @@ int resume() {
 * \brief Description: sets the priority level for a specified PCB 
 */
 int set_Priority() {
+    errx = 0;
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF, temp;
 	struct PCB *temppcb;
@@ -307,6 +312,7 @@ int set_Priority() {
 * \brief Description: prints a specific PCB 
 */
 int show_PCB() {
+    errx = 0;
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	struct PCB *temppcb;
@@ -340,6 +346,7 @@ int show_PCB() {
 * \brief Description: prints all PCB
 */
 int show_All() {
+    errx = 0;
     struct PCB *temppcb;
     int bufsize = BIGBUFF;
     int i = 2, x = 0;
@@ -376,6 +383,7 @@ int show_All() {
 * \brief Description: prints all PCB in ready queue
 */
 int show_Ready() {
+    errx = 0;
 	struct PCB* temppcb;
     int bufsize = BIGBUFF;
     int i = 2;
@@ -410,7 +418,8 @@ int show_Ready() {
 * Globals Used: err
 * \brief Description: moves a PCB from ready to blocked queue 
 */
-int delete_PCB() { //temp function	
+int delete_PCB() { //temp function
+    errx = 0;	
 	char buff[BIGBUFF];
 	struct PCB *tmp;
 	int buffsize = BIGBUFF;
@@ -434,6 +443,7 @@ int delete_PCB() { //temp function
 * \brief Description: moves a PCB from ready to blocked queue 
 */
 int show_Blocked() {
+    errx = 0;
 	struct PCB* temppcb;
     int bufsize = BIGBUFF;
     int i = 2;
@@ -466,6 +476,7 @@ int show_Blocked() {
 * \brief Description: moves a PCB from ready to blocked queue 
 */   
 int create_PCB() { //temp fcn
+    errx = 0;
     char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	char name[PROCESS_NAME_LENGTH];
@@ -513,6 +524,7 @@ int create_PCB() { //temp fcn
 * \brief Description: allocates memory for a PCB 
 */
 struct PCB * allocate_PCB() {
+    errx = 0;
 	struct PCB *newPCBptr;
 	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
 	return newPCBptr;
@@ -526,6 +538,7 @@ struct PCB * allocate_PCB() {
 * \brief Description: frees PCB from memory
 */
 int free_PCB(struct PCB *PCBptr) {
+    errx = 0;
 	errx = sys_free_mem(PCBptr);
 	return errx;
 }
@@ -541,7 +554,8 @@ int free_PCB(struct PCB *PCBptr) {
 * \brief Description: sets the contents of a PCB
 */
 int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
-	int bufsize = BIGBUFF;
+	errx = 0;
+    int bufsize = BIGBUFF;
 	char buffer[BIGBUFF] = {0};
 	strncpy((PCBptr->name), name,PROCESS_NAME_LENGTH);
 	(PCBptr->proc_class) = proc_class;
@@ -566,6 +580,7 @@ int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class
 * \brief Description: checks if a queue is empty 
 */
 int isEmpty(int q) {
+    errx = 0;
     int ret = 0;
     if(q == 1) if(head1 == NULL && tail1 == NULL) ret = 1;
     else if(head2 == NULL && tail2 == NULL) ret = 1;
@@ -581,6 +596,7 @@ int isEmpty(int q) {
 * \brief Description: inserts a PCB into the queue 
 */
 int insert(struct PCB *newPCB,int q) {
+    errx = 0;
     struct PCB *tmp;
     if(q == 1) {
       if(isEmpty(q)) {
@@ -640,6 +656,7 @@ int insert(struct PCB *newPCB,int q) {
 * \brief Description: find a PCB pointer given a name
 */
 int findPCB(char *name,struct PCB *PCBptr) {
+    errx = 0;
     struct PCB *tmp = tail1;
     while((tmp != NULL) && strncmp((tmp->name),name,strlen(name)+1)) tmp = (tmp->next);
     PCBptr = tmp;
@@ -662,15 +679,17 @@ int findPCB(char *name,struct PCB *PCBptr) {
 * \breif Description: removes a PCB from queue
 */
 int qRemove(char *name,struct PCB *set) {
+    errx = 0;
 	struct PCB  *del;
     errx = findPCB(name,del);
 
 	if(errx >= OK){
-    ((del->prev)->next) = (del->next);
-    ((del->next)->prev) = (del->prev);
-    (del->next) = NULL;
-	(del->prev) = NULL;
-	*set = *del;}
+      ((del->prev)->next) = (del->next);
+      ((del->next)->prev) = (del->prev);
+      (del->next) = NULL;
+	  (del->prev) = NULL;
+	  *set = *del;
+    }
     
 	return errx;
 }
