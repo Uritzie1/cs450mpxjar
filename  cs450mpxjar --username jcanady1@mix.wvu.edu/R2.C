@@ -594,7 +594,7 @@ int isEmpty(int q) {
 int insert(struct PCB *newPCB,int q) {
     struct PCB *tmp = NULL;
     errx = 0;
-    if(q == 1) {
+    if(q == 1) {  //For Ready Queue
       if(isEmpty(q)) {
         tail1 = newPCB;
         head1 = tail1;
@@ -609,7 +609,12 @@ int insert(struct PCB *newPCB,int q) {
 	      }
 		  else tmp = (tmp->next);
         }
-        if(head1 != newPCB) {
+        if(tmp==tail1){ //if inserted at tail
+          tail1->prev = tmp;
+          tmp->next = tail1;
+          tail1 = tmp;
+        }
+        else if(head1 != newPCB) {
           ((tmp->prev)->next) = newPCB;
           (newPCB->prev) = (tmp->prev);
 		  (tmp->prev) = newPCB;
@@ -617,7 +622,7 @@ int insert(struct PCB *newPCB,int q) {
         }
       }
     }
-    else {
+    else {  //For Blocked Queue
       if(isEmpty(q)) {
         tail2 = newPCB;
         head2 = tail2;
@@ -632,8 +637,13 @@ int insert(struct PCB *newPCB,int q) {
 		  }
 		  else tmp = (tmp->next);
         }
-        if(head2 != newPCB) {
-	  ((tmp->prev)->next) = newPCB;
+        if(tmp==tail2){ //if inserted at tail
+          tail2->prev = tmp;
+          tmp->next = tail2;
+          tail2 = tmp;
+        }
+        else if(head2 != newPCB) {
+	      ((tmp->prev)->next) = newPCB;
 		  (newPCB->prev) = (tmp->prev);
 		  (tmp->prev) = newPCB;
 		  (newPCB->next)= tmp;
