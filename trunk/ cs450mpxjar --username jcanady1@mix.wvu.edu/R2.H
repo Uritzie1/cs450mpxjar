@@ -37,9 +37,6 @@ typedef struct PCB {
 	struct PCB *next;				       	//Pointer to next PCB node
 } ;
 
-// Global Variables
-struct PCB *tail1, *tail2, *head1, *head2;
-
 // Function Prototypes
 int init_r2();
 int cleanup_r2();

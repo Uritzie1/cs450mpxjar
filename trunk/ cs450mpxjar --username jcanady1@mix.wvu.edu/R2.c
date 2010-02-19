@@ -48,13 +48,13 @@
 #define BLOCKED 2
 #define NOTSUSP 0
 #define SUSP 1
-#define STACK_SIZE 1024
+#define STACK_SIZE 1024     */
 
 
 // Global Variables
 struct PCB *tail1, *tail2, *head1, *head2;
 
-
+/*
 // Structures
 /** \struct PCB
 * The PCB represents a process control block, containing all information about a process and pointers to the next/prev PCBs in a queue.
