@@ -312,7 +312,7 @@ int show_Ready() {
 	}
 	return err;
 }
-int delete()//temp function
+int delete_PCB()//temp function
 {	
 	char buff[BIGBUFF];
 	PCB tmp;
