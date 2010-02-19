@@ -504,6 +504,8 @@ void err_hand(int err_code) {
   else if(err_code == ERR_INVPRI) printf("Invalid priority value.");
   else if(err_code == ERR_PCBNF) printf("PCB not found.");
   else if(err_code == ERR_QUEEMP) printf("Queue is empty.");
+  else if(err_code == ERR_PRONTL) printf("Process name is too long.");
+  else if(err_code == ERR_NAMEAE) printf("Process name already in use.");
   else printf("Invalid error code %d", err_code);
   err = 0;
 }
