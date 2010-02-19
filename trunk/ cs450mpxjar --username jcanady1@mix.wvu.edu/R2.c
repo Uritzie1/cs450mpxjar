@@ -15,7 +15,8 @@
 *        2/12/2010  JC           File created with placeholders
 *        2/15/2010  JC           block, unblock, suspend, resume, set_Priority, 
 *                                show_PCB, show_All, show_Ready, show_Blocked functions all added
-*		 2/16/2010  AT			 create_PCB, free_PCB, allocate_PCB, delete_PCB, setup_PCB
+*		 2/16/2010  AT			 create_PCB, free_PCB, allocate_PCB
+
 */
 
 
@@ -30,6 +31,9 @@
 
 // Status and Error Codes
 #define ERR_INVPRI (-205)
+#define ERR_INVPRI (-205)    //Invalid Priority
+#define ERR_PCBNF  (-206)    //PCB Not Found
+#define ERR_QUEEMP  (-207)   //Queue is Empty
 
 // Constants
 #define PROCESS_NAME_LENGTH 10
@@ -40,18 +44,21 @@
 #define BLOCKED 2
 #define NOTSUSP 0
 #define SUSP 1
-#define STACK_SIZE 1024
+
 
 // Global Variables
-PCB *tail1, *tail2, *head1, *head2;
+PCB *tail1,*tail2,*head1,*head2;
+
 
 // Structures
 /** \struct PCB
 * The PCB represents a process control block, containing all information about a process and pointers to the next/prev PCBs in a queue.
 */
-typedef struct PCB 
-{
+typedef struct PCB {
+
+
 	char name[PROCESS_NAME_LENGTH];         /**<Process Name*/
+	int id;                                 /**<Process ID#*/
 	int proc_class;						    /**<Process Class*/
 	int priority;					        /**<Priority Value (-128 to 127)*/
 	int state;						        /**<Process State Flag (Running, Ready, Blocked)*/
@@ -92,9 +99,11 @@ int delete_PCB(char name[]);
 * @var wd
 * \brief Description/Purpose: finds the working directory and writes it to the global
 */
-int init_r2() 
-{
+int init_r2() {
+
+
 	return 0;
+    return 0;
 }
 
 /** Procedure Name: init_r2
@@ -104,9 +113,11 @@ int init_r2()
 * Globals Used: none
 * \brief Description/Purpose: none for now
 */
-int cleanup_r2() 
-{
+int cleanup_r2() {
+
+
 	return 0;
+    return 0;
 }
 
 /**
@@ -119,29 +130,44 @@ int block() {  //temp command
 
 	printf("Please enter the name of the process to be blocked: ");
 	err = sys_req(READ, TERMINAL, buff, &buffsize);
-	
 	if (err < OK) return err;
-	
 	trim(buff);
 	toLowerCase(buff);
 	err = findPCB(buff, temppcb);
-	
 	if (err < OK) return err;
-	
-	if (temppcb->state != BLOCKED) 
+	if(temppcb->state != BLOCKED) 
 	{
-		removePCB(temppcb);
-		temppcb->state = BLOCKED;
-		insertPCB(temppcb);
+	removePCB(temppcb);
+	temppcb->state = BLOCKED;
+	insertPCB(temppcb);
 	}
 
 	return err;
+    char buff[BIGBUFF];
+    int buffsize = BIGBUFF;
+    PCB* temppcb;
+    memset(buff, '\0', BIGBUFF);
+    
+    printf("Please enter the name of the process to be blocked: ");
+    err = sys_req(READ, TERMINAL, buff, &buffsize);
+    if (err < OK) return err;
+    trim(buff);
+    toLowerCase(buff);
+    err = findPCB(buff, temppcb);
+    if (err < OK) return err;
+    if(temppcb->state != BLOCKED) {
+        removePCB(temppcb);
+        temppcb->state = BLOCKED;
+        insertPCB(temppcb);
+    }
+    return err;
 }
 
 /**
 */
-int unblock() 
-{
+int unblock() {
+
+
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	PCB* temppcb;
@@ -149,16 +175,12 @@ int unblock()
 
 	printf("Please enter the name of the process to be unblocked: ");
 	err = sys_req(READ, TERMINAL, buff, &buffsize);
-	
 	if (err < OK) return err;
-	
 	trim(buff);
 	toLowerCase(buff);
 	err = findPCB(buff, temppcb);
-	
 	if (err < OK) return err;
-	
-	if (temppcb->state == BLOCKED) 
+	if(temppcb->state == BLOCKED) 
 	{
 		removePCB(temppcb);
 		temppcb->state = READY;
@@ -166,12 +188,31 @@ int unblock()
 	}
 
 	return err;
+    char buff[BIGBUFF];
+    int buffsize = BIGBUFF;
+    PCB* temppcb;
+    memset(buff, '\0', BIGBUFF);
+    
+    printf("Please enter the name of the process to be unblocked: ");
+    err = sys_req(READ, TERMINAL, buff, &buffsize);
+    if (err < OK) return err;
+    trim(buff);
+    toLowerCase(buff);
+    err = findPCB(buff, temppcb);
+    if (err < OK) return err;
+    if(temppcb->state == BLOCKED) {
+        removePCB(temppcb);
+        temppcb->state = READY;
+        insertPCB(temppcb);
+    }
+    return err;
 }
 
 /**
 */
-int suspend() 
-{
+int suspend() {
+
+
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	PCB* temppcb;
@@ -179,23 +220,34 @@ int suspend()
 
 	printf("Please enter the name of the process to be suspended: ");
 	err = sys_req(READ, TERMINAL, buff, &buffsize);
-	
 	if (err < OK) return err;
 	trim(buff);
 	toLowerCase(buff);
 	err = findPCB(buff, temppcb);
-	
 	if (err < OK) return err;
-	
-	if (temppcb->state != SUSP) temppcb->suspended = SUSP;
-	
+	if(temppcb->state != SUSP) temppcb->suspended = SUSP;
 	return err;
+    char buff[BIGBUFF];
+    int buffsize = BIGBUFF;
+    PCB* temppcb;
+    memset(buff, '\0', BIGBUFF);
+    
+    printf("Please enter the name of the process to be suspended: ");
+    err = sys_req(READ, TERMINAL, buff, &buffsize);
+    if (err < OK) return err;
+    trim(buff);
+    toLowerCase(buff);
+    err = findPCB(buff, temppcb);
+    if (err < OK) return err;
+    if(temppcb->state != SUSP) temppcb->suspended = SUSP;
+    return err;
 }
 
 /**
 */
-int resume() 
-{
+int resume() {
+
+
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	PCB* temppcb;
@@ -214,8 +266,9 @@ int resume()
 
 /**
 */
-int set_Priority() 
-{
+int set_Priority() {
+
+
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF, temp;
 	PCB* temppcb;
@@ -235,6 +288,7 @@ int set_Priority()
 	if (temp==0) err = ERR_INVPRI;  //validate input ???***
 	else if (temp >= -128 && temp <= 127) 
 	{
+	else if (temp >= -128 && temp <= 127) {
 		removePCB(temppcb);
 		temppcb->priority = temp;
 		insertPCB(temppcb);
@@ -272,6 +326,7 @@ int show_PCB() {
 	if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
 	else printf("\nSuspended?: No");
 	return err;
+}
 
 /**
 */
@@ -286,6 +341,7 @@ int show_All() {
 	printf("\nPROCESS PROPERTIES------------------------");
 	while(temppcb->next != NULL) 
 	{
+	while(temppcb->next != NULL) {
 		printf("\n\nName: %s", temppcb->name);
 		if(temppcb->state == READY) printf("\nState: Ready");
 		else if(temppcb->state == RUNNING) printf("\nState: Running"); 
@@ -358,9 +414,49 @@ int show_Blocked() {
       }
 	}
 	
+	}	
 	return err;
 }
 
+/**
+*/	   
+int create_PCB(char process[], int class, int priority) {
+	PCB *newPCBptr = NULL;
+	newPCBptr = setup_PCB(process, class, priority);
+	if (newPCBptr == NULL)
+	{
+		// NULL ERROR THROWN
+	}
+	
+	else 
+	{
+		//Insert PCB
+		
+	}
+	return err;
+}
+
+/**
+*/
+struct PCB * allocate_PCB () {
+	struct PCB *newPCBptr;
+	newPCBptr = (PCB*)sys.alloc.mem((sizeof(PCB)));
+	return newPCBptr;
+}
+
+/**
+*/
+int free_PCB (struct PCB *PCBptr) {
+	err = sys_free_mem(PCBptr->stackBase);
+	err = sys_free_mem(PCBptr);
+	return err;
+}
+
+/**
+*/
+struct PCB * setup_PCB (char name[], int class, int priority) {
+	PCB *PCBptr = NULL;
+}
 int isEmpty(int q)
 {
 	int ret = 0;
@@ -373,6 +469,14 @@ int isEmpty(int q)
 		if(head2 == null && tail2 == null) ret = 1;
 	}
 	return ret;
+
+/**
+*/
+int isEmpty(int q) {
+    int ret = 0;
+    if(q == 1) if(head1 == null && tail1 == null) ret = 1;
+    else if(head2 == null && tail2 == null) ret = 1;
+    return ret;
 }
 
 int insert(struct PCB *newPCB,int q)
@@ -434,6 +538,57 @@ int insert(struct PCB *newPCB,int q)
 		}
 	}
 	return err;
+/**
+*/
+int insert(struct PCB *newPCB,int q) {
+    PCB *tmp;
+    if(q == 1) {
+      if(isEmpty(q)) {
+        tail1 = newPCB;
+        head1 = tail1;
+      }
+      else {
+  	    tmp = tail1;
+	    while((newPCB->priority) > (tmp->priority)) {
+          if (tmp == head1) {
+		    (tmp->next) = newPCB;
+		    (newPCB->prev) = tmp;
+		    head1 = newPCB;
+	      }
+		  else tmp = (tmp->next);
+        }
+        if(head1 != newPCB) {
+          ((tmp->previous)->next) = newPCB;
+          (newPCB->prev) = (tmp->prev);
+		  (tmp->prev) = newPCB;
+		  (newPCB->next)= tmp;
+        }
+      }
+    }
+    else {
+      if(isEmpty(q)) {
+        tail2 = newPCB;
+        head2 = tail2;
+      }
+      else {
+        tmp = tail2;
+        while((newPCB->priority) > (tmp->priority)) {
+          if (tmp == head2) {
+		    (tmp->next) = newPCB;
+		    (newPCB->prev) = tmp;
+		    head2 = newPCB;
+		  }
+		  else tmp = (tmp->next);
+        }
+        if(head2 != newPCB) {
+          ((tmp->previous)->next) = newPCB;
+		  (newPCB->prev) = (tmp->prev);
+		  (tmp->prev) = newPCB;
+		  (newPCB->next)= tmp;
+        }
+      }
+    }
+    return err;
 }
 //find pcb
 int findPCB(int name,PCB *PCBptr)
@@ -454,6 +609,19 @@ int findPCB(int name,PCB *PCBptr)
 	else if(tmp != null) PCBptr = tmp;
 
 	return err;
+/**
+*/
+int findPCB(char *name, PCB *PCBptr) {
+    PCB *tmp = tail1;
+    while((tmp != null) && strcmp((tmp->name),name)) tmp = (tmp->next);
+    PCBptr = tmp;
+    if (PCBptr == null) { //if not found yet, search queue2
+      tmp = tail2;
+      while((tmp != null) && strcmp((tmp->name),name)) tmp = (tmp->next);
+      if(tmp == null) err = 2; //PCB not found
+      else if(tmp != null) PCBptr = tmp;
+    }
+    return err;
 }
 int qDelete(int name,int q)
 {
@@ -474,6 +642,19 @@ int qDelete(int name,int q)
 			free_PCB(del)
 
 		}
+/**
+*/
+int qDelete(int name,int q) {
+    PCB del; // = findPCB(name);
+    if(q == 1) {
+      if(isEmpty(q)) err = 2; //queue is empty
+      else { //delete from proper queue
+        ((del->prev)->next) = (del->next);
+        ((del->next)->prev) = (del->prev);
+        (del->next) = null;
+        (del->prev) = null;
+        free_PCB(del);
+      }
 	}
 	else{
 				if(isEmpty(q))
@@ -490,60 +671,17 @@ int qDelete(int name,int q)
 			free_PCB(del)
 
 		}
+	else {
+	  if(isEmpty(q)) err = 2; //queue is empty
+	  else { //delete from proper queue
+	    ((del->prev)->next) = (del->next);
+	    ((del->next)->prev) = (del->prev);
+	    (del->next) = null;
+	    (del->prev) = null;
+        free_PCB(del);
+	  }
 	}
 	return err;
 }
 
-			   struct PCB *allocate_PCB()
-		  {
-			  PCB *newPCPptr;
-			  newPCPptr = (PCB*)sys_alloc_mem((sizeof(PCB)));
-			  
-			  return newPCPptr;
-		  }
-			   
-			   void free_PCB (struct PCB *PCBptr)
-		  {
-			  err = sys_free_mem(PCBptr->stackBase);
-			  err = sys_free_mem(PCBptr);
-		  }
-			   
-			   struct PCB * setup_PCB(char name[]. int class, int priority)
-		  {
-			  PCB *PCBptr = NULL;
-			  PCBptr      = allocate_PCB();
-			  
-			  unsigned char *stackBase;
-			  stackBase = (unsigned char *)sys_alloc_mem((sizeof(STACK_SIZE)));
-			  strcpy((PCBptr->name, name));
-			  (PCBptr->proc_class)   = class;
-			  (PCBptr->priority)     = priority;
-			  (PCBptr->state)        = READY;
-			  (PCBptr->stack_base)   = stackBase;
-			  (PCBptr->stack_top)    = stackBase + STACK_SIZE;
-			  (PCBptr->mem_size)     = STACK_SIZE;
-			  (PCBptr->load_address) = NULL;
-			  (PCBptr->prev)         = NULL;
-			  (PCBptr->next)         = NULL;	
-			  
-			  return PCBptr;
-		  }
-			   
-			   void create_PCB(char process[], int class, int priority)
-		  {
-			  PCB *PCBptr = NULL;
-			  PCBptr      = setup_PCB(process, class, priority);
-			  insert_PCB(PCBptr, <I have no idea what 'q' is);
-		  }
-			   
-			   void delete_PCB(char name[], *PCBptr)
-		  {
-			  PCB *removePCBptr = NULL;
-			  removePCBptr      = findPCB(name, PCBptr);
-			  
-			  if (removePCBptr != NULL)
-			  {
-				  qDelete(name, <Again, wtf is 'q');
-		free(removePCBptr);
-	}
-}
+
