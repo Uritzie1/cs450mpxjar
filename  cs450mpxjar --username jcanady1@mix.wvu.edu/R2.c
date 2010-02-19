@@ -16,7 +16,7 @@
 *        2/15/2010  JC           block, unblock, suspend, resume, set_Priority, 
 *                                show_PCB, show_All, show_Ready, show_Blocked functions all added
 *		 2/16/2010  AT			 create_PCB, free_PCB, allocate_PCB
-*        2/18/2010  AT,JC        Completed all functions and added all comments
+*        2/18/2010  RW,JC        Completed all functions and added all comments
 */
 
 
