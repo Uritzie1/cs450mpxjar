@@ -312,8 +312,10 @@ int show_Ready() {
 	}
 	return err;
 }
-int delete_PCB()//temp function
-{	
+
+/**
+*/
+int delete_PCB() { //temp function	
 	char buff[BIGBUFF];
 	PCB tmp;
 	int buffsize = BIGBUFF;
@@ -321,14 +323,11 @@ int delete_PCB()//temp function
 
 	printf("Please enter the name of the PCB to delete: ");
 	err = sys_req(READ, TERMINAL, buff, &buffsize);	
-	
-	if(err < OK)
-	{
+	if(err < OK) {
 		trim(buff);
 		remove(buff,tmp);
 		free_PCB(tmp);
 	}
-
 	return err;
 }
 
@@ -495,19 +494,14 @@ int qRemove(char *name,int q,PCB set) {
         (del->prev) = null;
       }
 	}
-	else{
-				if(isEmpty(q))
-		{
-			err = 2; //queue is empty
-		}
-		else //delete from proper queue
-		{
-			((del->prev)->next) = (del->next);
-			((del->next)->prev) = (del->prev);
-			(del->next) = null;
-			(del->prev) = null;
-
-		}
+	else {
+	  if(isEmpty(q)) err = 2; //queue is empty
+	  else { //delete from proper queue
+	    ((del->prev)->next) = (del->next);
+	    ((del->next)->prev) = (del->prev);
+	    (del->next) = null;
+	    (del->prev) = null;
+	  }
 	else {
 	  if(isEmpty(q)) err = 2; //queue is empty
 	  else { //delete from proper queue
