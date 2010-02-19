@@ -10,3 +10,25 @@ Directory	dir		list contents of current directory
 Date		date		displays date and allows changes
 
 Quit		quit		quits JAROS :'(
+
+Block		block		blocks a PCB
+
+Unblock		unblock		unblocks a PCB
+
+Create PCB	cpcb		creates a PCB
+
+Delete PCB	dpcb		deletes a PCB
+
+Set Priority	setpri		sets the Priority of a PCB
+
+show all	shall		prnts all PCB
+
+show PCB	shpcb		prints a specific PCB
+
+show Blocked	shblock		prints all blocked PCB
+
+show Ready	shready		prints all Read PCB
+
+Suspend		suspend		sets PCB state to suspended 
+
+Resume		resume		sets PCB state to ready
