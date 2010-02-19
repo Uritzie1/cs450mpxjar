@@ -501,7 +501,6 @@ void err_hand(int err_code) {
   else if(err_code == ERR_SUP_NOMEM) printf("Memory allocation error.");
   else if(err_code == ERR_SUP_MFREE) printf("Memory free error.");
   else if(err_code == ERR_SUP_INVHAN) printf("Invalid handler address.");
-  else if(err_code == ERR_INVPRI) printf("Invalid priority value.");
   else if(err_code == ERR_PCBNF) printf("PCB not found.");
   else if(err_code == ERR_QUEEMP) printf("Queue is empty.");
   else if(err_code == ERR_PRONTL) printf("Process name is too long.");
