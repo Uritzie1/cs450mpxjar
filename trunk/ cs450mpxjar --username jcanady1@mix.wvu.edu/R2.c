@@ -111,7 +111,18 @@ int init_r2() {
 * \brief Description/Purpose: none for now
 */
 int cleanup_r2() {
-    //free all PCB nodes
+    PCB* temppcb = tail1;
+    while (temppcb != NULL) {
+      tail1 = temppcb;
+      temppcb = tail1->next;
+      free_PCB(tail1);
+    }
+    temppcb = tail2;
+    while (temppcb != NULL) {
+      tail2 = temppcb;
+      temppcb = tail2->next;
+      free_PCB(tail2);
+    }
     return 0;
 }
 
