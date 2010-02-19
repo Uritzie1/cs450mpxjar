@@ -267,8 +267,7 @@ int resume() {
 	trimx(buff);
 	toLowerCasex(buff);
 	temppcb = findPCB(buff, temppcb);
-	if (errx < OK) return errx;
-	if(temppcb->state == BLOCKED) temppcb->suspended = NOTSUSP;
+	temppcb->suspended = NOTSUSP;
 	return errx;
 }
 
