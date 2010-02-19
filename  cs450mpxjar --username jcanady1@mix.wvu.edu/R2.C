@@ -446,7 +446,7 @@ int show_Blocked() {
     int bufsize = BIGBUFF;
     int i = 2;
     char buffer[BIGBUFF] = {0};
-	temppcb = tail1;
+	temppcb = tail2;
 	
 	errx = 0;
 	printf("\nPROCESS PROPERTIES------------------------");
