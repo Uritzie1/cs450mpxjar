@@ -30,6 +30,7 @@
 
 // Included Support Files
 #include "mpx_supt.h"
+#include "R2.c"
 
 // Status and Error Codes
 #define ERR_INVCOM (-201) // Invalid command
