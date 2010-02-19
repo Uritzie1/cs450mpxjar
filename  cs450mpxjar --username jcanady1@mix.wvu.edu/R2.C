@@ -610,9 +610,9 @@ int insert(struct PCB *newPCB,int q) {
 		  else tmp = (tmp->next);
         }
         if(tmp==tail1){ //if inserted at tail
-          tail1->prev = tmp;
-          tmp->next = tail1;
-          tail1 = tmp;
+          tail1->prev = newPCB;
+          newPCB->next = tail1;
+          tail1 = newPCB;
         }
         else if(head1 != newPCB) {
           ((tmp->prev)->next) = newPCB;
@@ -638,9 +638,9 @@ int insert(struct PCB *newPCB,int q) {
 		  else tmp = (tmp->next);
         }
         if(tmp==tail2){ //if inserted at tail
-          tail2->prev = tmp;
-          tmp->next = tail2;
-          tail2 = tmp;
+          tail2->prev = newPCB;
+          newPCB->next = tail2;
+          tail2 = newPCB;
         }
         else if(head2 != newPCB) {
 	      ((tmp->prev)->next) = newPCB;
