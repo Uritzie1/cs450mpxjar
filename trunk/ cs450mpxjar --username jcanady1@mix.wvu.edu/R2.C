@@ -532,7 +532,8 @@ printf("Press enter to delete ");
 struct PCB * allocate_PCB() {
 	struct PCB *newPCBptr = NULL;
 	errx = 0;
-	newPCBptr = (struct PCB*)sys_alloc_mem((sizeof(struct PCB)));
+	//newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
+	newPCBptr = malloc(sizeof(struct PCB));
 	return newPCBptr;
 }
 
@@ -547,7 +548,8 @@ int free_PCB(struct PCB *PCBptr) {
     errx = 0;
 	//errx=sys_free_mem(PCBptr -> stack_base);
 	//errx=sys_free_mem(PCBptr -> load_address);
-	errx=sys_free_mem((void)PCBptr);
+	//errx=sys_free_mem(PCBptr);
+	free(PCBPtr);
 	return errx;
 }
 
