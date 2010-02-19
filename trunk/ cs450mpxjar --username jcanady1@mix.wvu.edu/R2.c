@@ -344,16 +344,10 @@ int show_Blocked() {
 */	   
 int create_PCB(char process[], int class, int priority) {
 	PCB *newPCBptr = allocate_PCB();
-	if (newPCBptr == NULL)
-	{
-		err = ERR_UCPCB;
-	}
-	
-	else 
-	{
-		err = setup_PCB(newPCBptr, process, class, priority);
-		insert(newPCBptr,1);
-		
+	if (newPCBptr == NULL) err = ERR_UCPCB;
+    else {
+	  err = setup_PCB(newPCBptr, process, class, priority);
+	  insert(newPCBptr,1);
 	}
 	return err;
 }
