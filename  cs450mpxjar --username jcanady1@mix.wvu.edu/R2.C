@@ -632,6 +632,7 @@ int insert(struct PCB *newPCB,int q) {
     else {
       if(isEmpty(q)) {
         tail2 = newPCB;
+        printf("\ninsert:%s",tail2->name);
         head2 = tail2;
       }
       else {
