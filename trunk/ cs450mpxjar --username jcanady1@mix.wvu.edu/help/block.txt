@@ -1,0 +1,10 @@
+Function Help
+
+Name: block
+
+Usage: block
+
+Inputs: name of the PCB to be blocked
+
+Description:  Bock commaand takes the specificed
+PCB name and places it in the blocked queue.

@@ -1,0 +1,10 @@
+Function Help
+
+Name: Resume
+
+Usage: resume
+
+Inputs: prompts for a PCB name.
+
+Description:  The PCB is found using inputted name, and
+the PCB is unsuspended.

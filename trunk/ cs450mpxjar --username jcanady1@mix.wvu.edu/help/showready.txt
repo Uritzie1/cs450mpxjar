@@ -1,0 +1,11 @@
+Function Help
+
+Name: Help
+
+Usage: help
+
+Inputs: function name to show help for it, 
+or "list" to give limited help on all functions
+
+Description:  Using the help command prompts the user for a 
+function name and then displays detailed help on that function.

@@ -1,0 +1,9 @@
+Function Help
+
+Name: Unblock
+
+Usage: unblock
+
+Inputs: prompts for PCB name
+
+Description:  moves PCB from block to ready queue.
