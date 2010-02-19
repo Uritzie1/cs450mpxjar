@@ -1,0 +1,10 @@
+Function Help
+
+Name: Delete PCB
+
+Usage: deletepcb
+
+Inputs: name of PCB
+
+Description:  Finds the PCB with user inputted name
+and deletes PCB freeing memory.

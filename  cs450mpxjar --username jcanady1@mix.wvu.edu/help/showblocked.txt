@@ -1,0 +1,9 @@
+Function Help
+
+Name: Show Blocked
+
+Usage: showblocked
+
+Inputs: none
+
+Description: Prints all PCB in the blocked queue.

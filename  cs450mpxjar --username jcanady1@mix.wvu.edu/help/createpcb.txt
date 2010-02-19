@@ -1,0 +1,14 @@
+Function Help
+
+Name: createpcb
+
+Usage: createpcb
+
+Inputs: Prompts for inputs in this order:
+Name of PCB: ID of PCB
+Class of PCB: system or application
+Priority of PCB: priority level of PCB
+
+
+Description:  creates as PCB struct, and promts user
+for name, class, and priority

@@ -1,0 +1,9 @@
+Function Help
+
+Name: Show PCB
+
+Usage: showPCB
+
+Inputs: prompted for PCB name
+
+Description:  prints all of the PCB members
