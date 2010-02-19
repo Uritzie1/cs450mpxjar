@@ -344,7 +344,7 @@ int show_All() {
 * \brief Description: prints all PCB in ready queue
 */
 int show_Ready() {
-	PCB* temppcb;
+	struct PCB* temppcb;
     int *bufsize = BIGBUFF;
     int i = 2;
     char buffer[BIGBUFF] = {0};
@@ -380,7 +380,7 @@ int show_Ready() {
 */
 int delete_PCB() { //temp function	
 	char buff[BIGBUFF];
-	PCB tmp;
+	struct PCB tmp;
 	int buffsize = BIGBUFF;
 	memset(buff, '\0', BIGBUFF);
 
@@ -402,7 +402,7 @@ int delete_PCB() { //temp function
 * \brief Description: moves a PCB from ready to blocked queue 
 */
 int show_Blocked() {
-	PCB* temppcb;
+	struct PCB* temppcb;
     int *bufsize = BIGBUFF;
     int i = 2;
     char buffer[BIGBUFF] = {0};
@@ -438,7 +438,7 @@ int create_PCB() { //temp fcn
 	int buffsize = BIGBUFF;
 	char name[PROCESS_NAME_LENGTH];
 	int proc_class, priority;
-	PCB* temppcb;
+	struct PCB* temppcb;
 	memset(buff, '\0', BIGBUFF);
 
     printf("Please enter the name of the process to be created (9 character limit): ");
@@ -461,7 +461,7 @@ int create_PCB() { //temp fcn
 	if (err < OK) return err;
     temp = atoi(buff);
 	
-	PCB *newPCBptr = allocate_PCB();
+	struct PCB *newPCBptr = allocate_PCB();
 	if (newPCBptr == NULL) err = ERR_UCPCB;
     else {
 	  err = setup_PCB(newPCBptr, name, proc_class, priority);
@@ -478,7 +478,7 @@ int create_PCB() { //temp fcn
 * Globals Used: err
 * \brief Description: allocates memory for a PCB 
 */
-PCB * allocate_PCB() {
+struct PCB * allocate_PCB() {
 	PCB *newPCBptr;
 	newPCBptr = (PCB*)sys_alloc_mem((sizeof(PCB)));
 	return newPCBptr;
@@ -491,7 +491,7 @@ PCB * allocate_PCB() {
 * Globals Used: err
 * \brief Description: frees PCB from memory
 */
-int free_PCB(PCB *PCBptr) {
+int free_PCB(struct PCB *PCBptr) {
 	err = sys_free_mem(PCBptr);
 	return err;
 }
@@ -506,7 +506,7 @@ int free_PCB(PCB *PCBptr) {
 * Globals Used: err
 * \brief Description: sets the contents of a PCB
 */
-int setup_PCB(PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
+int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
 	(PCBptr->name) = name;
 	(PCBptr->proc_class) = proc_class;
 	(PCBptr->priority) = priority;
@@ -544,8 +544,8 @@ int isEmpty(int q) {
 * Globals Used: err
 * \brief Description: inserts a PCB into the queue 
 */
-int insert(PCB *newPCB,int q) {
-    PCB *tmp;
+int insert(struct PCB *newPCB,int q) {
+    struct PCB *tmp;
     if(q == 1) {
       if(isEmpty(q)) {
         tail1 = newPCB;
@@ -603,8 +603,8 @@ int insert(PCB *newPCB,int q) {
 * Globals Used: err
 * \brief Description: find a PCB pointer given a name
 */
-int findPCB(char *name, PCB *PCBptr) {
-    PCB *tmp = tail1;
+int findPCB(char *name,struct PCB *PCBptr) {
+    struct PCB *tmp = tail1;
     while((tmp != null) && strncmp((tmp->name),name,strlen(name)+1)) tmp = (tmp->next);
     PCBptr = tmp;
     if (PCBptr == null) { //if not found yet, search queue2
@@ -625,8 +625,8 @@ int findPCB(char *name, PCB *PCBptr) {
 * Globals Used: err
 * \breif Description: removes a PCB from queue
 */
-int qRemove(char *name,PCB *set) {
-	PCB *del;
+int qRemove(char *name,struct PCB *set) {
+	struct  *del;
     err = findPCB(name,del);
 	
 	if(err < OK){
