@@ -610,8 +610,8 @@ int insert(struct PCB *newPCB,int q) {
 		  else tmp = (tmp->next);
         }
         if(head1 != newPCB) {
-	  ((tmp->prev)->next) = newPCB;
-	  (newPCB->prev) = (tmp->prev);
+          ((tmp->prev)->next) = newPCB;
+          (newPCB->prev) = (tmp->prev);
 		  (tmp->prev) = newPCB;
 		  (newPCB->next)= tmp;
         }
@@ -677,9 +677,33 @@ struct PCB* findPCB(char *name,struct PCB *PCBptr) {
 struct PCB* qRemove(char *name,struct PCB *set) {
 	struct PCB *del = NULL;
     del = findPCB(name,del);
-    if(del->next == NULL && del->prev == NULL) {
+    if(del->next == NULL && del->prev == NULL) { //if last one left
       if(del==tail1) tail1 = head1 = NULL;
       else tail2 = head2 = NULL;
+    }
+    else if(del->next == NULL && del->prev != NULL) { //if head
+      if(del == head1) {
+        head1 = del->prev;
+        head1->next = NULL;
+        del->prev = NULL;
+      }
+      else {
+        head2 = del->prev;
+        head2->next = NULL;
+        del->prev = NULL;
+      }
+    }
+    else if(del->next != NULL && del->prev == NULL) { //if tail
+      if(del == tail1) {
+        tail1 = del->next;
+        tail1->prev = NULL;
+        del->next = NULL;
+      }
+      else {
+        tail2 = del->next;
+        tail2->prev = NULL;
+        del->next = NULL;
+      }
     }
 	else if(del != NULL) {
       ((del->prev)->next) = (del->next);
