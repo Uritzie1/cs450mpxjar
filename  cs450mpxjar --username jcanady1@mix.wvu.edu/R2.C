@@ -173,7 +173,7 @@ int cleanup_r2() {
 int block() {  //temp command
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
-	struct PCB *temppcb;
+	struct PCB *temppcb = NULL;
 	memset(buff, '\0', BIGBUFF);
 
     errx = 0;
@@ -202,7 +202,7 @@ int block() {  //temp command
 int unblock() {
     char buff[BIGBUFF];
     int buffsize = BIGBUFF;
-    struct PCB *temppcb;
+    struct PCB *temppcb = NULL;
     memset(buff, '\0', BIGBUFF);
     
     errx = 0;
@@ -231,7 +231,7 @@ int unblock() {
 int suspend() {
     char buff[BIGBUFF];
     int buffsize = BIGBUFF;
-    struct PCB *temppcb;
+    struct PCB *temppcb = NULL;
     memset(buff, '\0', BIGBUFF);
     
     errx = 0;
@@ -256,7 +256,7 @@ int suspend() {
 int resume() {
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
-	struct PCB *temppcb;
+	struct PCB *temppcb = NULL;
 	memset(buff, '\0', BIGBUFF);
 
     errx = 0;
@@ -281,7 +281,7 @@ int resume() {
 int set_Priority() {
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF, temp;
-	struct PCB *temppcb;
+	struct PCB *temppcb = NULL;
 	memset(buff, '\0', BIGBUFF);
 
     errx = 0;
@@ -314,7 +314,7 @@ int set_Priority() {
 int show_PCB() {
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
-	struct PCB *temppcb;
+	struct PCB *temppcb = NULL;
 	memset(buff, '\0', BIGBUFF);
 
     errx = 0;
@@ -346,7 +346,7 @@ int show_PCB() {
 * \brief Description: prints all PCB
 */
 int show_All() {
-    struct PCB *temppcb;
+    struct PCB *temppcb = NULL;
     int bufsize = BIGBUFF;
     int i = 2, x = 0;
     char buffer[BIGBUFF] = {0};
@@ -383,7 +383,7 @@ int show_All() {
 * \brief Description: prints all PCB in ready queue
 */
 int show_Ready() {
-	struct PCB* temppcb;
+	struct PCB* temppcb = NULL;
     int bufsize = BIGBUFF;
     int i = 2;
     char buffer[BIGBUFF] = {0};
@@ -420,7 +420,7 @@ int show_Ready() {
 */
 int delete_PCB() { //temp function	
 	char buff[BIGBUFF];
-	struct PCB *tmp;
+	struct PCB *tmp = NULL;
 	int buffsize = BIGBUFF;
 	memset(buff, '\0', BIGBUFF);
 
@@ -443,7 +443,7 @@ int delete_PCB() { //temp function
 * \brief Description: moves a PCB from ready to blocked queue 
 */
 int show_Blocked() {
-	struct PCB* temppcb;
+	struct PCB* temppcb = NULL;
     int bufsize = BIGBUFF;
     int i = 2;
     char buffer[BIGBUFF] = {0};
@@ -481,7 +481,7 @@ int create_PCB() { //temp fcn
 	char name[PROCESS_NAME_LENGTH];
 	int proc_class, priority;
 	struct PCB *temppcb = NULL;
-	struct PCB *newPCBptr;
+	struct PCB *newPCBptr = NULL;
 	memset(buff, '\0', BIGBUFF);
 
     errx = 0;
@@ -527,7 +527,7 @@ int create_PCB() { //temp fcn
 * \brief Description: allocates memory for a PCB 
 */
 struct PCB * allocate_PCB() {
-	struct PCB *newPCBptr;
+	struct PCB *newPCBptr = NULL;
 	errx = 0;
 	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
 	return newPCBptr;
@@ -598,7 +598,7 @@ int isEmpty(int q) {
 * \brief Description: inserts a PCB into the queue 
 */
 int insert(struct PCB *newPCB,int q) {
-    struct PCB *tmp;
+    struct PCB *tmp = NULL;
     errx = 0;
     if(q == 1) {
       if(isEmpty(q)) {
@@ -684,8 +684,9 @@ struct PCB* findPCB(char *name,struct PCB *PCBptr) {
 * \breif Description: removes a PCB from queue
 */
 struct PCB* qRemove(char *name,struct PCB *set) {
-	struct PCB  *del;
+	struct PCB *del = NULL;
     del = findPCB(name,del);
+    printf("\nremove:%s",del->name);
     if(del->next == NULL && del->prev == NULL) {
       if(del==tail1) tail1 = head1 = NULL;
       else tail2 = head2 = NULL;
@@ -696,7 +697,8 @@ struct PCB* qRemove(char *name,struct PCB *set) {
       (del->next) = NULL;
 	  (del->prev) = NULL;
 	  //set = del;
-    }  
+    } 
+     printf("\nremove:%s",del->name);
 	return del;
 }
 
