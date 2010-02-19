@@ -27,9 +27,11 @@
 #include <ctype.h>
 
 // Included Support Files
-//#include "mpx_supt.h"
-#include "COMHAN.c"
+#include "mpx_supt.h"
+//#include "R2.h"
+#include "COMHAN.h"
 
+/*
 // Status and Error Codes
 #define ERR_PCBNF  (-205)    //PCB Not Found
 #define ERR_QUEEMP (-206)    //Queue is Empty
@@ -57,21 +59,21 @@ struct PCB *tail1, *tail2, *head1, *head2;
 /** \struct PCB
 * The PCB represents a process control block, containing all information about a process and pointers to the next/prev PCBs in a queue.
 */
-typedef struct PCB {
-	char name[PROCESS_NAME_LENGTH];         /**<Process Name*/
-	int id;                                 /**<Process ID#*/
-	int proc_class;						    /**<Process Class*/
-	int priority;					        /**<Priority Value (-128 to 127)*/
-	int state;						        /**<Process State Flag (Running, Ready, Blocked)*/
-	int suspended;					        /**<Process Suspended Flag*/
-	unsigned char stack[STACK_SIZE];        /**<PCB Stack*/
-	unsigned char* stack_base;				/**<Pointer to base of stack*/
-	unsigned char* stack_top;				/**<Pointer to top of stack*/
-	int mem_size;							/**<Memory size*/
-	unsigned char* load_address;			/**<Pointer to loading address*/
-	unsigned char* execution_address;		/**<Pointer to execution address*/
-	struct PCB *prev;				        /**<Pointer to previous PCB node*/
-	struct PCB *next;				       	/**<Pointer to next PCB node*/
+/*typedef struct PCB {
+	char name[PROCESS_NAME_LENGTH];         /*Process Name
+	int id;                                 //Process ID#
+	int proc_class;						    //Process Class
+	int priority;					        //Priority Value (-128 to 127)
+	int state;						        //Process State Flag (Running, Ready, Blocked)
+	int suspended;					        //Process Suspended Flag
+	unsigned char stack[STACK_SIZE];        //PCB Stack
+	unsigned char* stack_base;				//Pointer to base of stack
+	unsigned char* stack_top;				//Pointer to top of stack
+	int mem_size;							//Memory size
+	unsigned char* load_address;			//Pointer to loading address
+	unsigned char* execution_address;		//Pointer to execution address
+	struct PCB *prev;				        //Pointer to previous PCB node
+	struct PCB *next;				       	//Pointer to next PCB node
 } ;
 
 // Function Prototypes
@@ -94,7 +96,7 @@ int delete_PCB();
 int isEmpty(int q);
 int insert(struct PCB *newPCB,int q);
 int findPCB(char *name, struct PCB *PCBptr);
-int qRemove(char *name, struct PCB *set);
+int qRemove(char *name, struct PCB *set);  */
 
 /** Procedure Name: init_r2
 * \param none
@@ -354,7 +356,7 @@ int show_Ready() {
 	while(temppcb->next != NULL) {
 	  if(temppcb->state == READY) {
 	    printf("\n\nName: %s", temppcb->name);
-	    printf("\nPriority: %d", temppcb->priority;
+	    printf("\nPriority: %d", temppcb->priority);
 	    if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
 	    else printf("\nSuspended?: No\n");
 	  }
@@ -380,7 +382,7 @@ int show_Ready() {
 */
 int delete_PCB() { //temp function	
 	char buff[BIGBUFF];
-	struct PCB tmp;
+	struct PCB *tmp;
 	int buffsize = BIGBUFF;
 	memset(buff, '\0', BIGBUFF);
 
@@ -388,7 +390,7 @@ int delete_PCB() { //temp function
 	err = sys_req(READ, TERMINAL, buff, &buffsize);	
 	if(err < OK) {
 		trim(buff);
-		remove(buff,tmp);
+		qRemove(buff,tmp);
 		free_PCB(tmp);
 	}
 	return err;
@@ -438,7 +440,8 @@ int create_PCB() { //temp fcn
 	int buffsize = BIGBUFF;
 	char name[PROCESS_NAME_LENGTH];
 	int proc_class, priority;
-	struct PCB* temppcb;
+	struct PCB *temppcb;
+	struct PCB *newPCBptr;
 	memset(buff, '\0', BIGBUFF);
 
     printf("Please enter the name of the process to be created (9 character limit): ");
@@ -448,7 +451,7 @@ int create_PCB() { //temp fcn
     err = findPCB(buff, temppcb);
 	if (err < OK) return err;
 	if (temppcb != NULL) return ERR_NAMEAE;
-    name = buff;
+    *name = *buff;
     
     printf("Please enter the class of the process to be created ('0' = Application, '1' = System): ");
 	err = sys_req(READ, TERMINAL, buff, &buffsize);
@@ -459,9 +462,9 @@ int create_PCB() { //temp fcn
     printf("Please enter the priority of the process to be created where 127 is high(-128 to 127): ");
 	err = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (err < OK) return err;
-    temp = atoi(buff);
+    priority = atoi(buff);
 	
-	struct PCB *newPCBptr = allocate_PCB();
+	newPCBptr = allocate_PCB();
 	if (newPCBptr == NULL) err = ERR_UCPCB;
     else {
 	  err = setup_PCB(newPCBptr, name, proc_class, priority);
@@ -479,8 +482,8 @@ int create_PCB() { //temp fcn
 * \brief Description: allocates memory for a PCB 
 */
 struct PCB * allocate_PCB() {
-	PCB *newPCBptr;
-	newPCBptr = (PCB*)sys_alloc_mem((sizeof(PCB)));
+	struct PCB *newPCBptr;
+	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
 	return newPCBptr;
 }
 
@@ -507,7 +510,7 @@ int free_PCB(struct PCB *PCBptr) {
 * \brief Description: sets the contents of a PCB
 */
 int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
-	(PCBptr->name) = name;
+	*(PCBptr->name) = *name;
 	(PCBptr->proc_class) = proc_class;
 	(PCBptr->priority) = priority;
 	(PCBptr->state) = READY;
@@ -531,8 +534,8 @@ int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class
 */
 int isEmpty(int q) {
     int ret = 0;
-    if(q == 1) if(head1 == null && tail1 == null) ret = 1;
-    else if(head2 == null && tail2 == null) ret = 1;
+    if(q == 1) if(head1 == NULL && tail1 == NULL) ret = 1;
+    else if(head2 == NULL && tail2 == NULL) ret = 1;
     return ret;
 }
 
@@ -562,8 +565,8 @@ int insert(struct PCB *newPCB,int q) {
 		  else tmp = (tmp->next);
         }
         if(head1 != newPCB) {
-          ((tmp->previous)->next) = newPCB;
-          (newPCB->prev) = (tmp->prev);
+	  ((tmp->prev)->next) = newPCB;
+	  (newPCB->prev) = (tmp->prev);
 		  (tmp->prev) = newPCB;
 		  (newPCB->next)= tmp;
         }
@@ -585,7 +588,7 @@ int insert(struct PCB *newPCB,int q) {
 		  else tmp = (tmp->next);
         }
         if(head2 != newPCB) {
-          ((tmp->previous)->next) = newPCB;
+	  ((tmp->prev)->next) = newPCB;
 		  (newPCB->prev) = (tmp->prev);
 		  (tmp->prev) = newPCB;
 		  (newPCB->next)= tmp;
@@ -605,13 +608,13 @@ int insert(struct PCB *newPCB,int q) {
 */
 int findPCB(char *name,struct PCB *PCBptr) {
     struct PCB *tmp = tail1;
-    while((tmp != null) && strncmp((tmp->name),name,strlen(name)+1)) tmp = (tmp->next);
+    while((tmp != NULL) && strncmp((tmp->name),name,strlen(name)+1)) tmp = (tmp->next);
     PCBptr = tmp;
-    if (PCBptr == null) { //if not found yet, search queue2
+    if (PCBptr == NULL) { //if not found yet, search queue2
       tmp = tail2;
-      while((tmp != null) && strncmp((tmp->name),name,strlen(name)+1)) tmp = (tmp->next);
-      if(tmp == null) err = ERR_PCBNF; //PCB not found
-      else if(tmp != null) PCBptr = tmp;
+      while((tmp != NULL) && strncmp((tmp->name),name,strlen(name)+1)) tmp = (tmp->next);
+      if(tmp == NULL) err = ERR_PCBNF; //PCB not found
+      else if(tmp != NULL) PCBptr = tmp;
     }
     return err;
 }
@@ -626,14 +629,14 @@ int findPCB(char *name,struct PCB *PCBptr) {
 * \breif Description: removes a PCB from queue
 */
 int qRemove(char *name,struct PCB *set) {
-	struct  *del;
+	struct PCB  *del;
     err = findPCB(name,del);
 	
 	if(err < OK){
     ((del->prev)->next) = (del->next);
     ((del->next)->prev) = (del->prev);
-    (del->next) = null;
-	(del->prev) = null;
+    (del->next) = NULL;
+	(del->prev) = NULL;
 	set = del;}
     
 	return err;
