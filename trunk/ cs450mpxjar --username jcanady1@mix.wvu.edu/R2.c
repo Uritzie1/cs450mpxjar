@@ -34,6 +34,7 @@
 #define ERR_INVPRI (-205)    //Invalid Priority
 #define ERR_PCBNF  (-206)    //PCB Not Found
 #define ERR_QUEEMP (-207)    //Queue is Empty
+#define ERR-UCPCB (-208)
 
 // Constants
 #define PROCESS_NAME_LENGTH 10
@@ -344,12 +345,12 @@ int create_PCB(char process[], int class, int priority) {
 	newPCBptr = setup_PCB(process, class, priority);
 	if (newPCBptr == NULL)
 	{
-		// NULL ERROR THROWN
+		err = ERR_UCPCB;
 	}
 	
 	else 
 	{
-		//Insert PCB
+		insert(newPCBptr,1);
 		
 	}
 	return err;
@@ -400,7 +401,7 @@ int isEmpty(int q) {
 
 /**
 */
-int insert(struct PCB *newPCB,int q) {
+int insert(PCB *newPCB,int q) {
     PCB *tmp;
     if(q == 1) {
       if(isEmpty(q)) {
