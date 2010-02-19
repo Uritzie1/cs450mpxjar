@@ -374,7 +374,18 @@ int free_PCB (PCB *PCBptr) {
 /**
 */
 int setup_PCB (PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
-	PCB *PCBptr = NULL;
+	(PCBptr->name) = name;
+	(PCBptr->proc_class) = proc_class;
+	(PCBptr->priority) = priority;
+	(PCBptr->state) = READY;
+	(PCBptr->suspended) = NOTSUSP;
+	(PCBptr->stack_base) = ;
+	(PCBptr->stack_top) = ;
+	(PCBptr->mem_size) = ;
+	(PCBptr->load_address) = ;
+	(PCBptr->execution_address) = ;
+	(PCBptr->prev) = NULL;
+	(PCBptr->next) = NULL;
 	return err;
 }
 
