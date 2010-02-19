@@ -513,9 +513,9 @@ int create_PCB() { //temp fcn
 	  if (errx < OK) return errx;
 	  errx = insert(newPCBptr,RUNNING);
 
-printf("Press enter to delete ");
-	errx = sys_req(READ, TERMINAL, buff, &buffsize);
-	free_PCB(newPCBptr);
+	//printf("Press enter to delete ");
+	//errx = sys_req(READ, TERMINAL, buff, &buffsize);
+	//free_PCB(newPCBptr);
 	  //temppcb = findPCB(newPCBptr->name, temppcb);
 	  //printf("\ncreate:%s",temppcb->name);
 	}
@@ -549,7 +549,7 @@ int free_PCB(struct PCB *PCBptr) {
 	//errx=sys_free_mem(PCBptr -> stack_base);
 	//errx=sys_free_mem(PCBptr -> load_address);
 	//errx=sys_free_mem(PCBptr);
-	free(PCBPtr);
+	free(PCBptr);
 	return errx;
 }
 
@@ -691,7 +691,6 @@ struct PCB* findPCB(char *name,struct PCB *PCBptr) {
 struct PCB* qRemove(char *name,struct PCB *set) {
 	struct PCB *del = NULL;
     del = findPCB(name,del);
-    printf("\nremove:%s",del->name);
     if(del->next == NULL && del->prev == NULL) {
       if(del==tail1) tail1 = head1 = NULL;
       else tail2 = head2 = NULL;
@@ -702,8 +701,7 @@ struct PCB* qRemove(char *name,struct PCB *set) {
       (del->next) = NULL;
 	  (del->prev) = NULL;
 	  //set = del;
-    } 
-     printf("\nremove:%s",del->name);
+    }
 	return del;
 }
 
