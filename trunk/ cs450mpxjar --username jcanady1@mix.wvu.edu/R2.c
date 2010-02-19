@@ -30,11 +30,11 @@
 #include "mpx_supt.h"
 
 // Status and Error Codes
-#define ERR_INVPRI (-205)
 #define ERR_INVPRI (-205)    //Invalid Priority
 #define ERR_PCBNF  (-206)    //PCB Not Found
 #define ERR_QUEEMP (-207)    //Queue is Empty
 #define ERR_UCPCB  (-208)    //Unable to Create PCB
+#define ERR_PRONTL (-209)    //Process Name too Long
 
 // Constants
 #define PROCESS_NAME_LENGTH 10
@@ -130,9 +130,9 @@ int block() {  //temp command
 	err = findPCB(buff, temppcb);
 	if (err < OK) return err;
 	if(temppcb->state != BLOCKED) {
-	  qRemove(buff, temppcb);
+	  err = qRemove(buff, temppcb);
 	  temppcb->state = BLOCKED;
-	  insertPCB(temppcb);
+	  insertPCB(temppcb, BLOCKED);
 	}
 	return err;
 }
@@ -153,9 +153,9 @@ int unblock() {
     err = findPCB(buff, temppcb);
     if (err < OK) return err;
     if(temppcb->state == BLOCKED) {
-        removePCB(temppcb);
+        err = qRemove(buff, temppcb);
         temppcb->state = READY;
-        insertPCB(temppcb);
+        insertPCB(temppcb, RUNNING);
     }
     return err;
 }
@@ -213,15 +213,16 @@ int set_Priority() {
 	toLowerCase(buff);
 	err = findPCB(buff, temppcb);
 	if (err < OK) return err;
-	printf("Please enter the new priority level (-128 to 127): ");
+	printf("Please enter the new priority level where 127 is the highest(-128 to 127): ");
 	err = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (err < OK) return err;
 	temp = atoi(buff);
 	if (temp==0) err = ERR_INVPRI;  //validate input ???***
 	else if (temp >= -128 && temp <= 127) {
-		removePCB(temppcb);
+		qRemove(buff, temppcb);
 		temppcb->priority = temp;
-		insertPCB(temppcb);
+		if (temppcb->state == BLOCKED) insertPCB(temppcb, BLOCKED);
+		else insertPCB(temppcb, RUNNING);
 		printf("Priority for %s successfully set to %d",temppcb->name,temppcb->priority);
 	}
 	else err = ERR_INVPRI;
@@ -261,16 +262,16 @@ int show_PCB() {
 int show_All() {
 	PCB* temppcb;
     int *bufsize = BIGBUFF;
-    int i = 2;
+    int i = 2, x = 0;
     char buffer[BIGBUFF] = {0};
-   
-	//set temppcb to queue root
-	//hit all queues
+	temppcb = tail1;
+	
 	printf("\nPROCESS PROPERTIES------------------------");
-	while(temppcb->next != NULL) {
-		printf("\n\nName: %s", temppcb->name);
-		if(temppcb->state == READY) printf("\nState: Ready");
-		else if(temppcb->state == RUNNING) printf("\nState: Running"); 
+	for (x;x<=1;x++) {
+	  while(temppcb->next != NULL) {
+        printf("\n\nName: %s", temppcb->name);
+	    if(temppcb->state == READY) printf("\nState: Ready");
+	    else if(temppcb->state == RUNNING) printf("\nState: Running"); 
 		else printf("\nState: Blocked");
 		if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
 		else printf("\nSuspended?: No\n");
@@ -281,6 +282,8 @@ int show_All() {
 	      err = sys_req(READ, TERMINAL, buffer, &bufsize);
 	      i = 0;
 	    }
+      }
+      temppcb = tail2;
 	}
 	return err;
 }
@@ -292,8 +295,8 @@ int show_Ready() {
     int *bufsize = BIGBUFF;
     int i = 2;
     char buffer[BIGBUFF] = {0};
-     
-	//set temppcb to queue root
+    temppcb = tail1; 
+
 	printf("\nPROCESS PROPERTIES\n------------------------");
 	while(temppcb->next != NULL) {
 	  if(temppcb->state == READY) {
@@ -338,8 +341,8 @@ int show_Blocked() {
     int *bufsize = BIGBUFF;
     int i = 2;
     char buffer[BIGBUFF] = {0};
+    temppcb = tail2;
      
-	//set temppcb to queue root
 	printf("\nPROCESS PROPERTIES\n------------------------");
 	while(temppcb->next != NULL) {
 	  if(temppcb->state == BLOCKED) {
@@ -360,12 +363,35 @@ int show_Blocked() {
 
 /**
 */	   
-int create_PCB(char process[], int class, int priority) { //temp fcn
+int create_PCB() { //temp fcn
+    char buff[BIGBUFF];
+	int buffsize = BIGBUFF;
+	char name[PROCESS_NAME_LENGTH];
+	memset(buff, '\0', BIGBUFF);
+
+    printf("Please enter the name of the process to be created (9 character limit): ");
+	err = sys_req(READ, TERMINAL, buff, &buffsize);
+	if (err < OK) return err;
+    if (strlen(buff)>9) return ERR_PRONTL;
+    name = buff;
+    
+    printf("Please enter the class of the process to be created ('0' = Application, '1' = System): ");
+	err = sys_req(READ, TERMINAL, buff, &buffsize);
+	if (err < OK) return err;
+    if (strncmp(buff,"0\0",2) && strncmp(buff,"1\0",2)) return ERR_PRONTL;
+    proc_class = buff;
+    
+    printf("Please enter the name of the process to be created (9 character limit): ");
+	err = sys_req(READ, TERMINAL, buff, &buffsize);
+	if (err < OK) return err;
+    if (strlen(buff)>9) return ERR_PRONTL;
+    priority = buff;
+	
 	PCB *newPCBptr = allocate_PCB();
 	if (newPCBptr == NULL) err = ERR_UCPCB;
     else {
-	  err = setup_PCB(newPCBptr, process, class, priority);
-	  insert(newPCBptr,1);
+	  err = setup_PCB(newPCBptr, name, proc_class, priority);
+	  insert(newPCBptr,RUNNING);
 	}
 	return err;
 }
@@ -469,11 +495,11 @@ int insert(PCB *newPCB,int q) {
 */
 int findPCB(char *name, PCB *PCBptr) {
     PCB *tmp = tail1;
-    while((tmp != null) && strcmp((tmp->name),name)) tmp = (tmp->next);
+    while((tmp != null) && strncmp((tmp->name),name,strlen(name)+1)) tmp = (tmp->next);
     PCBptr = tmp;
     if (PCBptr == null) { //if not found yet, search queue2
       tmp = tail2;
-      while((tmp != null) && strcmp((tmp->name),name)) tmp = (tmp->next);
+      while((tmp != null) && strncmp((tmp->name),name,strlen(name)+1)) tmp = (tmp->next);
       if(tmp == null) err = 2; //PCB not found
       else if(tmp != null) PCBptr = tmp;
     }
