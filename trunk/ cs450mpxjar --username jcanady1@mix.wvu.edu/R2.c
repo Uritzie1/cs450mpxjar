@@ -16,7 +16,7 @@
 *        2/15/2010  JC           block, unblock, suspend, resume, set_Priority, 
 *                                show_PCB, show_All, show_Ready, show_Blocked functions all added
 *		 2/16/2010  AT			 create_PCB, free_PCB, allocate_PCB
-
+*        2/18/2010  AT,JC        Completed all functions and added all comments
 */
 
 
@@ -215,8 +215,6 @@ int set_Priority() {
 	if (err < OK) return err;
 	temp = atoi(buff);
 	if (temp==0) err = ERR_INVPRI;  //validate input ???***
-	else if (temp >= -128 && temp <= 127) 
-	{
 	else if (temp >= -128 && temp <= 127) {
 		removePCB(temppcb);
 		temppcb->priority = temp;
@@ -360,14 +358,14 @@ int create_PCB(char process[], int class, int priority) {
 /**
 */
 struct PCB * allocate_PCB () {
-	struct PCB *newPCBptr;
+	PCB *newPCBptr;
 	newPCBptr = (PCB*)sys.alloc.mem((sizeof(PCB)));
 	return newPCBptr;
 }
 
 /**
 */
-int free_PCB (struct PCB *PCBptr) {
+int free_PCB (PCB *PCBptr) {
 	err = sys_free_mem(PCBptr->stackBase);
 	err = sys_free_mem(PCBptr);
 	return err;
