@@ -674,14 +674,14 @@ struct PCB* findPCB(char *name,struct PCB *PCBptr) {
     return PCBptr;
 }
 
-/**  Procedure Name: remove
+/**  Procedure Name: qremove
 * \param name: string containing PCB name
 * \param set: a pointer to a PCB
 * \return an integer error code (o for now)
 * \return sets set to removed PCB
 * Procedures Called: findPCB
 * Globals Used: err
-* \breif Description: removes a PCB from queue
+* \brief Description: removes a PCB from queue
 */
 struct PCB* qRemove(char *name,struct PCB *set) {
 	struct PCB *del = NULL;
