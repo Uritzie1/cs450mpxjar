@@ -30,8 +30,10 @@
 
 // Included Support Files
 #include "mpx_supt.h"
-#include "R2.c"
+#include "COMHAN.h"
+#include "R2.h"
 
+/*
 // Status and Error Codes
 #define ERR_INVCOM (-201) // Invalid command
 #define ERR_INVYR (-202)  // Invalid year
@@ -78,7 +80,7 @@ void get_Version();
 int date();
 int valid_date(int yr, int mo, int day);
 void toLowerCase(char str[BIGBUFF]);
-void trim(char ary[BIGBUFF]);
+void trim(char ary[BIGBUFF]);      */
 
 
 /** Procedure Name: main
@@ -158,7 +160,7 @@ int comhan() {
       err = unblock();
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[SUSP],strlen(fcns[SUSP])+1)) {
+    else if (!strncmp(cmd,fcns[SUSPEND],strlen(fcns[SUSPEND])+1)) {
       err = suspend();
       if(err < OK) err_hand(err);
     }
@@ -357,7 +359,7 @@ int date() {
   char buff[BIGBUFF];
   int buffsize = BIGBUFF;
   int x = 1, temp;
-  date_rec *date_p;
+  struct date_rec *date_p;
   
   sys_get_date(date_p);      //show current date and prompt for change
   printf("The current date is (MM/DD/YYYY): %d/%d/%d",date_p->month,date_p->day,date_p->year);
@@ -502,10 +504,10 @@ void err_hand(int err_code) {
   else if(err_code == ERR_SUP_NOMEM) printf("Memory allocation error.");
   else if(err_code == ERR_SUP_MFREE) printf("Memory free error.");
   else if(err_code == ERR_SUP_INVHAN) printf("Invalid handler address.");
-  else if(err_code == ERR_PCBNF) printf("PCB not found.");
+  /*else if(err_code == ERR_PCBNF) printf("PCB not found.");
   else if(err_code == ERR_QUEEMP) printf("Queue is empty.");
   else if(err_code == ERR_PRONTL) printf("Process name is too long.");
-  else if(err_code == ERR_NAMEAE) printf("Process name already in use.");
+  else if(err_code == ERR_NAMEAE) printf("Process name already in use.");*/
   else printf("Invalid error code %d", err_code);
   err = 0;
 }
