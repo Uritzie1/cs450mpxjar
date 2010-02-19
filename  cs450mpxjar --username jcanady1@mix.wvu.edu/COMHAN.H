@@ -27,11 +27,6 @@
 #define SHOWBLOCKED 15
 #define VERSION 1.72
 
-// Global Variables
-int err = 0;  //error code
-char * fcns[18] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","createpcb\0","deletepcb\0","block\0","unblock\0","suspend\0","resume\0","setpriority\0","showpcb\0","showall\0","showready\0","showblocked\0",NULL};  //functions list
-char wd[BIGBUFF*2] = {0};  //working directory
-
 // Function Prototypes
 void err_hand(int err_code);
 int init_r1();
