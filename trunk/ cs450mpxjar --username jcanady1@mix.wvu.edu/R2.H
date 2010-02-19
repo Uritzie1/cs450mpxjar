@@ -1,9 +1,3 @@
-// Included ANSI C Files
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-
 // Status and Error Codes
 #define ERR_PCBNF  (-205)    //PCB Not Found
 #define ERR_QUEEMP (-206)    //Queue is Empty
@@ -41,7 +35,7 @@ typedef struct PCB {
 	unsigned char* execution_address;		//Pointer to execution address
 	struct PCB *prev;				        //Pointer to previous PCB node
 	struct PCB *next;				       	//Pointer to next PCB node
-} PCB;
+} ;
 
 // Global Variables
 struct PCB *tail1, *tail2, *head1, *head2;
