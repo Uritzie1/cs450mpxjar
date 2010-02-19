@@ -10,5 +10,4 @@ Class of PCB: system or application
 Priority of PCB: priority level of PCB
 
 
-Description:  creates as PCB struct, and promts user
-for name, class, and priority
+Description:  Creates a PCB struct, and prompts user for name, class, and priority

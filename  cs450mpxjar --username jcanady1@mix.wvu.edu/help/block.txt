@@ -6,5 +6,5 @@ Usage: block
 
 Inputs: name of the PCB to be blocked
 
-Description:  Bock commaand takes the specificed
+Description:  Block command takes the specified
 PCB name and places it in the blocked queue.

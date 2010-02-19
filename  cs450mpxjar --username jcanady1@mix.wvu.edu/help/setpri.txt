@@ -4,10 +4,10 @@ Name: Set Priority
 
 Usage: setpriority
 
-Inputs: promts for a PCB name and new priority level
+Inputs: prompts for a PCB name and new priority level
 
 Description:  The PCB prioirty level is changed to
 user input
 
-note:  Invalid prioirty level causes PCB
-prioirty to default to 0.
+note:  Invalid priority level causes PCB
+priority to default to 0.
