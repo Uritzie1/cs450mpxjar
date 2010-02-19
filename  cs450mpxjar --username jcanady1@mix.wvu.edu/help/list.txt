@@ -9,4 +9,26 @@ Directory	dir		list contents of current directory
 
 Date		date		displays date and allows changes
 
+Block		block		sets PCB to blocked status
+
+Unblock		unblock		sets PCB to ready status
+
+Suspend		suspend		sets PCB to suspended status
+
+Resume		resume		sets PCB to non-suspended status
+
+SetPriority	setpri		reassigns a PCB's priority level
+
+CreatePCB	cpcb		creates a PCB
+
+DeletePCB	dpcb		deletes a PCB
+
+ShowPCB		shpcb		displays detailed info on a PCB
+
+ShowAll		shall		displays limited info on all PCBs
+
+ShowReady	shready		displays limited info on all ready PCBs
+
+ShowBlocked	shblock		displays limited info on all blocked PCBs
+
 Quit		quit		quits JAROS :'(
