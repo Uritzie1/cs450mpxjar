@@ -319,7 +319,7 @@ int help() {
   if ((err = sys_req(READ, TERMINAL, buffer, &bufsize)) < OK) return err;
   trim(buffer);
   toLowerCase(buffer);
-  for(i = 0; i < 6;i++) if(!strncmp(fcns[i],buffer, strlen(fcns[i]))) j++;
+  for(i = 0; i < strlen(fcns);i++) if(!strncmp(fcns[i],buffer, strlen(fcns[i]))) j++;
   if(j > 0){                //build file path
     strcat(wdc,tbuffer);
     strcat(wdc,buffer);
