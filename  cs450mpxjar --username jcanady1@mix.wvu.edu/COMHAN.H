@@ -27,6 +27,9 @@
 #define SHOWBLOCKED 15
 #define VERSION 1.72
 
+// Global Variables
+int err = 0;  //error code
+
 // Function Prototypes
 void err_hand(int err_code);
 int init_r1();
