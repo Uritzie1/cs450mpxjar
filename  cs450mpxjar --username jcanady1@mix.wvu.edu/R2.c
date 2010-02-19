@@ -28,6 +28,7 @@
 
 // Included Support Files
 #include "mpx_supt.h"
+#include "COMHAN.c"
 
 // Status and Error Codes
 #define ERR_PCBNF  (-205)    //PCB Not Found
