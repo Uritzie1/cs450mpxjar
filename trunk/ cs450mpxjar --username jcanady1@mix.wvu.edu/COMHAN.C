@@ -5,7 +5,7 @@
  * \author Adam Trainer
  * \author Rob Wayland   
  * \date 2/04/2010
- * \version: 1.72
+ * \version: 2.0
  *
  * Components: err_hand, init_r1, cleanup_r1, disp_dir, comhan, terminate_mpx,
  *             help, get_Version, date, valid_date, toLowerCase, trim
@@ -64,7 +64,7 @@
 #define SHOWALL 14
 #define SHOWREADY 15
 #define SHOWBLOCKED 16
-#define VERSION 1.72
+#define VERSION 2.0
 
 // Global Variables
 int err = 0;  //error code
