@@ -78,7 +78,7 @@
 
 
 // Global Variables
-struct PCB *tail1, *tail2, *head1, *head2;
+struct PCB *tail1=NULL, *tail2=NULL, *head1=NULL, *head2=NULL;
 int errx = 0;
 
 // Structures
@@ -348,7 +348,7 @@ int show_All() {
 	
 	printf("\nPROCESS PROPERTIES------------------------");
 	for (x;x<=1;x++) {
-	  while(temppcb->next != NULL) {
+	  while(temppcb != NULL) {
         printf("\n\nName: %s", temppcb->name);
 	    if(temppcb->state == READY) printf("\nState: Ready");
 	    else if(temppcb->state == RUNNING) printf("\nState: Running");
@@ -418,7 +418,7 @@ int delete_PCB() { //temp function
 
 	printf("Please enter the name of the PCB to delete: ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);	
-	if(errx < OK) {
+	if(errx >= OK) {
 		trimx(buff);
 		qRemove(buff,tmp);
 		free_PCB(tmp);
@@ -543,7 +543,7 @@ int free_PCB(struct PCB *PCBptr) {
 int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
 	int bufsize = BIGBUFF;
 	char buffer[BIGBUFF] = {0};
-	*(PCBptr->name) = *name;
+	strncpy((PCBptr->name), name,PROCESS_NAME_LENGTH);
 	(PCBptr->proc_class) = proc_class;
 	(PCBptr->priority) = priority;
 	(PCBptr->state) = READY;
@@ -664,8 +664,8 @@ int findPCB(char *name,struct PCB *PCBptr) {
 int qRemove(char *name,struct PCB *set) {
 	struct PCB  *del;
     errx = findPCB(name,del);
-	
-	if(errx < OK){
+
+	if(errx >= OK){
     ((del->prev)->next) = (del->next);
     ((del->next)->prev) = (del->prev);
     (del->next) = NULL;
