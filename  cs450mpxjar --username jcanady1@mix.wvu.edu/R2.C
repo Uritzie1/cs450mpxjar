@@ -185,7 +185,7 @@ int block() {  //temp command
 	temppcb = findPCB(buff, temppcb);
 	if (errx < OK) return errx;
 	if(temppcb->state != BLOCKED) {
-	  errx = qRemove(buff, temppcb);
+	  temppcb = qRemove(buff, temppcb);
 	  temppcb->state = BLOCKED;
 	  insert(temppcb, BLOCKED);
 	}
@@ -214,7 +214,7 @@ int unblock() {
     temppcb = findPCB(buff, temppcb);
     if (errx < OK) return errx;
     if(temppcb->state == BLOCKED) {
-        errx = qRemove(buff, temppcb);
+	temppcb = qRemove(buff, temppcb);
         temppcb->state = READY;
 	insert(temppcb, RUNNING);
     }
