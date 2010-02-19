@@ -30,11 +30,11 @@
 #include "mpx_supt.h"
 
 // Status and Error Codes
-#define ERR_INVPRI (-205)    //Invalid Priority
-#define ERR_PCBNF  (-206)    //PCB Not Found
-#define ERR_QUEEMP (-207)    //Queue is Empty
-#define ERR_UCPCB  (-208)    //Unable to Create PCB
-#define ERR_PRONTL (-209)    //Process Name too Long
+#define ERR_PCBNF  (-205)    //PCB Not Found
+#define ERR_QUEEMP (-206)    //Queue is Empty
+#define ERR_UCPCB  (-207)    //Unable to Create PCB
+#define ERR_PRONTL (-208)    //Process Name too Long
+#define ERR_NAMEAE (-209)    //Process Name Already Exists
 
 // Constants
 #define PROCESS_NAME_LENGTH 10
@@ -111,6 +111,7 @@ int init_r2() {
 * \brief Description/Purpose: none for now
 */
 int cleanup_r2() {
+    //free all PCB nodes
     return 0;
 }
 
@@ -217,15 +218,11 @@ int set_Priority() {
 	err = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (err < OK) return err;
 	temp = atoi(buff);
-	if (temp==0) err = ERR_INVPRI;  //validate input ???***
-	else if (temp >= -128 && temp <= 127) {
-		qRemove(buff, temppcb);
-		temppcb->priority = temp;
-		if (temppcb->state == BLOCKED) insertPCB(temppcb, BLOCKED);
-		else insertPCB(temppcb, RUNNING);
-		printf("Priority for %s successfully set to %d",temppcb->name,temppcb->priority);
-	}
-	else err = ERR_INVPRI;
+	qRemove(buff, temppcb);
+	temppcb->priority = temp;
+	if (temppcb->state == BLOCKED) insertPCB(temppcb, BLOCKED);
+	else insertPCB(temppcb, RUNNING);
+	printf("Priority for %s successfully set to %d",temppcb->name,temppcb->priority);
 	return err;
 }
 
@@ -367,31 +364,36 @@ int create_PCB() { //temp fcn
     char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	char name[PROCESS_NAME_LENGTH];
+	int proc_class, priority;
+	PCB* temppcb;
 	memset(buff, '\0', BIGBUFF);
 
     printf("Please enter the name of the process to be created (9 character limit): ");
 	err = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (err < OK) return err;
     if (strlen(buff)>9) return ERR_PRONTL;
+    err = findPCB(buff, temppcb);
+	if (err < OK) return err;
+	if (temppcb != NULL) return ERR_NAMEAE;
     name = buff;
     
     printf("Please enter the class of the process to be created ('0' = Application, '1' = System): ");
 	err = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (err < OK) return err;
     if (strncmp(buff,"0\0",2) && strncmp(buff,"1\0",2)) return ERR_PRONTL;
-    proc_class = buff;
+    proc_class = atoi(buff);
     
-    printf("Please enter the name of the process to be created (9 character limit): ");
+    printf("Please enter the priority of the process to be created where 127 is high(-128 to 127): ");
 	err = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (err < OK) return err;
-    if (strlen(buff)>9) return ERR_PRONTL;
-    priority = buff;
+    temp = atoi(buff);
 	
 	PCB *newPCBptr = allocate_PCB();
 	if (newPCBptr == NULL) err = ERR_UCPCB;
     else {
 	  err = setup_PCB(newPCBptr, name, proc_class, priority);
-	  insert(newPCBptr,RUNNING);
+	  if (err < OK) return err;
+	  err = insert(newPCBptr,RUNNING);
 	}
 	return err;
 }
