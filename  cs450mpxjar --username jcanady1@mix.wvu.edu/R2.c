@@ -85,11 +85,15 @@ int show_PCB();
 int show_All();
 int show_Ready();
 int show_Blocked();
-struct PCB * allocate_PCB();
-struct PCB * setup_PCB(char [], int, int);
-int free_PCB(PCB*);
-int create_PCB(char [], int class, int priority);
-int delete_PCB(char name[]);
+PCB * allocate_PCB();
+int setup_PCB(PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority);
+int free_PCB(PCB *PCBptr);
+int create_PCB();
+int delete_PCB();
+int isEmpty(int q);
+int insert(PCB *newPCB,int q);
+int findPCB(char *name, PCB *PCBptr);
+int qRemove(char *name,PCB *set);
 
 /** Procedure Name: init_r2
 * \param none
@@ -473,7 +477,7 @@ int create_PCB() { //temp fcn
 * Globals Used: err
 * \breif Description: allocates memory for a PCB 
 */
-PCB * allocate_PCB () {
+PCB * allocate_PCB() {
 	PCB *newPCBptr;
 	newPCBptr = (PCB*)sys_alloc_mem((sizeof(PCB)));
 	return newPCBptr;
@@ -486,7 +490,7 @@ PCB * allocate_PCB () {
 * Globals Used: err
 * \breif Description: frees PCB from memory
 */
-int free_PCB (PCB *PCBptr) {
+int free_PCB(PCB *PCBptr) {
 	err = sys_free_mem(PCBptr);
 	return err;
 }
@@ -501,7 +505,7 @@ int free_PCB (PCB *PCBptr) {
 * Globals Used: err
 * \breif Description: moves a PCB from ready to blocked queue 
 */
-int setup_PCB (PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
+int setup_PCB(PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
 	(PCBptr->name) = name;
 	(PCBptr->proc_class) = proc_class;
 	(PCBptr->priority) = priority;
