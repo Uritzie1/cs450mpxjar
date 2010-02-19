@@ -186,7 +186,6 @@ int block() {  //temp command
 	if (errx < OK) return errx;
 	if(temppcb->state != BLOCKED) {
 	  temppcb = qRemove(buff, temppcb);
-	  printf("\nblock:%s",temppcb->name);
 	  temppcb->state = BLOCKED;
 	  insert(temppcb, BLOCKED);
 	}
@@ -213,11 +212,11 @@ int unblock() {
     trimx(buff);
     toLowerCasex(buff);
     temppcb = findPCB(buff, temppcb);
-    if (errx < OK) return errx;
     if(temppcb->state == BLOCKED) {
-	temppcb = qRemove(buff, temppcb);
-        temppcb->state = READY;
-	insert(temppcb, RUNNING);
+	  temppcb = qRemove(buff, temppcb);
+      temppcb->state = READY;
+      printf("\nunblock:%s",temppcb->name);
+	  insert(temppcb, RUNNING);
     }
     return errx;
 }
