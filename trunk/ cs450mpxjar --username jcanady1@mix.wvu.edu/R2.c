@@ -126,7 +126,12 @@ int cleanup_r2() {
     return 0;
 }
 
-/**
+/**  Procedure Name: block
+* \param none
+* \return an integer error code 
+* Procedures Called: trim, toLowerCase, findPCB, qRemove, insertPCB, sys_req
+* Globals Used: err
+* \breif Description: moves a PCB from ready to blocked queue 
 */
 int block() {  //temp command
 	char buff[BIGBUFF];
@@ -149,7 +154,12 @@ int block() {  //temp command
 	return err;
 }
 
-/**
+/**  Procedure Name: unblock
+* \param none
+* \return an integer error code 
+* Procedures Called: findPCB, insertPCB, removePCB, toLowerCase, trim
+* Globals Used: err
+* \breif Description: moves a PCB from blocked to ready queue 
 */
 int unblock() {
     char buff[BIGBUFF];
@@ -172,7 +182,12 @@ int unblock() {
     return err;
 }
 
-/**
+/**  Procedure Name: suspend
+* \param none
+* \return an integer error code
+* Procedures Called: findPCB, sys_req, trim, toLowerCase
+* Globals Used: err
+* \breif Description: suspends a PCB
 */
 int suspend() {
     char buff[BIGBUFF];
@@ -191,7 +206,12 @@ int suspend() {
     return err;
 }
 
-/**
+/**  Procedure Name: resume
+* \param none
+* \return an integer error code
+* Procedures Called: sys_req, trim, toLowerCase, findPCB
+* Globals Used: err
+* \breif Description: sets PCB to not suspended 
 */
 int resume() {
 	char buff[BIGBUFF];
@@ -210,7 +230,12 @@ int resume() {
 	return err;
 }
 
-/**
+/**  Procedure Name: set_Priority
+* \param none
+* \return an integer error code
+* Procedures Called: sys_req, trim, toLowerCase, findPCB, inset, qremove
+* Globals Used: err
+* \breif Description: sets the priority level for a specified PCB 
 */
 int set_Priority() {
 	char buff[BIGBUFF];
@@ -237,7 +262,12 @@ int set_Priority() {
 	return err;
 }
 
-/**
+/**  Procedure Name: show_PCB
+* \param none
+* \return an integer error code
+* Procedures Called: sys_req, trim, toLowerCase, findPCB
+* Globals Used: err
+* \breif Description: prints a specific PCB 
 */
 int show_PCB() {
 	char buff[BIGBUFF];
@@ -265,7 +295,12 @@ int show_PCB() {
 	return err;
 }
 
-/**
+/**  Procedure Name: show_all
+* \param none
+* \return an integer error code
+* Procedures Called: sys_req
+* Globals Used: err
+* \breif Description: prints all PCB
 */
 int show_All() {
 	PCB* temppcb;
@@ -296,7 +331,12 @@ int show_All() {
 	return err;
 }
 
-/**
+/**  Procedure Name: show_Ready
+* \param none
+* \return an integer error code
+* Procedures Called: sys_req
+* Globals Used: err
+* \breif Description: prints all PCB in ready queue
 */
 int show_Ready() {
 	PCB* temppcb;
@@ -326,6 +366,13 @@ int show_Ready() {
 
 /**
 */
+/**  Procedure Name: delete
+* \param none
+* \return an integer error code
+* Procedures Called: sys_req, trim, remove, free_PCB
+* Globals Used: err
+* \breif Description: moves a PCB from ready to blocked queue 
+*/
 int delete_PCB() { //temp function	
 	char buff[BIGBUFF];
 	PCB tmp;
@@ -342,7 +389,12 @@ int delete_PCB() { //temp function
 	return err;
 }
 
-/**
+/**  Procedure Name: show_Blocked
+* \param none
+* \return an integer error code (o for now)
+* Procedures Called: sys_req, trim, toLowerCase, findPCB
+* Globals Used: err
+* \breif Description: moves a PCB from ready to blocked queue 
 */
 int show_Blocked() {
 	PCB* temppcb;
@@ -369,8 +421,13 @@ int show_Blocked() {
 	return err;
 }
 
-/**
-*/	   
+/** Procedure Name: create_PCB
+* \param none
+* \return an integer error code
+* Procedures Called: sys_req, trim, toLowerCase, setup_PCB, allocate_PCB
+* Globals Used: err
+* \breif Description: moves a PCB from ready to blocked queue 
+*/   
 int create_PCB() { //temp fcn
     char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
@@ -409,7 +466,12 @@ int create_PCB() { //temp fcn
 	return err;
 }
 
-/**
+/**  Procedure Name: allocate_PCB 
+* \param none
+* \return ptr to the new PCB
+* Procedures Called: sys_alloc_mem
+* Globals Used: err
+* \breif Description: allocates memory for a PCB 
 */
 PCB * allocate_PCB () {
 	PCB *newPCBptr;
@@ -417,14 +479,27 @@ PCB * allocate_PCB () {
 	return newPCBptr;
 }
 
-/**
+/**  Procedure Name: free_PCB
+* \param *PCBptr pointer to a PCB struct
+* \return an integer error code (o for now)
+* Procedures Called: sys_free_mem
+* Globals Used: err
+* \breif Description: frees PCB from memory
 */
 int free_PCB (PCB *PCBptr) {
 	err = sys_free_mem(PCBptr);
 	return err;
 }
 
-/**
+/**  Procedure Name: setup_PCB
+* \param *PCBptr pointer to PCB
+* \param name : char array with PCB name
+* \param proc_class : class of the PCB
+* \param priority : int that set priority
+* \return an integer error code (o for now)
+* Procedures Called: sys_req, trim, toLowerCase, findPCB
+* Globals Used: err
+* \breif Description: moves a PCB from ready to blocked queue 
 */
 int setup_PCB (PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
 	(PCBptr->name) = name;
@@ -442,7 +517,12 @@ int setup_PCB (PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int 
 	return err;
 }
 
-/**
+/**  Procedure Name: isEmpty
+* \param q :int representing the queue
+* \return an integer error code (o for now)
+* Procedures Called: none
+* Globals Used: err
+* \breif Description: moves a PCB from ready to blocked queue 
 */
 int isEmpty(int q) {
     int ret = 0;
@@ -513,7 +593,7 @@ int findPCB(char *name, PCB *PCBptr) {
     if (PCBptr == null) { //if not found yet, search queue2
       tmp = tail2;
       while((tmp != null) && strncmp((tmp->name),name,strlen(name)+1)) tmp = (tmp->next);
-      if(tmp == null) err = 2; //PCB not found
+      if(tmp == null) err = ERR_PCBNF; //PCB not found
       else if(tmp != null) PCBptr = tmp;
     }
     return err;
