@@ -130,9 +130,9 @@ int block() {  //temp command
 	err = findPCB(buff, temppcb);
 	if (err < OK) return err;
 	if(temppcb->state != BLOCKED) {
-	removePCB(temppcb);
-	temppcb->state = BLOCKED;
-	insertPCB(temppcb);
+	  qRemove(buff, temppcb);
+	  temppcb->state = BLOCKED;
+	  insertPCB(temppcb);
 	}
 	return err;
 }
