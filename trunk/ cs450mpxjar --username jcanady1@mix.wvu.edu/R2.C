@@ -63,6 +63,7 @@
 #define ERR_UCPCB  (-207)    //Unable to Create PCB
 #define ERR_PRONTL (-208)    //Process Name too Long
 #define ERR_NAMEAE (-209)    //Process Name Already Exists
+#define ERR_INVCLS (-210)    //Invalid Class
 
 // Constants
 #define PROCESS_NAME_LENGTH 10
@@ -447,8 +448,8 @@ int show_Blocked() {
 	  temppcb = temppcb->next;
 	  i=i+3;
 	  if(i > 21) {        //paging
-        printf("Press any key to continue");
-        errx = sys_req(READ, TERMINAL, buffer, &bufsize);
+	printf("Press any key to continue");
+	errx = sys_req(READ, TERMINAL, buffer, &bufsize);
         i = 0;
       }
 	}	
@@ -467,36 +468,38 @@ int create_PCB() { //temp fcn
 	int buffsize = BIGBUFF;
 	char name[PROCESS_NAME_LENGTH];
 	int proc_class, priority;
-	struct PCB *temppcb;
+	struct PCB *temppcb = NULL;
 	struct PCB *newPCBptr;
 	memset(buff, '\0', BIGBUFF);
 
     printf("Please enter the name of the process to be created (9 character limit): ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (errx < OK) return errx;
+	trimx(buff);
     if (strlen(buff)>9) return ERR_PRONTL;
-    errx = findPCB(buff, temppcb);
-	if (errx < OK) return errx;
+    findPCB(buff,temppcb);
 	if (temppcb != NULL) return ERR_NAMEAE;
-    *name = *buff;
+    strncpy(name,buff,PROCESS_NAME_LENGTH);
     
-    printf("Please enter the class of the process to be created ('0' = Application, '1' = System): ");
+    printf("Please enter the class of the process to be created\n('0' = Application, '1' = System): ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (errx < OK) return errx;
-    if (strncmp(buff,"0\0",2) && strncmp(buff,"1\0",2)) return ERR_PRONTL;
+	trimx(buff);
+    if (strncmp(buff,"0\0",2) && strncmp(buff,"1\0",2)) return ERR_INVCLS;
     proc_class = atoi(buff);
     
-    printf("Please enter the priority of the process to be created where 127 is high(-128 to 127): ");
+    printf("Please enter the priority of the process to be created where 127 is high\n(-128 to 127): ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (errx < OK) return errx;
+	trimx(buff);
     priority = atoi(buff);
-	
 	newPCBptr = allocate_PCB();
 	if (newPCBptr == NULL) errx = ERR_UCPCB;
     else {
 	  errx = setup_PCB(newPCBptr, name, proc_class, priority);
+	  printf("setup");
 	  if (errx < OK) return errx;
-	  errx = insert(newPCBptr,RUNNING);
+	  //errx = insert(newPCBptr,RUNNING);
 	}
 	return errx;
 }
@@ -511,6 +514,7 @@ int create_PCB() { //temp fcn
 struct PCB * allocate_PCB() {
 	struct PCB *newPCBptr;
 	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
+	if (newPCBptr == NULL) printf("AAAAAAAA");
 	return newPCBptr;
 }
 
@@ -537,13 +541,20 @@ int free_PCB(struct PCB *PCBptr) {
 * \brief Description: sets the contents of a PCB
 */
 int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
+	int bufsize = BIGBUFF;
+	char buffer[BIGBUFF] = {0};
+	printf("Press any key to continue");
+	errx = sys_req(READ, TERMINAL, buffer, &bufsize);
 	*(PCBptr->name) = *name;
 	(PCBptr->proc_class) = proc_class;
 	(PCBptr->priority) = priority;
-	(PCBptr->state) = READY;
-	(PCBptr->suspended) = NOTSUSP;
-	(PCBptr->stack_base) = (PCBptr->stack)[STACK_SIZE] ;
-	(PCBptr->stack_top) = (PCBptr->stack)[STACK_SIZE + 1];
+	//(PCBptr->state) = READY;
+
+	//(PCBptr->suspended) = NOTSUSP;
+	printf("Press any key to continue");
+	errx = sys_req(READ, TERMINAL, buffer, &bufsize);
+	//(PCBptr->stack_base) = (PCBptr->stack)[STACK_SIZE] ;
+	//(PCBptr->stack_top) = (PCBptr->stack)[STACK_SIZE + 1];
 	//(PCBptr->mem_size) = ;
 	//(PCBptr->load_address) = ;
 	//(PCBptr->execution_address) = ;

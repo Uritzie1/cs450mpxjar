@@ -41,6 +41,7 @@
 #define ERR_UCPCB  (-207)    //Unable to Create PCB
 #define ERR_PRONTL (-208)    //Process Name too Long
 #define ERR_NAMEAE (-209)    //Process Name Already Exists
+#define ERR_INVCLS (-210)    //Invalid Class
 
 // Constants
 #define BIGBUFF 80
@@ -509,6 +510,7 @@ void err_hand(int err_code) {
   else if(err_code == ERR_QUEEMP) printf("Queue is empty.");
   else if(err_code == ERR_PRONTL) printf("Process name is too long.");
   else if(err_code == ERR_NAMEAE) printf("Process name already in use.");
+  else if(err_code == ERR_INVCLS) printf("Invalid process class.");
   else printf("Invalid error code %d", err_code);
   err = 0;
 }
