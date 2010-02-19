@@ -373,8 +373,9 @@ int free_PCB (PCB *PCBptr) {
 
 /**
 */
-struct PCB * setup_PCB (char name[], int class, int priority) {
+int setup_PCB (PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
 	PCB *PCBptr = NULL;
+	return err;
 }
 
 /**
