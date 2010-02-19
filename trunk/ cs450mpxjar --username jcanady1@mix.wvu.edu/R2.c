@@ -344,9 +344,17 @@ int show_Blocked() {
 */	   
 int create_PCB(char process[], int class, int priority) {
 	PCB *newPCBptr = allocate_PCB();
-	err = setup_PCB(newPCBptr, process, class, priority);
-	if (newPCBptr == NULL) err = ERR_UCPCB;
-	else insert(newPCBptr,1);
+	if (newPCBptr == NULL)
+	{
+		err = ERR_UCPCB;
+	}
+	
+	else 
+	{
+		err = setup_PCB(newPCBptr, process, class, priority);
+		insert(newPCBptr,1);
+		
+	}
 	return err;
 }
 
@@ -374,11 +382,11 @@ int setup_PCB (PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int 
 	(PCBptr->priority) = priority;
 	(PCBptr->state) = READY;
 	(PCBptr->suspended) = NOTSUSP;
-	(PCBptr->stack_base) = ;
-	(PCBptr->stack_top) = ;
-	(PCBptr->mem_size) = ;
-	(PCBptr->load_address) = ;
-	(PCBptr->execution_address) = ;
+	(PCBptr->stack_base) = (PCBptr->stack)[STACK_SIZE] ;
+	(PCBptr->stack_top) = (PCBptr->stack)[STACK_SIZE + 1];
+	//(PCBptr->mem_size) = ;
+	//(PCBptr->load_address) = ;
+	//(PCBptr->execution_address) = ;
 	(PCBptr->prev) = NULL;
 	(PCBptr->next) = NULL;
 	return err;
