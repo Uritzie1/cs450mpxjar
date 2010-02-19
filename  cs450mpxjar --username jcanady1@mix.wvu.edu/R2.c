@@ -46,7 +46,7 @@
 #define BLOCKED 2
 #define NOTSUSP 0
 #define SUSP 1
-#define STACK_SIZE 1024;
+#define STACK_SIZE 1024
 
 
 // Global Variables
