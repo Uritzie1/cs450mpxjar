@@ -45,6 +45,7 @@
 #define BLOCKED 2
 #define NOTSUSP 0
 #define SUSP 1
+#define STACK_SIZE 1024;
 
 
 // Global Variables
@@ -62,11 +63,12 @@ typedef struct PCB {
 	int priority;					        /**<Priority Value (-128 to 127)*/
 	int state;						        /**<Process State Flag (Running, Ready, Blocked)*/
 	int suspended;					        /**<Process Suspended Flag*/
-	unsigned char * stack_base;				/**<Pointer to base of stack*/
-	unsigned char * stack_top;				/**<Pointer to top of stack*/
+	unsigned char stack[STACK_SIZE];        /**<PCB Stack*/
+	unsigned char* stack_base;				/**<Pointer to base of stack*/
+	unsigned char* stack_top;				/**<Pointer to top of stack*/
 	int mem_size;							/**<Memory size*/
-	unsigned char * load_address;			/**<Pointer to loading address*/
-	unsigned char * execution_address;		/**<Pointer to execution address*/
+	unsigned char* load_address;			/**<Pointer to loading address*/
+	unsigned char* execution_address;		/**<Pointer to execution address*/
 	struct PCB *prev;				        /**<Pointer to previous PCB node*/
 	struct PCB *next;				       	/**<Pointer to next PCB node*/
 } PCB;
