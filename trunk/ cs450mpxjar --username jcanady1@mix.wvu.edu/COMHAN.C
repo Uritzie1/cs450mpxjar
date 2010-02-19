@@ -46,11 +46,23 @@
 #define VER 2
 #define DIR 3
 #define QUIT 4
+#define LIST 5
+#define CREATEPCB 6
+#define DELPCB 7
+#define BLOCK 8
+#define UNBLOCK 9
+#define SUSP 10
+#define RES 11
+#define SETPRI 12
+#define SHOWPCB 13
+#define SHOWALL 14
+#define SHOWREADY 15
+#define SHOWBLOCKED 15
 #define VERSION 1.72
 
 // Global Variables
 int err = 0;  //error code
-char * fcns[7] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0",NULL};  //functions list
+char * fcns[18] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","createpcb\0","deletepcb\0","block\0","unblock\0","suspend\0","resume\0","setpriority\0","showpcb\0","showall\0","showready\0","showblocked\0",NULL};  //functions list
 char wd[BIGBUFF*2] = {0};  //working directory
 
 // Function Prototypes
@@ -114,20 +126,66 @@ int comhan() {
     err = sys_req(READ, TERMINAL, cmd, &bufsize);     //read in command
     trim(cmd);
     toLowerCase(cmd);
-    if (!strncmp(cmd,fcns[QUIT],5)) terminate_mpx();  //call corresponding function
-    else if (!strncmp(cmd,fcns[VER],4)) get_Version();
-    else if (!strncmp(cmd,fcns[HELP],5)) {
+    if (!strncmp(cmd,fcns[QUIT],strlen(fcns[QUIT])+1)) terminate_mpx();  //call corresponding function
+    else if (!strncmp(cmd,fcns[VER],strlen(fcns[VER]))) get_Version();
+    else if (!strncmp(cmd,fcns[HELP],strlen(fcns[HELP])+1)) {
       err = help(NULL);
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[DATE],5)) {
+    else if (!strncmp(cmd,fcns[DATE],strlen(fcns[DATE])+1)) {
       err = date();
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[DIR],4)) {
+    else if (!strncmp(cmd,fcns[DIR],strlen(fcns[DIR])+1)) {
       err = disp_dir();
       if(err < OK) err_hand(err);
     }
+    //R2 commands
+    else if (!strncmp(cmd,fcns[CREATEPCB],strlen(fcns[CREATEPCB])+1)) {
+      err = create_PCB();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[DELPCB],strlen(fcns[DELPCB])+1)) {
+      err = delete_PCB();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[BLOCK],strlen(fcns[BLOCK])+1)) {
+      err = block();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[UNBLOCK],strlen(fcns[UNBLOCK])+1)) {
+      err = unblock();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[SUSP],strlen(fcns[SUSP])+1)) {
+      err = suspend();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[RES],strlen(fcns[RES])+1)) {
+      err = resume();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[SETPRI],strlen(fcns[SETPRI])+1)) {
+      err = set_Priority();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[SHOWPCB],strlen(fcns[SHOWPCB])+1)) {
+      err = show_PCB();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[SHOWALL],strlen(fcns[SHOWALL])+1)) {
+      err = show_All();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[SHOWREADY],strlen(fcns[SHOWREADY])+1)) {
+      err = show_Ready();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[SHOWBLOCKED],strlen(fcns[SHOWBLOCKED])+1)) {
+      err = show_Blocked();
+      if(err < OK) err_hand(err);
+    }
+    //end new fcns
     else if (!strncmp(cmd,"\n",1)) ;
     else err_hand(ERR_INVCOM);
   }
