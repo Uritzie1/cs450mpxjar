@@ -116,7 +116,7 @@ int init_r2() {
 * \breef Description/Purpose: none for now
 */
 int cleanup_r2() {
-    PCB* temppcb = tail1;
+    PCB *temppcb = tail1;
     while (temppcb != NULL) {
       tail1 = temppcb;
       temppcb = tail1->next;
