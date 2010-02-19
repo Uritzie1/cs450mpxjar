@@ -685,9 +685,12 @@ struct PCB* findPCB(char *name,struct PCB *PCBptr) {
 */
 struct PCB* qRemove(char *name,struct PCB *set) {
 	struct PCB  *del;
-	errx = 0;
     del = findPCB(name,del);
-	if(errx >= OK) {
+    if(del->next == NULL && del->prev == NULL) {
+      if(del==tail1) tail1 = head1 = NULL;
+      else tail2 = head2 = NULL;
+    }
+	else if(del != NULL) {
       ((del->prev)->next) = (del->next);
       ((del->next)->prev) = (del->prev);
       (del->next) = NULL;
