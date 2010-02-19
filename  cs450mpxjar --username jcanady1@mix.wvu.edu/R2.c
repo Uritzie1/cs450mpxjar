@@ -27,7 +27,7 @@
 #include <ctype.h>
 
 // Included Support Files
-#include "mpx_supt.h"
+//#include "mpx_supt.h"
 #include "COMHAN.c"
 
 // Status and Error Codes
@@ -50,7 +50,7 @@
 
 
 // Global Variables
-PCB *tail1, *tail2, *head1, *head2;
+struct PCB *tail1, *tail2, *head1, *head2;
 
 
 // Structures
@@ -72,7 +72,7 @@ typedef struct PCB {
 	unsigned char* execution_address;		/**<Pointer to execution address*/
 	struct PCB *prev;				        /**<Pointer to previous PCB node*/
 	struct PCB *next;				       	/**<Pointer to next PCB node*/
-} PCB;
+} ;
 
 // Function Prototypes
 int init_r2();
@@ -86,15 +86,15 @@ int show_PCB();
 int show_All();
 int show_Ready();
 int show_Blocked();
-PCB * allocate_PCB();
-int setup_PCB(PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority);
-int free_PCB(PCB *PCBptr);
+struct PCB * allocate_PCB();
+int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority);
+int free_PCB(struct PCB *PCBptr);
 int create_PCB();
 int delete_PCB();
 int isEmpty(int q);
-int insert(PCB *newPCB,int q);
-int findPCB(char *name, PCB *PCBptr);
-int qRemove(char *name,PCB *set);
+int insert(struct PCB *newPCB,int q);
+int findPCB(char *name, struct PCB *PCBptr);
+int qRemove(char *name, struct PCB *set);
 
 /** Procedure Name: init_r2
 * \param none
@@ -116,7 +116,7 @@ int init_r2() {
 * \breef Description/Purpose: none for now
 */
 int cleanup_r2() {
-    PCB *temppcb = tail1;
+    struct PCB *temppcb = tail1;
     while (temppcb != NULL) {
       tail1 = temppcb;
       temppcb = tail1->next;
@@ -141,7 +141,7 @@ int cleanup_r2() {
 int block() {  //temp command
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
-	PCB* temppcb;
+	struct PCB *temppcb;
 	memset(buff, '\0', BIGBUFF);
 
 	printf("Please enter the name of the process to be blocked: ");
@@ -169,7 +169,7 @@ int block() {  //temp command
 int unblock() {
     char buff[BIGBUFF];
     int buffsize = BIGBUFF;
-    PCB* temppcb;
+    struct PCB *temppcb;
     memset(buff, '\0', BIGBUFF);
     
     printf("Please enter the name of the process to be unblocked: ");
@@ -197,7 +197,7 @@ int unblock() {
 int suspend() {
     char buff[BIGBUFF];
     int buffsize = BIGBUFF;
-    PCB* temppcb;
+    struct PCB *temppcb;
     memset(buff, '\0', BIGBUFF);
     
     printf("Please enter the name of the process to be suspended: ");
@@ -221,7 +221,7 @@ int suspend() {
 int resume() {
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
-	PCB* temppcb;
+	struct PCB *temppcb;
 	memset(buff, '\0', BIGBUFF);
 
 	printf("Please enter the name of the process to be resumed: ");
@@ -245,7 +245,7 @@ int resume() {
 int set_Priority() {
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF, temp;
-	PCB* temppcb;
+	struct PCB *temppcb;
 	memset(buff, '\0', BIGBUFF);
 
 	printf("Please enter the name of the process to be reprioritized: ");
@@ -277,7 +277,7 @@ int set_Priority() {
 int show_PCB() {
 	char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
-	PCB* temppcb;
+	struct PCB *temppcb;
 	memset(buff, '\0', BIGBUFF);
 
 	printf("Please enter a process name: ");
@@ -291,7 +291,7 @@ int show_PCB() {
 	printf("\nName: %s", temppcb->name);
 	if(temppcb->proc_class == SYSTEM) printf("\nClass: System");
 	else printf("\nClass: Application");
-	printf("\nPriority: %d", temppcb->priority;
+	printf("\nPriority: %d", temppcb->priority);
 	if(temppcb->state == READY) printf("\nState: Ready");
 	else if(temppcb->state == RUNNING) printf("\nState: Running"); 
 	else printf("\nState: Blocked");
@@ -308,7 +308,7 @@ int show_PCB() {
 * \brief Description: prints all PCB
 */
 int show_All() {
-	PCB* temppcb;
+    struct PCB *temppcb;
     int *bufsize = BIGBUFF;
     int i = 2, x = 0;
     char buffer[BIGBUFF] = {0};
