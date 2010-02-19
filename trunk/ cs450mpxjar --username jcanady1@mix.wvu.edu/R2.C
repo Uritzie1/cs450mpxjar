@@ -392,13 +392,11 @@ int show_Ready() {
 
     errx = 0;
 	printf("\nPROCESS PROPERTIES\n------------------------");
-	while(temppcb->next != NULL) {
-	  if(temppcb->state == READY) {
-	    printf("\n\nName: %s", temppcb->name);
-	    printf("\nPriority: %d", temppcb->priority);
-	    if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
-	    else printf("\nSuspended?: No\n");
-	  }
+	while(temppcb != NULL) {
+      printf("\n\nName: %s", temppcb->name);
+      printf("\nPriority: %d", temppcb->priority);
+      if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
+      else printf("\nSuspended?: No\n");
       temppcb = temppcb->next;
       i=i+4;
 	  if(i > 20) {        //paging
@@ -452,12 +450,10 @@ int show_Blocked() {
      
     errx = 0;
 	printf("\nPROCESS PROPERTIES\n------------------------");
-	while(temppcb->next != NULL) {
-	  if(temppcb->state == BLOCKED) {
-	    printf("\n\nName: %s", temppcb->name);
-	    if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
-	    else printf("\nSuspended?: No\n");
-	  }
+	while(temppcb != NULL) {
+      printf("\n\nName: %s", temppcb->name);
+      if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
+      else printf("\nSuspended?: No\n");
 	  temppcb = temppcb->next;
 	  i=i+3;
 	  if(i > 21) {        //paging
