@@ -34,7 +34,7 @@
 #define ERR_INVPRI (-205)    //Invalid Priority
 #define ERR_PCBNF  (-206)    //PCB Not Found
 #define ERR_QUEEMP (-207)    //Queue is Empty
-#define ERR-UCPCB (-208)
+#define ERR_UCPCB  (-208)    //Unable to Create PCB
 
 // Constants
 #define PROCESS_NAME_LENGTH 10
@@ -343,16 +343,8 @@ int show_Blocked() {
 int create_PCB(char process[], int class, int priority) {
 	PCB *newPCBptr = allocate_PCB();
 	err = setup_PCB(newPCBptr, process, class, priority);
-	if (newPCBptr == NULL)
-	{
-		err = ERR_UCPCB;
-	}
-	
-	else 
-	{
-		insert(newPCBptr,1);
-		
-	}
+	if (newPCBptr == NULL) err = ERR_UCPCB;
+	else insert(newPCBptr,1);
 	return err;
 }
 
