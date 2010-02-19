@@ -532,7 +532,7 @@ printf("Press enter to delete ");
 struct PCB * allocate_PCB() {
 	struct PCB *newPCBptr = NULL;
 	errx = 0;
-	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
+	newPCBptr = (struct PCB*)sys_alloc_mem((sizeof(struct PCB)));
 	return newPCBptr;
 }
 
