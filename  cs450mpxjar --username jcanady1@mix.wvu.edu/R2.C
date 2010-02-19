@@ -384,27 +384,27 @@ int show_All() {
 * \brief Description: prints all PCB in ready queue
 */
 int show_Ready() {
-	struct PCB* temppcb = NULL;
+	struct PCB *temppcb = NULL;
     int bufsize = BIGBUFF;
     int i = 2;
     char buffer[BIGBUFF] = {0};
-    temppcb = tail1; 
-
-    errx = 0;
-	printf("\nPROCESS PROPERTIES\n------------------------");
-	while(temppcb != NULL) {
-      printf("\n\nName: %s", temppcb->name);
-      printf("\nPriority: %d", temppcb->priority);
-      if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
-      else printf("\nSuspended?: No\n");
-      temppcb = temppcb->next;
-      i=i+4;
-	  if(i > 20) {        //paging
-        printf("Press any key to continue");
-        errx = sys_req(READ, TERMINAL, buffer, &bufsize);
-        i = 0;
+	temppcb = tail1;
+	
+	errx = 0;
+	printf("\nPROCESS PROPERTIES------------------------");
+	  while(temppcb != NULL) {
+        printf("\n\nName: %s", temppcb->name);
+	    printf("\nPriority: %d",temppcb->priority);
+		if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
+		else printf("\nSuspended?: No\n");
+		temppcb = temppcb->next;
+		i=i+4;
+		if(i > 20) {        //paging
+	      printf("Press any key to continue");
+	      errx = sys_req(READ, TERMINAL, buffer, &bufsize);
+	      i = 0;
+	    }
       }
-	}
 	return errx;
 }
 
@@ -442,26 +442,26 @@ int delete_PCB() { //temp function
 * \brief Description: moves a PCB from ready to blocked queue 
 */
 int show_Blocked() {
-	struct PCB* temppcb = NULL;
+	struct PCB *temppcb = NULL;
     int bufsize = BIGBUFF;
     int i = 2;
     char buffer[BIGBUFF] = {0};
-    temppcb = tail2;
-     
-    errx = 0;
-	printf("\nPROCESS PROPERTIES\n------------------------");
-	while(temppcb != NULL) {
-      printf("\n\nName: %s", temppcb->name);
-      if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
-      else printf("\nSuspended?: No\n");
-	  temppcb = temppcb->next;
-	  i=i+3;
-	  if(i > 21) {        //paging
-	printf("Press any key to continue");
-	errx = sys_req(READ, TERMINAL, buffer, &bufsize);
-        i = 0;
+	temppcb = tail1;
+	
+	errx = 0;
+	printf("\nPROCESS PROPERTIES------------------------");
+	  while(temppcb != NULL) {
+        printf("\n\nName: %s", temppcb->name);
+		if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
+		else printf("\nSuspended?: No\n");
+		temppcb = temppcb->next;
+		i=i+4;
+		if(i > 20) {        //paging
+	      printf("Press any key to continue");
+	      errx = sys_req(READ, TERMINAL, buffer, &bufsize);
+	      i = 0;
+	    }
       }
-	}	
 	return errx;
 }
 
@@ -509,12 +509,6 @@ int create_PCB() { //temp fcn
 	  errx = setup_PCB(newPCBptr, name, proc_class, priority);
 	  if (errx < OK) return errx;
 	  errx = insert(newPCBptr,RUNNING);
-
-	//printf("Press enter to delete ");
-	//errx = sys_req(READ, TERMINAL, buff, &buffsize);
-	//free_PCB(newPCBptr);
-	  //temppcb = findPCB(newPCBptr->name, temppcb);
-	  //printf("\ncreate:%s",temppcb->name);
 	}
 	return errx;
 }
@@ -625,10 +619,9 @@ int insert(struct PCB *newPCB,int q) {
         }
       }
     }
-    else {printf("\ninsert:%s %d %d",newPCB->name,q,isEmpty(q));
+    else {
       if(isEmpty(q)) {
         tail2 = newPCB;
-        printf("\ninsert:%s",tail2->name);
         head2 = tail2;
       }
       else {
@@ -649,8 +642,6 @@ int insert(struct PCB *newPCB,int q) {
         }
       }
     }
-    //printf("\ntail1:%s",tail1->name);
-    //printf("\ntail2:%s",tail2->name);
     return errx;
 }
 
@@ -673,7 +664,6 @@ struct PCB* findPCB(char *name,struct PCB *PCBptr) {
       if(tmp == NULL) errx = ERR_PCBNF; //PCB not found
       else if(tmp != NULL) PCBptr = tmp;
     }
-    //if(PCBptr != NULL) printf("\nfind:%d",*PCBptr->name);
     return PCBptr;
 }
 
