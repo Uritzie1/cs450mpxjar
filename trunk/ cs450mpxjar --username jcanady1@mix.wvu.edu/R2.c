@@ -465,7 +465,7 @@ int findPCB(char *name, PCB *PCBptr) {
 
 /**
 */
-int qDelete(int name,int q) {
+int qRemove(int name,int q) {
     PCB del; // = findPCB(name);
     if(q == 1) {
       if(isEmpty(q)) err = 2; //queue is empty
