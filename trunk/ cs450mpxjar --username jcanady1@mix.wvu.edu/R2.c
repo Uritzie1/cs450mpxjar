@@ -40,6 +40,7 @@
 #define BLOCKED 2
 #define NOTSUSP 0
 #define SUSP 1
+#define STACK_SIZE 1024
 
 // Global Variables
 PCB *tail1, *tail2, *head1, *head2;
@@ -491,4 +492,58 @@ int qDelete(int name,int q)
 		}
 	}
 	return err;
+}
+
+			   struct PCB *allocate_PCB()
+		  {
+			  PCB *newPCPptr;
+			  newPCPptr = (PCB*)sys_alloc_mem((sizeof(PCB)));
+			  
+			  return newPCPptr;
+		  }
+			   
+			   void free_PCB (struct PCB *PCBptr)
+		  {
+			  err = sys_free_mem(PCBptr->stackBase);
+			  err = sys_free_mem(PCBptr);
+		  }
+			   
+			   struct PCB * setup_PCB(char name[]. int class, int priority)
+		  {
+			  PCB *PCBptr = NULL;
+			  PCBptr      = allocate_PCB();
+			  
+			  unsigned char *stackBase;
+			  stackBase = (unsigned char *)sys_alloc_mem((sizeof(STACK_SIZE)));
+			  strcpy((PCBptr->name, name));
+			  (PCBptr->proc_class)   = class;
+			  (PCBptr->priority)     = priority;
+			  (PCBptr->state)        = READY;
+			  (PCBptr->stack_base)   = stackBase;
+			  (PCBptr->stack_top)    = stackBase + STACK_SIZE;
+			  (PCBptr->mem_size)     = STACK_SIZE;
+			  (PCBptr->load_address) = NULL;
+			  (PCBptr->prev)         = NULL;
+			  (PCBptr->next)         = NULL;	
+			  
+			  return PCBptr;
+		  }
+			   
+			   void create_PCB(char process[], int class, int priority)
+		  {
+			  PCB *PCBptr = NULL;
+			  PCBptr      = setup_PCB(process, class, priority);
+			  insert_PCB(PCBptr, <I have no idea what 'q' is);
+		  }
+			   
+			   void delete_PCB(char name[], *PCBptr)
+		  {
+			  PCB *removePCBptr = NULL;
+			  removePCBptr      = findPCB(name, PCBptr);
+			  
+			  if (removePCBptr != NULL)
+			  {
+				  qDelete(name, <Again, wtf is 'q');
+		free(removePCBptr);
+	}
 }
