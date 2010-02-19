@@ -1,0 +1,3 @@
+Fix PCB duplicates
+Change ShowAll to display horizontally
+Fix Set Priority to correct range
