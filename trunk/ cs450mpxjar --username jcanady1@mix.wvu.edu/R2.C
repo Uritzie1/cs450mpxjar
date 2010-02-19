@@ -123,7 +123,7 @@ int create_PCB();
 int delete_PCB();
 int isEmpty(int q);
 int insert(struct PCB *newPCB,int q);
-int findPCB(char *name, struct PCB *PCBptr);
+struct PCB* findPCB(char *name, struct PCB *PCBptr);
 int qRemove(char *name, struct PCB *set);
 void toLowerCasex(char str[BIGBUFF]);
 void trimx(char ary[BIGBUFF]);
@@ -182,7 +182,7 @@ int block() {  //temp command
 	if (errx < OK) return errx;
 	trimx(buff);
 	toLowerCasex(buff);
-	errx = findPCB(buff, temppcb);
+	//errx = findPCB(buff, temppcb);
 	if (errx < OK) return errx;
 	if(temppcb->state != BLOCKED) {
 	  errx = qRemove(buff, temppcb);
@@ -211,7 +211,7 @@ int unblock() {
     if (errx < OK) return errx;
     trimx(buff);
     toLowerCasex(buff);
-    errx = findPCB(buff, temppcb);
+    //errx = findPCB(buff, temppcb);
     if (errx < OK) return errx;
     if(temppcb->state == BLOCKED) {
         errx = qRemove(buff, temppcb);
@@ -240,7 +240,7 @@ int suspend() {
     if (errx < OK) return errx;
     trimx(buff);
     toLowerCasex(buff);
-    errx = findPCB(buff, temppcb);
+    //errx = findPCB(buff, temppcb);
     if (errx < OK) return errx;
     if(temppcb->state != SUSP) temppcb->suspended = SUSP;
     return errx;
@@ -265,7 +265,7 @@ int resume() {
 	if (errx < OK) return errx;
 	trimx(buff);
 	toLowerCasex(buff);
-	errx = findPCB(buff, temppcb);
+	//errx = findPCB(buff, temppcb);
 	if (errx < OK) return errx;
 	if(temppcb->state == BLOCKED) temppcb->suspended = NOTSUSP;
 	return errx;
@@ -290,13 +290,13 @@ int set_Priority() {
 	if (errx < OK) return errx;
 	trimx(buff);
 	toLowerCasex(buff);
-	errx = findPCB(buff, temppcb);
+	//errx = findPCB(buff, temppcb);
 	if (errx < OK) return errx;
 	printf("Please enter the new priority level where 127 is the highest(-128 to 127): ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (errx < OK) return errx;
 	temp = atoi(buff);
-	qRemove(buff, temppcb);
+	qRemove(temppcb->name, temppcb);
 	temppcb->priority = temp;
 	if (temppcb->state == BLOCKED) insert(temppcb, BLOCKED);
 	else insert(temppcb, RUNNING);
@@ -323,7 +323,8 @@ int show_PCB() {
 	if (errx < OK) return errx;
 	trimx(buff);
 	toLowerCasex(buff);
-	errx = findPCB(buff, temppcb);
+	//errx = findPCB(buff, temppcb);
+	temppcb = findPCB(buff,temppcb);
 	if (errx < OK) return errx;
 	printf("\nPROCESS PROPERTIES\n------------------------");
 	printf("\nName: %s", temppcb->name);
@@ -512,6 +513,9 @@ int create_PCB() { //temp fcn
 	  errx = setup_PCB(newPCBptr, name, proc_class, priority);
 	  if (errx < OK) return errx;
 	  errx = insert(newPCBptr,RUNNING);
+
+	  temppcb = findPCB(newPCBptr->name, temppcb);
+	  printf("\ncreate:%s",temppcb->name);
 	}
 	return errx;
 }
@@ -579,7 +583,6 @@ int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class
 */
 int isEmpty(int q) {
     int ret = 0;
-    errx = 0;
     if(q == 1) if(head1 == NULL && tail1 == NULL) ret = 1;
     else if(head2 == NULL && tail2 == NULL) ret = 1;
     return ret;
@@ -642,6 +645,8 @@ int insert(struct PCB *newPCB,int q) {
         }
       }
     }
+    printf("\ntail1:%s",tail1->name);
+    printf("\ntail2:%s",tail2->name);
     return errx;
 }
 
@@ -653,18 +658,19 @@ int insert(struct PCB *newPCB,int q) {
 * Globals Used: err
 * \brief Description: find a PCB pointer given a name
 */
-int findPCB(char *name,struct PCB *PCBptr) {
+struct PCB* findPCB(char *name,struct PCB *PCBptr) {
     struct PCB *tmp = tail1;
     errx = 0;
-    while((tmp != NULL) && strncmp((tmp->name),name,strlen(name)+1)) tmp = (tmp->next);
+    while((tmp != NULL) && strncmp((tmp->name),name,PROCESS_NAME_LENGTH)) tmp = (tmp->next);
     PCBptr = tmp;
     if (PCBptr == NULL) { //if not found yet, search queue2
       tmp = tail2;
-      while((tmp != NULL) && strncmp((tmp->name),name,strlen(name)+1)) tmp = (tmp->next);
+      while((tmp != NULL) && strncmp((tmp->name),name,PROCESS_NAME_LENGTH)) tmp = (tmp->next);
       if(tmp == NULL) errx = ERR_PCBNF; //PCB not found
       else if(tmp != NULL) PCBptr = tmp;
     }
-    return errx;
+    if(PCBptr != NULL) printf("\nfind:%d",*PCBptr->name);
+    return PCBptr;
 }
 
 /**  Procedure Name: remove
@@ -679,14 +685,14 @@ int findPCB(char *name,struct PCB *PCBptr) {
 int qRemove(char *name,struct PCB *set) {
 	struct PCB  *del;
 	errx = 0;
-    errx = findPCB(name,del);
+    //errx = findPCB(name,del);
 
 	if(errx >= OK){
       ((del->prev)->next) = (del->next);
       ((del->next)->prev) = (del->prev);
       (del->next) = NULL;
 	  (del->prev) = NULL;
-	  *set = *del;
+	  set = del;
     }
     
 	return errx;
