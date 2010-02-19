@@ -63,7 +63,7 @@
 #define SHOWPCB 13
 #define SHOWALL 14
 #define SHOWREADY 15
-#define SHOWBLOCKED 15
+#define SHOWBLOCKED 16
 #define VERSION 1.72
 
 // Global Variables
