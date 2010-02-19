@@ -545,8 +545,8 @@ struct PCB * allocate_PCB() {
 */
 int free_PCB(struct PCB *PCBptr) {
     errx = 0;
-	errx=sys_free_mem(PCBptr -> stack_base);
-	errx=sys_free_mem(PCBptr -> load_address);
+	//errx=sys_free_mem(PCBptr -> stack_base);
+	//errx=sys_free_mem(PCBptr -> load_address);
 	errx=sys_free_mem(PCBptr);
 	return errx;
 }
