@@ -90,8 +90,8 @@ typedef struct PCB {
 	int id;                                 //Process ID#
 	int proc_class;						    //Process Class
 	int priority;					        //Priority Value (-128 to 127)
-	int state;						        //Process State Flag (Running, Ready, Blocked)
-	int suspended;					        //Process Suspended Flag
+	//int state;						        //Process State Flag (Running, Ready, Blocked)
+	//int suspended;					        //Process Suspended Flag
 	unsigned char stack[STACK_SIZE];        //PCB Stack
 	unsigned char* stack_base;				//Pointer to base of stack
 	unsigned char* stack_top;				//Pointer to top of stack
@@ -100,6 +100,8 @@ typedef struct PCB {
 	unsigned char* execution_address;		//Pointer to execution address
 	struct PCB *prev;				        //Pointer to previous PCB node
 	struct PCB *next;				       	//Pointer to next PCB node
+	int state;
+	int suspended;
 } ;
 
 // Function Prototypes
@@ -497,9 +499,8 @@ int create_PCB() { //temp fcn
 	if (newPCBptr == NULL) errx = ERR_UCPCB;
     else {
 	  errx = setup_PCB(newPCBptr, name, proc_class, priority);
-	  printf("setup");
 	  if (errx < OK) return errx;
-	  //errx = insert(newPCBptr,RUNNING);
+	  errx = insert(newPCBptr,RUNNING);
 	}
 	return errx;
 }
@@ -514,7 +515,6 @@ int create_PCB() { //temp fcn
 struct PCB * allocate_PCB() {
 	struct PCB *newPCBptr;
 	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
-	if (newPCBptr == NULL) printf("AAAAAAAA");
 	return newPCBptr;
 }
 
@@ -543,18 +543,13 @@ int free_PCB(struct PCB *PCBptr) {
 int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
 	int bufsize = BIGBUFF;
 	char buffer[BIGBUFF] = {0};
-	printf("Press any key to continue");
-	errx = sys_req(READ, TERMINAL, buffer, &bufsize);
 	*(PCBptr->name) = *name;
 	(PCBptr->proc_class) = proc_class;
 	(PCBptr->priority) = priority;
-	//(PCBptr->state) = READY;
-
-	//(PCBptr->suspended) = NOTSUSP;
-	printf("Press any key to continue");
-	errx = sys_req(READ, TERMINAL, buffer, &bufsize);
-	//(PCBptr->stack_base) = (PCBptr->stack)[STACK_SIZE] ;
-	//(PCBptr->stack_top) = (PCBptr->stack)[STACK_SIZE + 1];
+	(PCBptr->state) = READY;
+	PCBptr->suspended = NOTSUSP;
+	(PCBptr->stack_base) = (PCBptr->stack)[STACK_SIZE] ;
+	(PCBptr->stack_top) = (PCBptr->stack)[STACK_SIZE + 1];
 	//(PCBptr->mem_size) = ;
 	//(PCBptr->load_address) = ;
 	//(PCBptr->execution_address) = ;
