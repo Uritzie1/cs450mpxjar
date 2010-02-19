@@ -590,7 +590,7 @@ int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class
 */
 int isEmpty(int q) {
     int ret = 0;
-    if(q == 1) if(head1 == NULL && tail1 == NULL) ret = 1;
+    if(q == 1) {if(head1 == NULL && tail1 == NULL) ret = 1;}
     else if(head2 == NULL && tail2 == NULL) ret = 1;
     return ret;
 }
@@ -629,7 +629,7 @@ int insert(struct PCB *newPCB,int q) {
         }
       }
     }
-    else {printf("\ninsert:%s",tail2->name);
+    else {printf("\ninsert:%s %d %d",newPCB->name,q,isEmpty(q));
       if(isEmpty(q)) {
         tail2 = newPCB;
         printf("\ninsert:%s",tail2->name);
