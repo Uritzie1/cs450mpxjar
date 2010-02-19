@@ -342,7 +342,7 @@ int show_Blocked() {
 
 /**
 */	   
-int create_PCB(char process[], int class, int priority) {
+int create_PCB(char process[], int class, int priority) { //temp fcn
 	PCB *newPCBptr = allocate_PCB();
 	if (newPCBptr == NULL) err = ERR_UCPCB;
     else {
