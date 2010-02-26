@@ -295,7 +295,11 @@ int set_Priority() {
 	if (errx < OK) return errx;
 	temp = atoi(buff);
 	qRemove(temppcb->name, temppcb);
-	temppcb->priority = temp;
+	if(temp<=127 && temp>=-128) temppcb->priority = temp;
+	else {
+      temppcb->priority = 0;
+      printf("\nInvalid priority level.  Priority defaulted to 0.");
+    }
 	if (temppcb->state == BLOCKED) insert(temppcb, BLOCKED);
 	else insert(temppcb, RUNNING);
 	printf("Priority for %s successfully set to %d",temppcb->name,temppcb->priority);
@@ -484,7 +488,7 @@ int create_PCB() { //temp fcn
 	if (errx < OK) return errx;
 	trimx(buff);
     if (strlen(buff)>9) return ERR_PRONTL;
-    findPCB(buff,temppcb);
+    temppcb = findPCB(buff,temppcb);
 	if (temppcb != NULL) return ERR_NAMEAE;
     strncpy(name,buff,PROCESS_NAME_LENGTH);
     
@@ -520,8 +524,8 @@ int create_PCB() { //temp fcn
 struct PCB * allocate_PCB() {
 	struct PCB *newPCBptr = NULL;
 	errx = 0;
-	//newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
-	newPCBptr = malloc(sizeof(struct PCB));
+	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
+	//newPCBptr = malloc(sizeof(struct PCB));
 	return newPCBptr;
 }
 
@@ -536,8 +540,8 @@ int free_PCB(struct PCB *PCBptr) {
     errx = 0;
 	//errx=sys_free_mem(PCBptr -> stack_base);
 	//errx=sys_free_mem(PCBptr -> load_address);
-	//errx=sys_free_mem(PCBptr);
-	free(PCBptr);
+	errx=sys_free_mem(PCBptr);
+	//free(PCBptr);
 	return errx;
 }
 
