@@ -289,7 +289,6 @@ int set_Priority() {
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (errx < OK) return errx;
 	temp = atoi(buff);
-	printf("\nYou entered %d",temp);
 	temppcb = qRemove(temppcb->name, temppcb);	
 	if(temp<=127 && temp>=-128) temppcb->priority = temp;
 	else {
@@ -519,8 +518,9 @@ int create_PCB() { //temp fcn
 */
 struct PCB * allocate_PCB() {
 	struct PCB *newPCBptr = NULL;
-	errx = 0;
 	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
+	printf("\nPCB size = %d",sizeof(struct PCB));
+	printf("\nPCB size = %d",sizeof(newPCBptr));
 	//newPCBptr = malloc(sizeof(struct PCB));
 	return newPCBptr;
 }
