@@ -289,7 +289,8 @@ int set_Priority() {
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (errx < OK) return errx;
 	temp = atoi(buff);
-	qRemove(temppcb->name, temppcb);
+	temppcb = qRemove(temppcb->name, temppcb);
+	printf("\nYou entered %d",temp);
 	if(temp<=127 && temp>=-128) temppcb->priority = temp;
 	else {
       temppcb->priority = 0;
@@ -297,7 +298,7 @@ int set_Priority() {
     }
 	if (temppcb->state == BLOCKED) insert(temppcb, BLOCKED);
 	else insert(temppcb, RUNNING);
-	printf("Priority for %s successfully set to %d",temppcb->name,temppcb->priority);
+	printf("\nPriority for %s successfully set to %d",temppcb->name,temppcb->priority);
 	return errx;
 }
 
