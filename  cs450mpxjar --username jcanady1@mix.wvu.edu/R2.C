@@ -507,6 +507,14 @@ int create_PCB() { //temp fcn
 	  errx = insert(newPCBptr,RUNNING);
 	}
 	return errx;
+	
+    	
+	//if(temp<=127 && temp>=-128) temppcb->priority = temp;
+	//else {
+    //  temppcb->priority = 0;
+    //  printf("\nInvalid priority level.  Priority defaulted to 0.");
+    //}
+	//printf("\nPriority for %s successfully set to %d",temppcb->name,temppcb->priority);
 }
 
 /**  Procedure Name: allocate_PCB 
