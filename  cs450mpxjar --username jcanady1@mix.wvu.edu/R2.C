@@ -520,7 +520,7 @@ struct PCB * allocate_PCB() {
 	struct PCB *newPCBptr = NULL;
 	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
 	printf("\nPCB size = %d",sizeof(struct PCB));
-	printf("\nPCB size = %d",sizeof(newPCBptr));
+	printf("\nPCB size = %d",sizeof(*newPCBptr));
 	//newPCBptr = malloc(sizeof(struct PCB));
 	return newPCBptr;
 }
