@@ -107,14 +107,12 @@ void interrupt dispatcher () {
 		ss_save = _SS;
 		sp_save = _SP;
 	}
-	tempnode = getReadyHead();
-	//scan for a non-suspended process
-	while(tempnode != NULL) {
+	tempnode = getReadyHead();	
+	while(tempnode != NULL) { //scan for a non-suspended process
 		if(tempnode->process_suspended == PROC_NOT_SUSP) break;
 		tempnode = tempnode -> next;
 	}
-	//found a ready, non-suspended process
-	if(tempnode != NULL) {
+	if(tempnode != NULL) { //found a ready, non-suspended process
 		cop = tempnode;
 		removePCB(tempnode);
 		//reset tempnode so it doesn't interfere with other interrupt/function calls
@@ -125,8 +123,7 @@ void interrupt dispatcher () {
 		_SS = new_ss;
 		_SP = new_sp;
 	}
-	//no ready, unsuspended processes; restore state
-	else {
+	else { //no ready, unsuspended processes; restore state
 		cop = NULL;
 		_SS = ss_save;
 		_SP = sp_save;
