@@ -4,8 +4,8 @@
 * \author Jonroy Canady
 * \author Adam Trainer
 * \author Rob Wayland   
-* \date 2/12/2010
-* \version: 1.0
+* \date 3/8/2010
+* \version: 2.71
 *
 * Components: 
 *
@@ -17,6 +17,7 @@
 *                                show_PCB, show_All, show_Ready, show_Blocked functions all added
 *		 2/16/2010  AT			 create_PCB, free_PCB, allocate_PCB
 *        2/18/2010  RW,JC        Completed all functions and added all comments
+*        3/08/2010  JC           
 */
 
 
@@ -26,22 +27,12 @@
 #include <string.h>
 #include <ctype.h>
 
-// Included Support Files
-//#include "mpx_supt.h"
-//#include "R2.h"
-//#include "COMHAN.c"
-
-
-// Status and Error Codes
-#define ERR_INVCOM (-201) // Invalid command
-#define ERR_INVYR (-202)  // Invalid year
-#define ERR_INVMON (-203) // Invalid month
-#define ERR_INVDAY (-204) // Invalid day
 // Constants
 #define BIGBUFF 80
 #define SMALLBUFF 10
 #define TINYBUFF 2
 #define OK 0
+
 /* Service operation codes */
 #define IDLE	0
 #define	READ	1
@@ -49,6 +40,7 @@
 #define CLEAR	3
 #define GOTOXY	4
 #define EXIT	5
+
 /* Device ID codes */
 #define NO_DEV		0
 #define	TERMINAL	1
@@ -56,8 +48,11 @@
 #define	COM_PORT	3
 #define NUM_DEVS	3
 
-
 // Status and Error Codes
+#define ERR_INVCOM (-201)    //Invalid command
+#define ERR_INVYR  (-202)    //Invalid year
+#define ERR_INVMON (-203)    //Invalid month
+#define ERR_INVDAY (-204)    //Invalid day
 #define ERR_PCBNF  (-205)    //PCB Not Found
 #define ERR_QUEEMP (-206)    //Queue is Empty
 #define ERR_UCPCB  (-207)    //Unable to Create PCB
@@ -90,8 +85,8 @@ typedef struct PCB {
 	int id;                                 //Process ID#
 	int proc_class;						    //Process Class
 	int priority;					        //Priority Value (-128 to 127)
-	//int state;						        //Process State Flag (Running, Ready, Blocked)
-	//int suspended;					        //Process Suspended Flag
+	//int state;						    //Process State Flag (Running, Ready, Blocked)
+	//int suspended;					    //Process Suspended Flag
 	unsigned char stack[STACK_SIZE];        //PCB Stack
 	unsigned char* stack_base;				//Pointer to base of stack
 	unsigned char* stack_top;				//Pointer to top of stack
