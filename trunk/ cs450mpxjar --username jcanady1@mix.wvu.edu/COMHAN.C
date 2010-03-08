@@ -253,6 +253,7 @@ void terminate_mpx() {
   toLowerCase(buff);
   if (buff[0] == 'y') {
     err = cleanup_r1();
+    err = cleanup_r2();
     if (err < OK) err_hand(err);
     sys_exit();
   }
