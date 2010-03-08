@@ -102,7 +102,7 @@ static pcb_node* tempnode;
   * Searches ready queue for the next non-suspended process. When found, removes the process from the queue.
   * <BR>Then, assigns to the COP and changes state to running. Finally, performs a context switch and completes.
   */
-void interrupt dispatcher () {
+void interrupt dispatcher() {
 	if(sp_save == NULL) {
 		ss_save = _SS;
 		sp_save = _SP;
