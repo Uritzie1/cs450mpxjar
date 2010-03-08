@@ -289,8 +289,8 @@ int set_Priority() {
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (errx < OK) return errx;
 	temp = atoi(buff);
-	temppcb = qRemove(temppcb->name, temppcb);
 	printf("\nYou entered %d",temp);
+	temppcb = qRemove(temppcb->name, temppcb);	
 	if(temp<=127 && temp>=-128) temppcb->priority = temp;
 	else {
       temppcb->priority = 0;
