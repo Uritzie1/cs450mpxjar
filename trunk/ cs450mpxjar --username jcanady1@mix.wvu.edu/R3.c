@@ -65,7 +65,15 @@
 int err = 0;
 
 // Structures
+typedef struct params {
+	int op_code;
+	int device_id;
+	byte *buf_addr;
+	int *count_addr;
+}params;
+params *param_P;
 
+PCB *runPCB
 
 // Function Prototypes
 int init_r3();
@@ -130,4 +138,20 @@ void interrupt dispatcher() {
 		ss_save = NULL;
 		sp_save = NULL;
 	}
+}
+void interrupt sys_call()
+{
+
+	param_p = (params*)(MK_FP(_SS,_SP)) + sizeof(context));
+
+	if(param_p->op_code == IDLE)
+	{
+		insert(runPCB,1)
+	}
+	else if(param_p->code == EXIT)
+	{
+		deletePCB(runPCB);
+	}
+	dispatcher();
+
 }
