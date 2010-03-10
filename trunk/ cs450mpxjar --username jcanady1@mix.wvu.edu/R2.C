@@ -353,7 +353,7 @@ int show_All() {
 	printf("\nPROCESS PROPERTIES------------------------");
 	for (x;x<=1;x++) {
 	  while(temppcb != NULL) {
-        printf("\n\nName: %s", temppcb->name);
+	printf("\n\nName: %s", temppcb->name);
 	    if(temppcb->state == READY) printf("\nState: Ready");
 	    else if(temppcb->state == RUNNING) printf("\nState: Running");
 		else printf("\nState: Blocked");
@@ -525,11 +525,17 @@ int create_PCB() { //temp fcn
 * \brief Description: allocates memory for a PCB 
 */
 struct PCB * allocate_PCB() {
+//int *ptr = malloc(15);
+//int *ptr1 = malloc(15);
 	struct PCB *newPCBptr = NULL;
-	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
-	printf("\nPCB size = %d",sizeof(struct PCB));
-	printf("\nPCB size = %d",sizeof(*newPCBptr));
-	//newPCBptr = malloc(sizeof(struct PCB));
+//printf("\ntest1:%u",ptr);
+//printf("\ntest2:%u",ptr1);
+//printf("\nEqual:%d",ptr==ptr1);
+//free(ptr);
+//free(ptr1);
+	//newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
+	newPCBptr = malloc(sizeof(struct PCB));
+	//printf("\nPCB ptr = %u",*newPCBptr);
 	return newPCBptr;
 }
 
@@ -544,8 +550,11 @@ int free_PCB(struct PCB *PCBptr) {
     errx = 0;
 	//errx=sys_free_mem(PCBptr -> stack_base);
 	//errx=sys_free_mem(PCBptr -> load_address);
-	errx=sys_free_mem(PCBptr);
-	//free(PCBptr);
+
+	//ptr = ptr & 0xFFFF;
+	//printf("\nFree ptr = %d",PCBptr);
+	//errx=sys_free_mem(&PCBptr);
+	free(PCBptr);
 	return errx;
 }
 
