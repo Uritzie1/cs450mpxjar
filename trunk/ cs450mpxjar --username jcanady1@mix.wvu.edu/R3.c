@@ -73,7 +73,7 @@ typedef struct params {
 }params;
 params *param_P;
 
-PCB *runPCB
+PCB *cop;
 
 // Function Prototypes
 int init_r3();
@@ -140,21 +140,21 @@ void interrupt dispatcher() {
 	}
 }
 void interrupt sys_call()
-{
-
+{	
 	param_p = (params*)(MK_FP(_SS,_SP)) + sizeof(context));
 
 	if(param_p->op_code == IDLE)
 	{
 		insert(runPCB,1)
-		runPCB = null;
-		dispatcher();
+		cop = NULL;
 	}
 	else if(param_p->code == EXIT)
 	{
 		free_pcb(runPCB);
-		dispatcher();
+		cop = NULL;
 	}
 	else
 		context_p->AX = param_p->op_code;
+
+	dispatcher();
 }
