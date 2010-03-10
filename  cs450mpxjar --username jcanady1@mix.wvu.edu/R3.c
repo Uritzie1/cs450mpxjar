@@ -147,11 +147,14 @@ void interrupt sys_call()
 	if(param_p->op_code == IDLE)
 	{
 		insert(runPCB,1)
+		runPCB = null;
+		dispatcher();
 	}
 	else if(param_p->code == EXIT)
 	{
-		deletePCB(runPCB);
+		free_pcb(runPCB);
+		dispatcher();
 	}
-	dispatcher();
-
+	else
+		context_p->AX = param_p->op_code;
 }
