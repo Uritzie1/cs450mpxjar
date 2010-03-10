@@ -404,8 +404,6 @@ int show_Ready() {
 	return errx;
 }
 
-/**
-*/
 /**  Procedure Name: delete
 * \param none
 * \return an integer error code

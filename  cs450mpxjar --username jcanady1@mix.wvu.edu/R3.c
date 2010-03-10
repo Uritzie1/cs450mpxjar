@@ -61,29 +61,7 @@
 // Constants
 
 
-// Global Variables
-int err = 0;
-static unsigned short ss_save;
-static unsigned short sp_save;
-static unsigned short ss_save_temp;
-static unsigned short sp_save_temp;
-static unsigned short new_ss;
-static unsigned short new_sp;
-static unsigned char sys_stack[STACK_SIZE];
-static PCB *cop;
-context *context_p;
-//static pcb_node* tempnode;
-
 // Structures
-typedef struct params {
-	int op_code;
-	int device_id;
-	byte *buf_addr;
-	int *count_addr;
-}params;
-
-params *param_P;
-
 typedef struct context {
 	unsigned int BP, DI, SI, DS, ES;
 	unsigned int DX, CX, BX, AX;
@@ -93,6 +71,20 @@ typedef struct context {
 // Function Prototypes
 int init_r3();
 int cleanup_r3();
+
+// Global Variables
+int err = 0;
+static unsigned short ss_save;
+static unsigned short sp_save;
+static unsigned short ss_save_temp;
+static unsigned short sp_save_temp;
+static unsigned short new_ss;
+static unsigned short new_sp;
+static unsigned char sys_stack[STACK_SIZE];
+static struct PCB *cop;
+static struct PCB *tempnode;
+struct context *context_p;
+struct params *param_p;
 
 /** Procedure Name: init_r3
 */
@@ -115,14 +107,13 @@ void interrupt dispatcher() {
 		ss_save = _SS;
 		sp_save = _SP;
 	}
-	tempnode = getReadyHead();	
-	while(tempnode != NULL) { //scan for a non-suspended process
-		if(tempnode->process_suspended == PROC_NOT_SUSP) break;
+	tempnode = head1;	
+	while(tempnode != NULL) { //look for a non-suspended process
+		if(tempnode->suspended == NOTSUSP) break;
 		tempnode = tempnode -> next;
 	}
 	if(tempnode != NULL) { //found a ready, non-suspended process
-		cop = tempnode;
-		removePCB(tempnode);
+		cop = qRemove(tempnode->name,tempnode);
 		//reset tempnode so it doesn't interfere with other interrupt/function calls
 		tempnode = NULL;
 		cop -> process_state = PROC_RUNNING;
