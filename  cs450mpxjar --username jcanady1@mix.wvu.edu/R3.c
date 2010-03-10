@@ -134,6 +134,14 @@ void interrupt dispatcher() {
 /**
  */
 void interrupt sys_call() {	
+	ss_save = _SS;
+	sp_save = _SP;
+	new_ss = FP_SEG(sys_stack);
+	new_sp = FP_OFF(sys_stack);
+	new_sp += SYS_STACK_SIZE;
+	_SS = new_ss;
+	_SP = new_sp;
+
 	param_p = (params*)(MK_FP(_SS,_SP)) + sizeof(context));
 
 	if(param_p->op_code == IDLE)
@@ -151,3 +159,84 @@ void interrupt sys_call() {
 
 	dispatcher();
 }
+void dispatch()
+{
+	dispatcher();
+}
+
+int load_test()
+{	
+	PCB *np;
+	context *npc;
+
+	np = allocate_PCB();
+	if (np == NULL) errx = ERR_UCPCB;
+	else {
+		errx = setup_PCB(np, "test1",0,0);
+		if (errx < OK) return errx;{
+			npc = (context*) np->stack_top;
+			npc->IP = FP_OFF(&test1_R3); //test1_R3 is a func name in procs-r3.c
+			npc->CS = FP_SEG(&test1_R3);
+			npc->FLAGS = 0x200;
+			npc->DS = _DS;
+			npc->ES = _ES;
+			errx = insert(newPCBptr,RUNNING);}
+	}
+
+	np = allocate_PCB();
+	if (np == NULL) errx = ERR_UCPCB;
+	else {
+		errx = setup_PCB(np, "test2",0,0);
+		if (errx < OK) return errx;{
+			npc = (context*) np->stack_top;
+			npc->IP = FP_OFF(&test1_R3); //test1_R3 is a func name in procs-r3.c
+			npc->CS = FP_SEG(&test1_R3);
+			npc->FLAGS = 0x200;
+			npc->DS = _DS;
+			npc->ES = _ES;
+			errx = insert(newPCBptr,RUNNING);}
+	}
+	
+	np = allocate_PCB();
+	if (np == NULL) errx = ERR_UCPCB;
+	else {
+		errx = setup_PCB(np, "test3",0,0);
+		if (errx < OK) return errx;{
+			npc = (context*) np->stack_top;
+			npc->IP = FP_OFF(&test1_R3); //test1_R3 is a func name in procs-r3.c
+			npc->CS = FP_SEG(&test1_R3);
+			npc->FLAGS = 0x200;
+			npc->DS = _DS;
+			npc->ES = _ES;
+			errx = insert(newPCBptr,RUNNING);}
+	}
+	
+	np = allocate_PCB();
+	if (np == NULL) errx = ERR_UCPCB;
+	else {
+		errx = setup_PCB(np, "test4",0,0);
+		if (errx < OK) return errx;{
+			npc = (context*) np->stack_top;
+			npc->IP = FP_OFF(&test1_R3); //test1_R3 is a func name in procs-r3.c
+			npc->CS = FP_SEG(&test1_R3);
+			npc->FLAGS = 0x200;
+			npc->DS = _DS;
+			npc->ES = _ES;
+			errx = insert(newPCBptr,RUNNING);}
+	}
+	
+	np = allocate_PCB();
+	if (np == NULL) errx = ERR_UCPCB;
+	else {
+		errx = setup_PCB(np, "test5",0,0);
+		if (errx < OK) return errx;{
+			npc = (context*) np->stack_top;
+			npc->IP = FP_OFF(&test1_R3); //test1_R3 is a func name in procs-r3.c
+			npc->CS = FP_SEG(&test1_R3);
+			npc->FLAGS = 0x200;
+			npc->DS = _DS;
+			npc->ES = _ES;
+			errx = insert(newPCBptr,RUNNING);}
+	}
+}
+
