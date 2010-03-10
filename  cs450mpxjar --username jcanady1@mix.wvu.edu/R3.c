@@ -159,13 +159,10 @@ void interrupt sys_call() {
 
 	dispatcher();
 }
-void dispatch()
-{
-	dispatcher();
-}
 
-int load_test()
-{	
+/**
+ */
+int load_test() {	
 	PCB *np;
 	context *npc;
 
