@@ -63,6 +63,16 @@
 
 // Global Variables
 int err = 0;
+static unsigned short ss_save;
+static unsigned short sp_save;
+static unsigned short ss_save_temp;
+static unsigned short sp_save_temp;
+static unsigned short new_ss;
+static unsigned short new_sp;
+static unsigned char sys_stack[STACK_SIZE];
+static PCB *cop;
+context *context_p;
+//static pcb_node* tempnode;
 
 // Structures
 typedef struct params {
@@ -80,14 +90,9 @@ typedef struct context {
 	unsigned int IP, CS, FLAGS;
 } context;
 
-context *context_p;
-
-PCB *cop;
-
 // Function Prototypes
 int init_r3();
 int cleanup_r3();
-
 
 /** Procedure Name: init_r3
 */
@@ -99,20 +104,6 @@ int init_r3() {
 */
 int cleanup_r3() {
 }
-
-
-
-
-/*static unsigned short ss_save;
-static unsigned short sp_save;
-static unsigned short ss_save_temp;
-static unsigned short sp_save_temp;
-static unsigned short new_ss;
-static unsigned short new_sp;
-static unsigned char sys_stack[STACK_SIZE];
-static pcb_node *cop;
-static pcb_node* tempnode;
-
 
 /**
   * \brief Assigns the next ready, non-suspended process to be the current operating process.
