@@ -71,7 +71,16 @@ typedef struct params {
 	byte *buf_addr;
 	int *count_addr;
 }params;
+
 params *param_P;
+
+typedef struct context {
+	unsigned int BP, DI, SI, DS, ES;
+	unsigned int DX, CX, BX, AX;
+	unsigned int IP, CS, FLAGS;
+} context
+
+context *context_p;
 
 PCB *cop;
 
