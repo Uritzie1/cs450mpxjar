@@ -148,8 +148,10 @@ void interrupt dispatcher() {
 		sp_save = NULL;
 	}
 }
-void interrupt sys_call()
-{	
+
+/**
+ */
+void interrupt sys_call() {	
 	param_p = (params*)(MK_FP(_SS,_SP)) + sizeof(context));
 
 	if(param_p->op_code == IDLE)
