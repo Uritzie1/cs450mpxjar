@@ -97,7 +97,7 @@ void trim(char ary[BIGBUFF]);
  *   terminate)
  */
 int main() {
-  sys_init(MODULE_R1);
+  sys_init(MODULE_R2);
   err = init_r1();
   err = init_r2();
   err = comhan();
