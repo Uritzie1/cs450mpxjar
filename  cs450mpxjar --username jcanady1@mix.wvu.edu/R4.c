@@ -11,7 +11,7 @@
 
 
 
-int load_prog(char[FILE_LENGTH] fname, int pri){
+void load_prog(char[FILE_LENGTH] fname, int pri){
 
 	int offset_p;
 	int progLength;
