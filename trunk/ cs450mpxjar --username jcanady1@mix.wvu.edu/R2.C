@@ -418,12 +418,16 @@ int delete_PCB() { //temp function
 	memset(buff, '\0', BIGBUFF);
 
     errx = 0;
-	printf("Please enter the name of the PCB to delete: ");
+	printf("Please enter the name of the Process to delete: ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);	
 	if(errx >= OK) {
+	//	if(tmp->proc_class != SYSTEM){
 		trimx(buff);
 		tmp = qRemove(buff,tmp);
 		free_PCB(tmp);
+	//	}
+		//else
+		//	return ERR_UTDSC;
 	}
 	return errx;
 }
