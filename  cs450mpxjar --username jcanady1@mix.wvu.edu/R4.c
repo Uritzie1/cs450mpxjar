@@ -1,16 +1,21 @@
 /**
 */
 #include "R12.h"
+#include "mpx_supt.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 #define FILE_LENGTH = 9;
 
-void load_prog(char[FILE_LENGTH] fname, int pri);
+void load_prog(char fname[], int pri);
 int terminate();
 int load();
 
 int err4 = 0;
 
-void load_prog(char[FILE_LENGTH] fname, int pri) {
+void load_prog(char fname[], int pri) {
 	int offset_p;
 	int progLength;
 	struct PCB *newNode;
