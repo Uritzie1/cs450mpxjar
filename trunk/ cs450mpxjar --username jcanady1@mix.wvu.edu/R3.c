@@ -89,7 +89,7 @@ static unsigned short ss_save_temp;
 static unsigned short sp_save_temp;
 static unsigned short new_ss;
 static unsigned short new_sp;
-static unsigned char sys_stack[STACK_SIZE];
+static unsigned char sys_stack[SYS_STACK_SIZE];
 static struct PCB *cop;
 static struct PCB *tempnode;
 struct context *context_p;
@@ -156,7 +156,7 @@ void interrupt sys_call() {
 	sp_save_temp = _SP;
 	cop->stack_top = (unsigned char *)(MK_FP(ss_save_temp,sp_save_temp));
     new_ss = FP_SEG(sys_stack);
-	new_sp = FP_OFF(sys_stack) + STACK_SIZE;
+	new_sp = FP_OFF(sys_stack) + SYS_STACK_SIZE;
     _SS = new_ss;
 	_SP = new_sp;
     param_p = (struct params *)(cop -> stack_top + sizeof(struct context));

@@ -45,7 +45,7 @@ static unsigned short ss_save_temp;
 static unsigned short sp_save_temp;
 static unsigned short new_ss;
 static unsigned short new_sp;
-static unsigned char sys_stack[STACK_SIZE];
+static unsigned char sys_stack[SYS_STACK_SIZE];
 static struct PCB *cop;
 static struct PCB *tempnode;
 struct context *context_p;
@@ -537,7 +537,7 @@ void err_hand(int err_code) {
   else if(err_code == ERR_NAMEAE) printf("Process name already in use.");
   else if(err_code == ERR_INVCLS) printf("Invalid process class.");
   else printf("Invalid error code %d", err_code);
-  err = 0;
+  err = 0; errx=0; err3=0;
 }
 
 int init_r2() {
@@ -941,7 +941,7 @@ struct PCB * allocate_PCB() {
 	struct PCB *newPCBptr = NULL;
 	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
 	newPCBptr->stack_base = (unsigned char *)sys_alloc_mem(STACK_SIZE * sizeof(unsigned char));
-	newPCBptr->stack_top = newPCBptr->stack_base + STACK_SIZE;
+	newPCBptr->stack_top = newPCBptr->stack_base + STACK_SIZE-sizeof(struct context);
 	//newPCBptr = malloc(sizeof(struct PCB));
 	return newPCBptr;
 }
@@ -1179,7 +1179,8 @@ int init_r3() {
 	new_sp = NULL;
 	cop = NULL;
 	tempnode = NULL;
-	sys_set_vec(sys_call);
+	err3 = sys_set_vec(sys_call);
+	if(err3<OK) err_hand(err3);
     return 0;
 }
 
