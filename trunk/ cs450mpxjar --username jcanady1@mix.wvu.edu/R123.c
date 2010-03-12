@@ -761,7 +761,7 @@ int show_All() {
 	printf("\nPROCESS PROPERTIES------------------------");
 	for (x;x<=1;x++) {
 	  while(temppcb != NULL) {
-	printf("\n\nName: %s", temppcb->name);
+	printf("\nName: %s", temppcb->name);
 	printf("  Priority: %d",temppcb->priority);
 	    if(temppcb->state == READY) printf("  State: Ready");
 	    else if(temppcb->state == RUNNING) printf("  State: Running");
@@ -769,8 +769,8 @@ int show_All() {
 		if(temppcb->suspended == SUSP) printf("  Suspended?: Yes");
 		else printf("  Suspended?: No\n");
 		temppcb = temppcb->next;
-		i=i+4;
-		if(i > 19) {        //paging
+		i=i++;
+		if(i > 23) {        //paging
 	      printf("Press any key to continue");
 	      errx = sys_req(READ, TERMINAL, buffer, &bufsize);
 	      i = 0;
