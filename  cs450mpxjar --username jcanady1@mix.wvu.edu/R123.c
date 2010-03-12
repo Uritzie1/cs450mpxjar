@@ -768,7 +768,7 @@ int show_All() {
 	    if(temppcb->state == READY) printf("    State: %-7s","Ready");
 	    else if(temppcb->state == RUNNING) printf("    State: %-7s","Running");
 		else printf("    State: %-7s","Blocked");
-		if(temppcb->suspended == SUSP) printf("    Suspended?: Yes");
+		if(temppcb->suspended == SUSP) printf("    Suspended?: Yes\n");
 		else printf("    Suspended?: No\n");
 		temppcb = temppcb->prev;
 		i=i++;
@@ -1203,7 +1203,7 @@ void interrupt dispatcher() {
 	tempnode = getRHead();	
 	while(tempnode != NULL) { //look for a non-suspended process
 		if(tempnode->suspended == NOTSUSP) break;
-		tempnode = tempnode -> next;
+		tempnode = tempnode -> prev;
 	}
 	if(tempnode != NULL) { //found a ready, non-suspended process
 		cop = qRemove(tempnode->name,cop);
