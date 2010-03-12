@@ -68,7 +68,7 @@ typedef struct context {
 	unsigned int BP, DI, SI, DS, ES;
 	unsigned int DX, CX, BX, AX;
 	unsigned int IP, CS, FLAGS;
-} context;
+} ;
 
 // Function Prototypes
 int init_r3();
@@ -172,7 +172,7 @@ int load_test() {
 	else {
 		errx = setup_PCB(np, "test1",0,0);
 		if (errx < OK) return errx;{
-			npc = (context*) np->stack_top;
+			npc = (struct context*) np->stack_top;
 			npc->IP = FP_OFF(&test1_R3); //test1_R3 is a func name in procs-r3.c
 			npc->CS = FP_SEG(&test1_R3);
 			npc->FLAGS = 0x200;
@@ -186,7 +186,7 @@ int load_test() {
 	else {
 		errx = setup_PCB(np, "test2",0,0);
 		if (errx < OK) return errx;{
-			npc = (context*) np->stack_top;
+			npc = (struct context*) np->stack_top;
 			npc->IP = FP_OFF(&test2_R3); //test1_R3 is a func name in procs-r3.c
 			npc->CS = FP_SEG(&test2_R3);
 			npc->FLAGS = 0x200;
@@ -200,7 +200,7 @@ int load_test() {
 	else {
 		errx = setup_PCB(np, "test3",0,0);
 		if (errx < OK) return errx;{
-			npc = (context*) np->stack_top;
+			npc = (struct context*) np->stack_top;
 			npc->IP = FP_OFF(&test3_R3); //test1_R3 is a func name in procs-r3.c
 			npc->CS = FP_SEG(&test3_R3);
 			npc->FLAGS = 0x200;
@@ -214,7 +214,7 @@ int load_test() {
 	else {
 		errx = setup_PCB(np, "test4",0,0);
 		if (errx < OK) return errx;{
-			npc = (context*) np->stack_top;
+			npc = (struct context*) np->stack_top;
 			npc->IP = FP_OFF(&test4_R3); //test1_R3 is a func name in procs-r3.c
 			npc->CS = FP_SEG(&test4_R3);
 			npc->FLAGS = 0x200;
@@ -228,7 +228,7 @@ int load_test() {
 	else {
 		errx = setup_PCB(np, "test5",0,0);
 		if (errx < OK) return errx;{
-			npc = (context*) np->stack_top;
+			npc = (struct context*) np->stack_top;
 			npc->IP = FP_OFF(&test5_R3); //test1_R3 is a func name in procs-r3.c
 			npc->CS = FP_SEG(&test5_R3);
 			npc->FLAGS = 0x200;
