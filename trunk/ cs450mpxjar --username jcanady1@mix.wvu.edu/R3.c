@@ -142,14 +142,12 @@ void interrupt dispatcher() {
 void interrupt sys_call() {	
 	ss_save = _SS;
 	sp_save = _SP;
-	new_ss = FP_SEG(sys_stack);
-	new_sp = FP_OFF(sys_stack);
-	new_sp += STACK_SIZE;
-	_SS = new_ss;
+	cop->stack_top = (struct params*)(MK_FP(ss_save,sp_save));
+    new_ss = FP_SEG(sys_stack);
+	new_sp = FP_OFF(sys_stack) + STACK_SIZE;
+    _SS = new_ss;
 	_SP = new_sp;
-
-	param_p = (struct params*)(MK_FP(_SS,_SP) + sizeof(struct context));
-
+    param_p = (struct params *)(cop -> stack_top + sizeof(struct context));
 	if(param_p->op_code == IDLE)
 	{
 		insert(cop,1);
