@@ -1,7 +1,3 @@
-Fix PCB duplicates--Check that it's fixed
-Check that priority works
-
-Fix Malloc etc
-Change ShowAll to display horizontally
-Confirm deletion
-Fix Programmer's Manual
+Documentation & Commentation
+File Death Splitting
+EC
