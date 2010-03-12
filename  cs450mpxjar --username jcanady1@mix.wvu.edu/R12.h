@@ -47,7 +47,7 @@
 #define LOADPROCS 18
 #define LOAD 19
 #define TERMINATE 20
-#define VERSION 2.0
+#define VERSION 4.0
 #define PROCESS_NAME_LENGTH 10
 #define SYSTEM 1
 #define APP 0
