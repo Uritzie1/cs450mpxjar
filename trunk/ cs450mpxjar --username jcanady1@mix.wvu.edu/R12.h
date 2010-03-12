@@ -65,7 +65,6 @@ typedef struct PCB {
 	int state;						        //Process State Flag (Running, Ready, Blocked)
 	int suspended;					        //Process Suspended Flag
 	unsigned char stack[STACK_SIZE];        //PCB Stack
-	unsigned char sysstack[STACK_SIZE];
 	unsigned char* stack_base;				//Pointer to base of stack
 	unsigned char* stack_top;				//Pointer to top of stack
 	int mem_size;							//Memory size
