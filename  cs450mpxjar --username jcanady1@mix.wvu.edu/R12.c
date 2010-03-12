@@ -92,9 +92,11 @@ int main() {
   sys_init(MODULE_R3);
   err = init_r1();
   err = init_r2();
+  err = init_r3();
   err = comhan();
   err = cleanup_r1();
   err = cleanup_r2();
+  err = cleanup_r3();
   terminate_mpx();
   return 0;
 }
@@ -255,6 +257,7 @@ void terminate_mpx() {
   if (buff[0] == 'y') {
     err = cleanup_r1();
     err = cleanup_r2();
+    err = cleanup_r3();
     if (err < OK) err_hand(err);
     sys_exit();
   }

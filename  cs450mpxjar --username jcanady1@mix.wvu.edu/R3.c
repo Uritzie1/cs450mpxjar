@@ -96,6 +96,13 @@ int err3=0;
 /** Procedure Name: init_r3
 */
 int init_r3() {
+	ss_save = NULL;
+	sp_save = NULL;
+	new_ss = NULL;
+	new_sp = NULL;
+	cop = NULL;
+	tempnode = NULL;
+	sys_set_vec(sys_call);
     return 0;
 }
 
@@ -121,7 +128,7 @@ void interrupt dispatcher() {
 		tempnode = tempnode -> next;
 	}
 	if(tempnode != NULL) { //found a ready, non-suspended process
-		cop = qRemove(tempnode->name,tempnode);
+		cop = qRemove(tempnode->name,cop);
 		//reset tempnode so it doesn't interfere with other interrupt/function calls
 		tempnode = NULL;
 		cop->state = RUNNING;
@@ -129,7 +136,6 @@ void interrupt dispatcher() {
 		new_sp = FP_OFF(cop -> stack_top);
 		_SS = new_ss;
 		_SP = new_sp;
-		return;
 	}
 	else { //no ready, unsuspended processes; restore state
 		cop = NULL;
@@ -137,7 +143,6 @@ void interrupt dispatcher() {
 		_SP = sp_save;
 		ss_save = NULL;
 		sp_save = NULL;
-		return;
 	}
 }
 
