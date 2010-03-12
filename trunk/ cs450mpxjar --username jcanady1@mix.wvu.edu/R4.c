@@ -63,7 +63,7 @@ int load() {
 	memset(buff, '\0', BIGBUFF);
 	
 	err4 = 0;
-    printf("\nPlease enter the name of the process to be created (9 character limit; no extension): ");
+    printf("\nPlease enter the name of the process to be created (9 char limit; no extension): ");
 	err4 = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (err4 < OK) return err4;
 	trimx(buff);
