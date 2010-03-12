@@ -112,7 +112,7 @@ int load_test();
  *   terminate)
  */
 int main() {
-  sys_init(MODULE_R3);
+  sys_init(MODULE_R4);
   err = init_r1();
   err = init_r2();
   err = init_r3();
@@ -216,7 +216,7 @@ int comhan() {
     }
     //R4 commands
     else if (!strncmp(cmd,fcns[LOAD],strlen(fcns[LOAD])+1)) {
-      err = load_test();
+      err = load();
       if(err < OK) err_hand(err);
     }
     else if (!strncmp(cmd,fcns[TERMINATE],strlen(fcns[TERMINATE])+1)) {
