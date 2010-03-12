@@ -155,7 +155,7 @@ void interrupt dispatcher() {
 void interrupt sys_call() {	
 	ss_save_temp = _SS;
 	sp_save_temp = _SP;
-	param_p = (struct params *)(MK_FP(ss_save_temp,sp_save_temp)+ sizeof(struct context));
+	param_p = (struct params *)((unsigned char *)MK_FP(ss_save_temp,sp_save_temp)+ sizeof(struct context));
     new_ss = FP_SEG(sys_stack);
 	new_sp = FP_OFF(sys_stack) + SYS_STACK_SIZE;
     _SS = new_ss;

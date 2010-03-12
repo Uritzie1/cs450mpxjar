@@ -45,7 +45,7 @@ static unsigned short ss_save_temp;
 static unsigned short sp_save_temp;
 static unsigned short new_ss;
 static unsigned short new_sp;
-static unsigned char sys_stack[SYS_STACK_SIZE];
+static byte sys_stack[SYS_STACK_SIZE];
 static struct PCB *cop;
 static struct PCB *tempnode;
 struct context *context_p;
@@ -1227,12 +1227,13 @@ void interrupt dispatcher() {
 
 /**
  */
-void interrupt sys_call() {	
+void interrupt sys_call() {
+    unsigned char * 	
 	ss_save_temp = _SS;
 	sp_save_temp = _SP;
-	param_p = (struct params *)(MK_FP(ss_save_temp,sp_save_temp)+ sizeof(struct context));
+	param_p = (struct params *)((unsigned char *)MK_FP(ss_save_temp,sp_save_temp)+ sizeof(struct context));
     new_ss = FP_SEG(sys_stack);
-	new_sp = FP_OFF(sys_stack) + STACK_SIZE;
+	new_sp = FP_OFF(sys_stack) + SYS_STACK_SIZE;
     _SS = new_ss;
 	_SP = new_sp;
 	if(param_p->op_code == IDLE)
