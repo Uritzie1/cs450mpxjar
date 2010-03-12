@@ -30,7 +30,7 @@ int load_prog(char fname[], int pri) {
     newNode = findPCB(fname, newNode);
     if(newNode != NULL) return ERR_NAMEAE;
 
-	err4 = sys_check_program("\PROCS",fname,&progLength,&offset_p);
+	err4 = sys_check_program("PROCS",fname,&progLength,&offset_p);
 	if(err4 < OK) return err4;
 	if(NULL == (newNode = allocate_PCB())) return ERR_UCPCB;
 
@@ -48,7 +48,7 @@ int load_prog(char fname[], int pri) {
 	cp->ES = _ES;
 	cp->FLAGS = 0x200;
 	
-	err4 = sys_load_program(newNode->load_address, newNode->mem_size, "\PROCS",fname);
+	err4 = sys_load_program(newNode->load_address, newNode->mem_size, "PROCS",fname);
 	if(err4>=OK) err4 = insert(newNode,RUNNING);
 	return err4;
 }
