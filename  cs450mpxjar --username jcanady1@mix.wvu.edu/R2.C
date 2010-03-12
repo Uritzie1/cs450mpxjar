@@ -344,7 +344,9 @@ int show_PCB() {
 */
 int show_All() {
     struct PCB *temppcb = NULL;
-    
+    int bufsize = BIGBUFF;
+    int i = 2, x = 0;
+    char buffer[BIGBUFF] = {0};
     
     struct PCB* test;
 struct PCB* test2;
@@ -357,12 +359,10 @@ struct PCB* test2;
   err_hand(errx);
   errx = sys_free_mem(test2);
   err_hand(errx);
-    
-    
-    
-    int bufsize = BIGBUFF;
-    int i = 2, x = 0;
-    char buffer[BIGBUFF] = {0};
+
+
+
+
 	temppcb = tail1;
 	
 	errx = 0;
