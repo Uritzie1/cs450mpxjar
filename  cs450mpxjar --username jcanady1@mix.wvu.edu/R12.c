@@ -83,7 +83,7 @@ void trimx(char ary[BIGBUFF]);
  *   terminate)
  */
 int main() {
-  sys_init(MODULE_R2);
+  sys_init(MODULE_R3);
   err = init_r1();
   err = init_r2();
   err = comhan();

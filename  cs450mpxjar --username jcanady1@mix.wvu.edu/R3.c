@@ -143,7 +143,7 @@ void interrupt sys_call() {
 	_SS = new_ss;
 	_SP = new_sp;
 
-	param_p = (struct params*)(MK_FP(_SS,_SP) + sizeof(context));
+	param_p = (struct params*)(MK_FP(_SS,_SP) + sizeof(struct context));
 
 	if(param_p->op_code == IDLE)
 	{
@@ -236,5 +236,6 @@ int load_test() {
 			npc->ES = _ES;
 			errx = insert(np,RUNNING);}
 	}
+	return 0;
 }
 
