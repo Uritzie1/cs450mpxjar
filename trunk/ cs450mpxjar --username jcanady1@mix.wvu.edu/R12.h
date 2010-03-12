@@ -78,4 +78,10 @@ typedef struct params {
 	int      device_id;
 	char     *buf_p;
 	int      *count_p;
-	} params;
+} params;
+
+typedef struct context {
+	unsigned int BP, DI, SI, DS, ES;
+	unsigned int DX, CX, BX, AX;
+	unsigned int IP, CS, FLAGS;
+} ;
