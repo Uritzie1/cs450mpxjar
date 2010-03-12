@@ -31,6 +31,7 @@
 // Included Support Files
 #include "mpx_supt.h"
 #include "R12.h"
+#include <dos.h>
 
 // Global Variables
 int err = 0;  //error code
@@ -208,10 +209,7 @@ int comhan() {
       if(err < OK) err_hand(err);
     }
     //R3 commands
-    else if (!strncmp(cmd,fcns[DISPATCH],strlen(fcns[DISPATCH])+1)) {
-      err = dispatcher();
-      if(err < OK) err_hand(err);
-    }
+    else if (!strncmp(cmd,fcns[DISPATCH],strlen(fcns[DISPATCH])+1)) dispatcher();
     else if (!strncmp(cmd,fcns[LOADPROCS],strlen(fcns[LOADPROCS])+1)) {
       err = load_test();
       if(err < OK) err_hand(err);
