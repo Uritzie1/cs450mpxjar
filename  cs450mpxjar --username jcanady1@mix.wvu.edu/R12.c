@@ -33,30 +33,7 @@
 #include "R12.h"
 
 
-// Global Variables
-int err = 0;  //error code
-char * fcns[18] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0",NULL};  //functions list
-char wd[BIGBUFF*2] = {0};  //working directory
-struct PCB *tail1=NULL, *tail2=NULL, *head1=NULL, *head2=NULL;
-int errx = 0;
 
-//Structures
-typedef struct PCB {
-	char name[PROCESS_NAME_LENGTH];         //Process Name
-	int id;                                 //Process ID#
-	int proc_class;						    //Process Class
-	int priority;					        //Priority Value (-128 to 127)
-	int state;						    //Process State Flag (Running, Ready, Blocked)
-	int suspended;					    //Process Suspended Flag
-	unsigned char stack[STACK_SIZE];        //PCB Stack
-	unsigned char* stack_base;				//Pointer to base of stack
-	unsigned char* stack_top;				//Pointer to top of stack
-	int mem_size;							//Memory size
-	unsigned char* load_address;			//Pointer to loading address
-	unsigned char* execution_address;		//Pointer to execution address
-	struct PCB *prev;				        //Pointer to previous PCB node
-	struct PCB *next;				       	//Pointer to next PCB node
-} ;
 
 // Function Prototypes
 void err_hand(int err_code);
