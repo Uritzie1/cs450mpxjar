@@ -178,7 +178,7 @@ int load_test() {
 			npc->FLAGS = 0x200;
 			npc->DS = _DS;
 			npc->ES = _ES;
-			errx = insert(newPCBptr,RUNNING);}
+			errx = insert(np,RUNNING);}
 	}
 
 	np = allocate_PCB();
@@ -192,7 +192,7 @@ int load_test() {
 			npc->FLAGS = 0x200;
 			npc->DS = _DS;
 			npc->ES = _ES;
-			errx = insert(newPCBptr,RUNNING);}
+			errx = insert(np,RUNNING);}
 	}
 	
 	np = allocate_PCB();
@@ -206,7 +206,7 @@ int load_test() {
 			npc->FLAGS = 0x200;
 			npc->DS = _DS;
 			npc->ES = _ES;
-			errx = insert(newPCBptr,RUNNING);}
+			errx = insert(np,RUNNING);}
 	}
 	
 	np = allocate_PCB();
@@ -220,7 +220,7 @@ int load_test() {
 			npc->FLAGS = 0x200;
 			npc->DS = _DS;
 			npc->ES = _ES;
-			errx = insert(newPCBptr,RUNNING);}
+			errx = insert(np,RUNNING);}
 	}
 	
 	np = allocate_PCB();
@@ -234,7 +234,7 @@ int load_test() {
 			npc->FLAGS = 0x200;
 			npc->DS = _DS;
 			npc->ES = _ES;
-			errx = insert(newPCBptr,RUNNING);}
+			errx = insert(np,RUNNING);}
 	}
 }
 
