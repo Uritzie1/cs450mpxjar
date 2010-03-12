@@ -99,6 +99,10 @@ typedef struct PCB {
 	int suspended;
 } ;
 
+typedef struct TESTX {
+ int tree;
+ char tree2;};
+
 // Function Prototypes
 int init_r2();
 int cleanup_r2();
@@ -348,10 +352,10 @@ int show_All() {
     int i = 2, x = 0;
     char buffer[BIGBUFF] = {0};
     
-    struct PCB* test;
-struct PCB* test2;
-  test = (struct PCB*)sys_alloc_mem(sizeof(struct PCB));
-  test2 = (struct PCB*)sys_alloc_mem(sizeof(struct PCB));
+    struct TESTX* test;
+struct TESTX* test2;
+  test = (struct TESTX*)sys_alloc_mem(sizeof(struct TESTX));
+  test2 = (struct TESTX*)sys_alloc_mem(sizeof(struct TESTX));
   printf("\nptr = %u",test);
   printf("\nptr2 = %u",test2);
   printf("\nequal?: %d",test==test2);
