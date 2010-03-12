@@ -78,6 +78,9 @@ void test2_R3();
 void test3_R3();
 void test4_R3();
 void test5_R3();
+void interrupt sys_call();
+void interrupt dispatcher();
+int load_test();
 
 // Global Variables
 static unsigned short ss_save;
