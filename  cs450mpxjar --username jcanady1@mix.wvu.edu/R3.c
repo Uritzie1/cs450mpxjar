@@ -162,7 +162,8 @@ void interrupt sys_call() {
 	_SP = new_sp;
 	if(param_p->op_code == IDLE)
 	{
-		insert(cop,1);
+		cop->process_state = READY;
+        insert(cop,1);
 		cop = NULL;
 	}
 	else if(param_p->op_code == EXIT)
