@@ -54,6 +54,7 @@
 #define NOTSUSP 0
 #define SUSP 1
 #define STACK_SIZE 1024
+#define SYS_STACK_SIZE 200
 
 //Structures
 typedef struct PCB {

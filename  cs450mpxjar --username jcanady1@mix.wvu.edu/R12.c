@@ -919,7 +919,7 @@ struct PCB * allocate_PCB() {
 	struct PCB *newPCBptr = NULL;
 	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
 	newPCBptr->stack_base = (unsigned char *)sys_alloc_mem(STACK_SIZE * sizeof(unsigned char));
-	newPCBptr->stack_top = newPCBptr->stack_base + STACK_SIZE;
+	newPCBptr->stack_top = newPCBptr->stack_base + STACK_SIZE-sizeof(struct context);
 	//newPCBptr = malloc(sizeof(struct PCB));
 	return newPCBptr;
 }
