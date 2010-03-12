@@ -73,6 +73,11 @@ typedef struct context {
 // Function Prototypes
 int init_r3();
 int cleanup_r3();
+void test1_R3();
+void test2_R3();
+void test3_R3();
+void test4_R3();
+void test5_R3();
 
 // Global Variables
 static unsigned short ss_save;
