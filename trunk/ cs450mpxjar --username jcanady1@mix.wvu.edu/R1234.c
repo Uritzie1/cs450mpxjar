@@ -102,7 +102,7 @@ void interrupt sys_call();
 void interrupt dispatcher();
 int load_test();
 //
-int load_prog(char fname[], int pri);
+int load_prog(char * fname, int pri);
 int terminate();
 int load();
 
@@ -1375,7 +1375,7 @@ int load_test() {
 }
 
 
-int load_prog(char fname[], int pri) {
+int load_prog(char * fname, int pri) {
 	int offset_p;
 	int progLength;
 	struct PCB *newNode;
@@ -1409,7 +1409,6 @@ int load_prog(char fname[], int pri) {
 	
 	err4 = sys_load_program(newNode->load_address, newNode->mem_size, "PROCS",fname);
 	if(err4>=OK) err4 = insert(newNode,RUNNING);
-	printf("\nname: %s",newNode->name);
 	return err4;
 }
 
@@ -1426,7 +1425,7 @@ int load() {
     printf("\nPlease enter the name of the process to be created (9 char limit; no extension): ");
 	err4 = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (err4 < OK) return err4;
-	trimx(buff);
+	trim(buff);
     if (strlen(buff)>9) return ERR_PRONTL;
     temppcb = findPCB(buff,temppcb);
 	if (temppcb != NULL) return ERR_NAMEAE;
