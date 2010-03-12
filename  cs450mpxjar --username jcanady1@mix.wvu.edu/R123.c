@@ -1295,7 +1295,7 @@ int load_test() {
 	}
 
 	findPCB("test3",np);
-	if(errx != ERR_PCBNF){
+	if(errx == ERR_PCBNF){
 		np = allocate_PCB();
 		if (np == NULL) err3 = ERR_UCPCB;
 		else {
@@ -1312,7 +1312,7 @@ int load_test() {
 	}
 
 	findPCB("test4",np);
-	if(errx != ERR_PCBNF){
+	if(errx == ERR_PCBNF){
 		np = allocate_PCB();
 		if (np == NULL) err3 = ERR_UCPCB;
 		else {
@@ -1329,7 +1329,7 @@ int load_test() {
 	}
 
 	findPCB("test5",np);
-	if(errx != ERR_PCBNF){
+	if(errx == ERR_PCBNF){
 		np = allocate_PCB();
 		if (np == NULL) err3 = ERR_UCPCB;
 		else {
