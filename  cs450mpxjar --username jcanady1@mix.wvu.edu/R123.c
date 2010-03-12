@@ -51,6 +51,7 @@ static struct PCB *tempnode;
 struct context *context_p;
 struct params *param_p;
 int err3=0;
+int loop = 0;
 
 // Function Prototypes
 void err_hand(int err_code);
@@ -1231,13 +1232,13 @@ void interrupt sys_call() {
 	ss_save_temp = _SS;
 	sp_save_temp = _SP;
 	param_p = (struct params *)((unsigned char *)MK_FP(ss_save_temp,sp_save_temp)+ sizeof(struct context));
-    
-    
-    
+    //cop -> stack_top = (unsigned char *)MK_FP(ss_save_temp, sp_save_temp);
+    for(loop=0;loop<1024;loop++) cop->sysstack[errx] = cop->stack[errx];
     new_ss = FP_SEG(cop->sysstack);
-	new_sp = FP_OFF(cop->sysstack)+SYS_STACK_SIZE;
+	new_sp = FP_OFF(cop->sysstack)+STACK_SIZE;
     _SS = new_ss;
 	_SP = new_sp;
+	//param_p = (params *)(cop -> stack_top + sizeof(struct context));
 	if(param_p->op_code == IDLE)
 	{
         cop->state = READY;
