@@ -1233,12 +1233,12 @@ void interrupt sys_call() {
 	sp_save_temp = _SP;
 	param_p = (struct params *)((unsigned char *)MK_FP(ss_save_temp,sp_save_temp)+ sizeof(struct context));
     new_ss = FP_SEG(sys_stack);
-	new_sp = FP_OFF(sys_stack) + SYS_STACK_SIZE;
+	new_sp = FP_OFF(sys_stack) + SYS_STACK_SIZE-1;
     _SS = new_ss;
 	_SP = new_sp;
 	if(param_p->op_code == IDLE)
 	{
-        cop->process_state = READY;
+        cop->state = READY;
 		insert(cop,1);
 		cop = NULL;
 	}
