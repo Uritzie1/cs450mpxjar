@@ -142,6 +142,7 @@ void interrupt dispatcher() {
 	}
 	else { //no ready, unsuspended processes; restore state
 		cop = NULL;
+		tempnode = NULL;
 		_SS = ss_save;
 		_SP = sp_save;
 		ss_save = NULL;
@@ -188,7 +189,8 @@ int load_test() {
 		err3 = setup_PCB(np, "test1",0,0);
 		if (err3 < OK) return err3;
 		npc = (struct context*) np->stack_top;
-		npc->IP = FP_OFF(&test1_R3); //test1_R3 is a func name in procs-r3.c
+		npc->IP = FP_OFF(&test1_R3); 
+		np->execution_address = FP_OFF(&test1_R3);
 		npc->CS = FP_SEG(&test1_R3);
 		npc->FLAGS = 0x200;
 		npc->DS = _DS;
@@ -202,7 +204,8 @@ int load_test() {
 		err3 = setup_PCB(np, "test2",0,0);
 		if (err3 < OK) return err3;
 		npc = (struct context*) np->stack_top;
-		npc->IP = FP_OFF(&test2_R3); //test1_R3 is a func name in procs-r3.c
+		npc->IP = FP_OFF(&test2_R3); 
+		np->execution_address = FP_OFF(&test2_R3);
 		npc->CS = FP_SEG(&test2_R3);
 		npc->FLAGS = 0x200;
 		npc->DS = _DS;
@@ -216,7 +219,8 @@ int load_test() {
 		err3 = setup_PCB(np, "test3",0,0);
 		if (err3 < OK) return err3;
 		npc = (struct context*) np->stack_top;
-		npc->IP = FP_OFF(&test3_R3); //test1_R3 is a func name in procs-r3.c
+		npc->IP = FP_OFF(&test3_R3); 
+		np->execution_address = FP_OFF(&test3_R3);
 		npc->CS = FP_SEG(&test3_R3);
 		npc->FLAGS = 0x200;
 		npc->DS = _DS;
@@ -230,7 +234,8 @@ int load_test() {
 		err3 = setup_PCB(np, "test4",0,0);
 		if (err3 < OK) return err3;
 		npc = (struct context*) np->stack_top;
-		npc->IP = FP_OFF(&test4_R3); //test1_R3 is a func name in procs-r3.c
+		npc->IP = FP_OFF(&test4_R3); 
+		np->execution_address = FP_OFF(&test4_R3);
 		npc->CS = FP_SEG(&test4_R3);
 		npc->FLAGS = 0x200;
 		npc->DS = _DS;
@@ -244,7 +249,8 @@ int load_test() {
 		err3 = setup_PCB(np, "test5",0,0);
 		if (err3 < OK) return err3;
 		npc = (struct context*) np->stack_top;
-		npc->IP = FP_OFF(&test5_R3); //test1_R3 is a func name in procs-r3.c
+		npc->IP = FP_OFF(&test5_R3); 
+		np->execution_address = FP_OFF(&test5_R3);
 		npc->CS = FP_SEG(&test5_R3);
 		npc->FLAGS = 0x200;
 		npc->DS = _DS;
