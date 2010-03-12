@@ -915,6 +915,7 @@ int create_PCB() { //temp fcn
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (errx < OK) return errx;
 	trimx(buff);
+	toLowerCase(buff);
     if (strlen(buff)>9) return ERR_PRONTL;
     temppcb = findPCB(buff,temppcb);
 	if (temppcb != NULL) return ERR_NAMEAE;
@@ -1409,6 +1410,7 @@ int load_prog(char * fname, int pri) {
 	
 	err4 = sys_load_program(newNode->load_address, newNode->mem_size, "PROCS",fname);
 	if(err4>=OK) err4 = insert(newNode,RUNNING);
+	if(err4>=OK) printf("Program successfully loaded!");
 	return err4;
 }
 
@@ -1426,6 +1428,7 @@ int load() {
 	err4 = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (err4 < OK) return err4;
 	trim(buff);
+	toLowerCase(buff);
     if (strlen(buff)>9) return ERR_PRONTL;
     temppcb = findPCB(buff,temppcb);
 	if (temppcb != NULL) return ERR_NAMEAE;
