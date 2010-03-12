@@ -78,3 +78,10 @@ typedef struct PCB {
 	struct PCB *prev;				        //Pointer to previous PCB node
 	struct PCB *next;				       	//Pointer to next PCB node
 } ;
+
+typedef struct params {
+	int      op_code;
+	int      device_id;
+	char     *buf_p;
+	int      *count_p;
+	} params;
