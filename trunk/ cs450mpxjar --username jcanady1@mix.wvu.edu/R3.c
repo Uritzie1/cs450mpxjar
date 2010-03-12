@@ -129,6 +129,7 @@ void interrupt dispatcher() {
 		new_sp = FP_OFF(cop -> stack_top);
 		_SS = new_ss;
 		_SP = new_sp;
+		return;
 	}
 	else { //no ready, unsuspended processes; restore state
 		cop = NULL;
@@ -136,6 +137,7 @@ void interrupt dispatcher() {
 		_SP = sp_save;
 		ss_save = NULL;
 		sp_save = NULL;
+		return;
 	}
 }
 
