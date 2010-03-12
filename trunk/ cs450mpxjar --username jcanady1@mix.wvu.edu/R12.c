@@ -958,8 +958,8 @@ int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class
 	(PCBptr->priority) = priority;
 	(PCBptr->state) = READY;
 	PCBptr->suspended = NOTSUSP;
-	(PCBptr->stack_base) = (PCBptr->stack)[STACK_SIZE] ;
-	(PCBptr->stack_top) = (PCBptr->stack)[STACK_SIZE + 1];
+	//(PCBptr->stack_base) = (PCBptr->stack)[STACK_SIZE] ;
+	//(PCBptr->stack_top) = (PCBptr->stack)[STACK_SIZE + 1];
 	//(PCBptr->mem_size) = ;
 	//(PCBptr->load_address) = ;
 	//(PCBptr->execution_address) = ;
