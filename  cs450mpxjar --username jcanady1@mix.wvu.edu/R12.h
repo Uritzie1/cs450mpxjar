@@ -42,6 +42,8 @@
 #define SHOWALL 14
 #define SHOWREADY 15
 #define SHOWBLOCKED 16
+#define DISPATCH 17
+#define LOADPROCS 18
 #define VERSION 2.0
 #define PROCESS_NAME_LENGTH 10
 #define SYSTEM 1
@@ -59,8 +61,8 @@ typedef struct PCB {
 	int id;                                 //Process ID#
 	int proc_class;						    //Process Class
 	int priority;					        //Priority Value (-128 to 127)
-	int state;						    //Process State Flag (Running, Ready, Blocked)
-	int suspended;					    //Process Suspended Flag
+	int state;						        //Process State Flag (Running, Ready, Blocked)
+	int suspended;					        //Process Suspended Flag
 	unsigned char stack[STACK_SIZE];        //PCB Stack
 	unsigned char* stack_base;				//Pointer to base of stack
 	unsigned char* stack_top;				//Pointer to top of stack

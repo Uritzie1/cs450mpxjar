@@ -85,8 +85,8 @@ typedef struct PCB {
 	int id;                                 //Process ID#
 	int proc_class;						    //Process Class
 	int priority;					        //Priority Value (-128 to 127)
-	//int state;						    //Process State Flag (Running, Ready, Blocked)
-	//int suspended;					    //Process Suspended Flag
+	int state;						        //Process State Flag (Running, Ready, Blocked)
+	int suspended;					        //Process Suspended Flag
 	unsigned char stack[STACK_SIZE];        //PCB Stack
 	unsigned char* stack_base;				//Pointer to base of stack
 	unsigned char* stack_top;				//Pointer to top of stack
@@ -95,13 +95,7 @@ typedef struct PCB {
 	unsigned char* execution_address;		//Pointer to execution address
 	struct PCB *prev;				        //Pointer to previous PCB node
 	struct PCB *next;				       	//Pointer to next PCB node
-	int state;
-	int suspended;
 } ;
-
-typedef struct TESTX {
- int tree;
- char tree2;};
 
 // Function Prototypes
 int init_r2();
@@ -550,6 +544,8 @@ int create_PCB() { //temp fcn
 struct PCB * allocate_PCB() {
 	struct PCB *newPCBptr = NULL;
 	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
+	newPCBptr->stack_base = (unsigned char *)sys_alloc_mem(STACK_SIZE * sizeof(unsigned char));
+	newPCBptr->stack_top = newPCBptr->stack_base + STACK_SIZE;
 	//newPCBptr = malloc(sizeof(struct PCB));
 	return newPCBptr;
 }
@@ -563,9 +559,9 @@ struct PCB * allocate_PCB() {
 */
 int free_PCB(struct PCB *PCBptr) {
     errx = 0;
-	//errx=sys_free_mem(PCBptr -> stack_base);
-	//errx=sys_free_mem(PCBptr -> load_address
-	//errx=sys_free_mem(PCBptr -> execution_address);
+	errx=sys_free_mem(PCBptr -> stack_base);
+	errx=sys_free_mem(PCBptr -> load_address
+	errx=sys_free_mem(PCBptr -> execution_address);
 	errx=sys_free_mem(PCBptr);
 	//free(PCBptr);
 	return errx;

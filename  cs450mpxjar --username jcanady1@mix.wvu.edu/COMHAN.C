@@ -64,11 +64,13 @@
 #define SHOWALL 14
 #define SHOWREADY 15
 #define SHOWBLOCKED 16
+#define DISPATCH 17
+#define LOADPROCS 18
 #define VERSION 2.0
 
 // Global Variables
 int err = 0;  //error code
-char * fcns[18] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0",NULL};  //functions list
+char * fcns[20] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0","dispat\0","ldprocs\0",NULL};  //functions list
 char wd[BIGBUFF*2] = {0};  //working directory
 
 // Function Prototypes
@@ -96,29 +98,10 @@ void trim(char ary[BIGBUFF]);
  *   then cleans up and terminates (though it never actually reaches cleanup or
  *   terminate)
  */
-
- typedef struct TEST {
- int tree;
- char tree2;};
-
 int main() {
-struct TEST* test;
-struct TEST* test2;
-
   sys_init(MODULE_R3);
   err = init_r1();
   err = init_r2();
-
-  test = (struct TEST*)sys_alloc_mem(sizeof(struct TEST));
-  test2 = (struct TEST*)sys_alloc_mem(sizeof(struct TEST));
-  printf("\nptr = %u",test);
-  printf("\nptr2 = %u",test2);
-  printf("\nequal?: %d",test==test2);
-  err = sys_free_mem(test);
-  err_hand(err);
-  err = sys_free_mem(test2);
-  err_hand(err);
-
   err = comhan();
   err = cleanup_r1();
   err = cleanup_r2();
@@ -210,7 +193,16 @@ int comhan() {
       err = show_Blocked();
       if(err < OK) err_hand(err);
     }
-    //end new fcns
+    //R3 commands
+    else if (!strncmp(cmd,fcns[DISPATCH],strlen(fcns[DISPATCH])+1)) {
+      err = dispatcher();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[LOADPROCS],strlen(fcns[LOADPROCS])+1)) {
+      err = load_test();
+      if(err < OK) err_hand(err);
+    }
+    //end new commands
     else if (!strncmp(cmd,"\n",1)) ;
     else err_hand(ERR_INVCOM);
   }

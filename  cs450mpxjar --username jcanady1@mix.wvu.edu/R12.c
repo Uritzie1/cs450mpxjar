@@ -34,7 +34,7 @@
 
 // Global Variables
 int err = 0;  //error code
-char * fcns[18] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0",NULL};  //functions list
+char * fcns[20] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0","dispat\0","ldprocs\0",NULL};  //functions list
 char wd[BIGBUFF*2] = {0};  //working directory
 struct PCB *tail1=NULL, *tail2=NULL, *head1=NULL, *head2=NULL;
 int errx = 0;
@@ -183,7 +183,16 @@ int comhan() {
       err = show_Blocked();
       if(err < OK) err_hand(err);
     }
-    //end new fcns
+    //R3 commands
+    else if (!strncmp(cmd,fcns[DISPATCH],strlen(fcns[DISPATCH])+1)) {
+      err = dispatcher();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[LOADPROCS],strlen(fcns[LOADPROCS])+1)) {
+      err = load_test();
+      if(err < OK) err_hand(err);
+    }
+    //end new commands
     else if (!strncmp(cmd,"\n",1)) ;
     else err_hand(ERR_INVCOM);
   }
@@ -903,17 +912,11 @@ int create_PCB() { //temp fcn
 * \brief Description: allocates memory for a PCB 
 */
 struct PCB * allocate_PCB() {
-//int *ptr = malloc(15);
-//int *ptr1 = malloc(15);
 	struct PCB *newPCBptr = NULL;
-//printf("\ntest1:%u",ptr);
-//printf("\ntest2:%u",ptr1);
-//printf("\nEqual:%d",ptr==ptr1);
-//free(ptr);
-//free(ptr1);
 	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
+	newPCBptr->stack_base = (unsigned char *)sys_alloc_mem(STACK_SIZE * sizeof(unsigned char));
+	newPCBptr->stack_top = newPCBptr->stack_base + STACK_SIZE;
 	//newPCBptr = malloc(sizeof(struct PCB));
-	//printf("\nPCB ptr = %u",*newPCBptr);
 	return newPCBptr;
 }
 
@@ -926,13 +929,9 @@ struct PCB * allocate_PCB() {
 */
 int free_PCB(struct PCB *PCBptr) {
     errx = 0;
-	//errx=sys_free_mem(PCBptr -> stack_base);
-	//errx=sys_free_mem(PCBptr -> load_address
-	//errx=sys_free_mem(PCBptr -> execution_address);
-
-
-	//ptr = ptr & 0xFFFF;
-	//printf("\nFree ptr = %d",PCBptr);
+	errx=sys_free_mem(PCBptr -> stack_base);
+	errx=sys_free_mem(PCBptr -> load_address);
+	errx=sys_free_mem(PCBptr -> execution_address);
 	errx=sys_free_mem(PCBptr);
 	//free(PCBptr);
 	return errx;
