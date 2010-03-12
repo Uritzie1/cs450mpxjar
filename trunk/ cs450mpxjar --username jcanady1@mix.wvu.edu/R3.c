@@ -12,7 +12,8 @@
 *******************************************************************************
 * Change Log:
 *
-*        3/8/2010  JC           File created with placeholders and dispatch started
+*        3/08/2010  JC           File created with placeholders and dispatch started
+*        3/10/2010  JC, RW       Finished writing dispatch and sys_call
 */
 
 // Included ANSI C Files
@@ -146,12 +147,12 @@ void interrupt sys_call() {
 
 	if(param_p->op_code == IDLE)
 	{
-		insert(runPCB,1)
+		insert(cop,1)
 		cop = NULL;
 	}
 	else if(param_p->code == EXIT)
 	{
-		free_pcb(runPCB);
+		free_pcb(cop);
 		cop = NULL;
 	}
 	else
