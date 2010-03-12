@@ -10,7 +10,7 @@
 
 #define FILE_LENGTH = 9;
 
-void load_prog(char fname[], int pri);
+int load_prog(char fname[], int pri);
 int terminate();
 int load();
 
@@ -86,7 +86,7 @@ int terminate() {
     err4 = 0;
 	printf("Please enter the name of the process to delete: ");
 	err4 = sys_req(READ, TERMINAL, buff, &buffsize);	
-	if(errx >= OK) {
+	if(err4 >= OK) {
 		if(tmp->proc_class != SYSTEM) {
 		  trimx(buff);
 		  tmp = qRemove(buff,tmp);

@@ -45,6 +45,8 @@
 #define SHOWBLOCKED 16
 #define DISPATCH 17
 #define LOADPROCS 18
+#define LOAD 19
+#define TERMINATE 20
 #define VERSION 2.0
 #define PROCESS_NAME_LENGTH 10
 #define SYSTEM 1

@@ -35,7 +35,7 @@
 
 // Global Variables
 int err = 0;  //error code
-char * fcns[20] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0","dispat\0","ldprocs\0",NULL};  //functions list
+char * fcns[22] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0","dispat\0","ldprocs\0","load\0","term\0",NULL};  //functions list
 char wd[BIGBUFF*2] = {0};  //working directory
 struct PCB *tail1=NULL, *tail2=NULL, *head1=NULL, *head2=NULL;
 int errx = 0;
@@ -212,6 +212,15 @@ int comhan() {
     else if (!strncmp(cmd,fcns[DISPATCH],strlen(fcns[DISPATCH])+1)) dispatcher();
     else if (!strncmp(cmd,fcns[LOADPROCS],strlen(fcns[LOADPROCS])+1)) {
       err = load_test();
+      if(err < OK) err_hand(err);
+    }
+    //R4 commands
+    else if (!strncmp(cmd,fcns[LOAD],strlen(fcns[LOAD])+1)) {
+      err = load_test();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,fcns[TERMINATE],strlen(fcns[TERMINATE])+1)) {
+      err = terminate();
       if(err < OK) err_hand(err);
     }
     //end new commands
