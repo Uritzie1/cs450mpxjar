@@ -1260,7 +1260,9 @@ int load_test() {
 	struct PCB *np;
 	struct context *npc;
 
-	/*np = allocate_PCB();
+    findPCB("test1",np);
+    if(errx != ERR_PCBNF) return ERR_NAMEAE;
+	np = allocate_PCB();
 	if (np == NULL) err3 = ERR_UCPCB;
 	else {
 		err3 = setup_PCB(np, "test1",0,0);
@@ -1272,8 +1274,10 @@ int load_test() {
 		npc->DS = _DS;
 		npc->ES = _ES;
 		err3 = insert(np,RUNNING);
-	}*/
+	}
 
+    findPCB("test2",np);
+    if(errx != ERR_PCBNF) return ERR_NAMEAE;
 	np = allocate_PCB();
 	if (np == NULL) err3 = ERR_UCPCB;
 	else {
@@ -1288,7 +1292,9 @@ int load_test() {
 		err3 = insert(np,RUNNING);
 	}
 	
-	/*np = allocate_PCB();
+	findPCB("test3",np);
+    if(errx != ERR_PCBNF) return ERR_NAMEAE;
+	np = allocate_PCB();
 	if (np == NULL) err3 = ERR_UCPCB;
 	else {
 		err3 = setup_PCB(np, "test3",0,0);
@@ -1302,6 +1308,8 @@ int load_test() {
 		err3 = insert(np,RUNNING);
 	}
 	
+    findPCB("test4",np);
+    if(errx != ERR_PCBNF) return ERR_NAMEAE;
 	np = allocate_PCB();
 	if (np == NULL) err3 = ERR_UCPCB;
 	else {
@@ -1316,6 +1324,8 @@ int load_test() {
 		err3 = insert(np,RUNNING);
 	}
 	
+	findPCB("test5",np);
+    if(errx != ERR_PCBNF) return ERR_NAMEAE;
 	np = allocate_PCB();
 	if (np == NULL) err3 = ERR_UCPCB;
 	else {
@@ -1328,6 +1338,6 @@ int load_test() {
 		npc->DS = _DS;
 		npc->ES = _ES;
 		err3 = insert(np,RUNNING);
-	}*/
+	}
 	return 0;
 }
