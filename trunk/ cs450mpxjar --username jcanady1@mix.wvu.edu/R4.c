@@ -16,8 +16,6 @@ void load_prog(char[FILE_LENGTH] fname, int pri){
 	int offset_p;
 	int progLength;
 	struct PCB *newNode;
-	unsigned char *load_address;
-	unsigned char *excu_address;
 
 	if(pri < -127 || pri > 127)
 		return 1;
@@ -36,7 +34,7 @@ void load_prog(char[FILE_LENGTH] fname, int pri){
 	newNode->load_address = (unsigned char*)sys_alloc_mem(progLength);
 	newNode->execution_address = load_address + offset_p;
 
-	//contect cp* = (context *)pcb_>stack_top;
+	//context cp* = (context *)pcb_>stack_top;
 	//IP = FP_OFF(execution_address);
 	//CS = FP_SEG(execution_address);
 
