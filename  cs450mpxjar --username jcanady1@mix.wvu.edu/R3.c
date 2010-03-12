@@ -75,7 +75,6 @@ int init_r3();
 int cleanup_r3();
 
 // Global Variables
-int err = 0;
 static unsigned short ss_save;
 static unsigned short sp_save;
 static unsigned short ss_save_temp;
@@ -140,18 +139,18 @@ void interrupt sys_call() {
 	sp_save = _SP;
 	new_ss = FP_SEG(sys_stack);
 	new_sp = FP_OFF(sys_stack);
-	new_sp += SYS_STACK_SIZE;
+	new_sp += STACK_SIZE;
 	_SS = new_ss;
 	_SP = new_sp;
 
-	param_p = (params*)(MK_FP(_SS,_SP)) + sizeof(context));
+	param_p = (struct params*)(MK_FP(_SS,_SP) + sizeof(context));
 
 	if(param_p->op_code == IDLE)
 	{
-		insert(cop,1)
+		insert(cop,1);
 		cop = NULL;
 	}
-	else if(param_p->code == EXIT)
+	else if(param_p->op_code == EXIT)
 	{
 		free_pcb(cop);
 		cop = NULL;
@@ -165,8 +164,8 @@ void interrupt sys_call() {
 /**
  */
 int load_test() {	
-	PCB *np;
-	context *npc;
+	struct PCB *np;
+	struct context *npc;
 
 	np = allocate_PCB();
 	if (np == NULL) errx = ERR_UCPCB;
