@@ -25,6 +25,7 @@
 // Included Support Files
 #include "mpx_supt.h"
 #include <dos.h>
+#include "R12.h"
 
 // Constants
 #define BIGBUFF 80
