@@ -96,10 +96,29 @@ void trim(char ary[BIGBUFF]);
  *   then cleans up and terminates (though it never actually reaches cleanup or
  *   terminate)
  */
+
+ typedef struct TEST {
+ int tree;
+ char tree2;};
+
 int main() {
+struct TEST* test;
+struct TEST* test2;
+
   sys_init(MODULE_R2);
   err = init_r1();
   err = init_r2();
+
+  test = (struct TEST*)sys_alloc_mem(sizeof(struct TEST));
+  test2 = (struct TEST*)sys_alloc_mem(sizeof(struct TEST));
+  printf("\nptr = %u",test);
+  printf("\nptr2 = %u",test2);
+  printf("\nequal?: %d",test==test2);
+  err = sys_free_mem(test);
+  err_hand(err);
+  err = sys_free_mem(test2);
+  err_hand(err);
+
   err = comhan();
   err = cleanup_r1();
   err = cleanup_r2();
