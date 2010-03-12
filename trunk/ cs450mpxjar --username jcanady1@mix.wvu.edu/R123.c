@@ -1232,8 +1232,8 @@ void interrupt sys_call() {
 	sp_save_temp = _SP;
 	//param_p = (struct params *)((unsigned char *)MK_FP(ss_save_temp,sp_save_temp)+ sizeof(struct context));
     cop->stack_top = (unsigned char *)MK_FP(ss_save_temp, sp_save_temp);
-    new_ss = FP_SEG(cop->sysstack);
-	new_sp = FP_OFF(cop->sysstack)+STACK_SIZE;
+    new_ss = FP_SEG(sys_stack);
+	new_sp = FP_OFF(sys_stack)+STACK_SIZE-1;
     _SS = new_ss;
 	_SP = new_sp;
 	param_p = (params *)(cop -> stack_top + sizeof(struct context));
