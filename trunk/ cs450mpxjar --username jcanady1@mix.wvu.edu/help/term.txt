@@ -1,0 +1,10 @@
+Function Help
+
+Name: Terminate
+
+Usage: term
+
+Inputs: name of process
+
+Description:  Finds the process with user inputted name
+and deletes process freeing memory.
