@@ -737,13 +737,15 @@ int show_All() {
 	temppcb = tail1;	
 	errx = 0;
 	printf("\nPROCESS PROPERTIES------------------------");
+	if(cop != NULL) printf("\nCOP: %8s",cop->name);
+	else printf("\nNo COP");
 	for (x;x<=1;x++) {
 	  while(temppcb != NULL) {
-	printf("\nName: %s", temppcb->name);
-	printf("    Priority: %3d",temppcb->priority);
-	    if(temppcb->state == READY) printf("    State: %7s","Ready");
-	    else if(temppcb->state == RUNNING) printf("    State: %7s","Running");
-		else printf("    State: %7s","Blocked");
+	printf("\nName: %-8s", temppcb->name);
+	printf("    Priority: %-3d",temppcb->priority);
+	    if(temppcb->state == READY) printf("    State: %-7s","Ready");
+	    else if(temppcb->state == RUNNING) printf("    State: %-7s","Running");
+		else printf("    State: %-7s","Blocked");
 		if(temppcb->suspended == SUSP) printf("    Suspended?: Yes");
 		else printf("    Suspended?: No\n");
 		temppcb = temppcb->next;
