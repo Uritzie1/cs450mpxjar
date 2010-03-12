@@ -1231,9 +1231,11 @@ void interrupt sys_call() {
 	ss_save_temp = _SS;
 	sp_save_temp = _SP;
 	param_p = (struct params *)((unsigned char *)MK_FP(ss_save_temp,sp_save_temp)+ sizeof(struct context));
-    new_ss = FP_SEG(sys_stack);
-	new_sp = FP_OFF(sys_stack)+SYS_STACK_SIZE;
-	printf("\nnewsp: %u, ss:%u",new_sp,new_ss);
+    
+    
+    
+    new_ss = FP_SEG(cop->sysstack);
+	new_sp = FP_OFF(cop->sysstack)+SYS_STACK_SIZE;
     _SS = new_ss;
 	_SP = new_sp;
 	if(param_p->op_code == IDLE)
