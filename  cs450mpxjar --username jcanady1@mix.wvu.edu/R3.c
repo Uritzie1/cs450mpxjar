@@ -118,7 +118,7 @@ void interrupt dispatcher() {
 		cop = qRemove(tempnode->name,tempnode);
 		//reset tempnode so it doesn't interfere with other interrupt/function calls
 		tempnode = NULL;
-		cop -> process_state = RUNNING;
+		cop->state = RUNNING;
 		new_ss = FP_SEG(cop -> stack_base);
 		new_sp = FP_OFF(cop -> stack_top);
 		_SS = new_ss;
