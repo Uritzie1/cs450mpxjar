@@ -535,6 +535,7 @@ void err_hand(int err_code) {
   else if(err_code == ERR_QUEEMP) printf("Queue is empty.");
   else if(err_code == ERR_PRONTL) printf("Process name is too long.");
   else if(err_code == ERR_NAMEAE) printf("Process name already in use.");
+  else if(err_code == ERR_UTDSC) printf("Unable to delete system class.");
   else if(err_code == ERR_INVCLS) printf("Invalid process class.");
   else printf("Invalid error code %d", err_code);
   err = 0; errx=0; err3=0;

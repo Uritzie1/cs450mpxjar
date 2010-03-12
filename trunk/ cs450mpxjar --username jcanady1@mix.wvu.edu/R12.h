@@ -9,6 +9,7 @@
 #define ERR_PRONTL (-208)    //Process Name too Long
 #define ERR_NAMEAE (-209)    //Process Name Already Exists
 #define ERR_INVCLS (-210)    //Invalid Class
+#define ERR_UTDSC  (-211)    //Unable to Delete System Class
 #define NO_DEV		0
 #define	TERMINAL	1
 #define	PRINTER		2
