@@ -344,6 +344,22 @@ int show_PCB() {
 */
 int show_All() {
     struct PCB *temppcb = NULL;
+    
+    
+    struct PCB* test;
+struct PCB* test2;
+  test = (struct PCB*)sys_alloc_mem(sizeof(struct PCB));
+  test2 = (struct PCB*)sys_alloc_mem(sizeof(struct PCB));
+  printf("\nptr = %u",test);
+  printf("\nptr2 = %u",test2);
+  printf("\nequal?: %d",test==test2);
+  errx = sys_free_mem(test);
+  err_hand(errx);
+  errx = sys_free_mem(test2);
+  err_hand(errx);
+    
+    
+    
     int bufsize = BIGBUFF;
     int i = 2, x = 0;
     char buffer[BIGBUFF] = {0};
@@ -535,8 +551,8 @@ struct PCB * allocate_PCB() {
 //printf("\nEqual:%d",ptr==ptr1);
 //free(ptr);
 //free(ptr1);
-	//newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
-	newPCBptr = malloc(sizeof(struct PCB));
+	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
+	//newPCBptr = malloc(sizeof(struct PCB));
 	//printf("\nPCB ptr = %u",*newPCBptr);
 	return newPCBptr;
 }
@@ -557,8 +573,8 @@ int free_PCB(struct PCB *PCBptr) {
 
 	//ptr = ptr & 0xFFFF;
 	//printf("\nFree ptr = %d",PCBptr);
-	//errx=sys_free_mem(&PCBptr);
-	free(PCBptr);
+	errx=sys_free_mem(&PCBptr);
+	//free(PCBptr);
 	return errx;
 }
 
