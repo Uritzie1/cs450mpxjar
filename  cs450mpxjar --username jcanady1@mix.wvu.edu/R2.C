@@ -547,17 +547,9 @@ int create_PCB() { //temp fcn
 * \brief Description: allocates memory for a PCB 
 */
 struct PCB * allocate_PCB() {
-//int *ptr = malloc(15);
-//int *ptr1 = malloc(15);
 	struct PCB *newPCBptr = NULL;
-//printf("\ntest1:%u",ptr);
-//printf("\ntest2:%u",ptr1);
-//printf("\nEqual:%d",ptr==ptr1);
-//free(ptr);
-//free(ptr1);
 	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
 	//newPCBptr = malloc(sizeof(struct PCB));
-	//printf("\nPCB ptr = %u",*newPCBptr);
 	return newPCBptr;
 }
 
@@ -573,11 +565,7 @@ int free_PCB(struct PCB *PCBptr) {
 	//errx=sys_free_mem(PCBptr -> stack_base);
 	//errx=sys_free_mem(PCBptr -> load_address
 	//errx=sys_free_mem(PCBptr -> execution_address);
-
-
-	//ptr = ptr & 0xFFFF;
-	//printf("\nFree ptr = %d",PCBptr);
-	errx=sys_free_mem(&PCBptr);
+	errx=sys_free_mem(PCBptr);
 	//free(PCBptr);
 	return errx;
 }
