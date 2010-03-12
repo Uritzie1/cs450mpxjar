@@ -1217,6 +1217,7 @@ void interrupt dispatcher() {
 	}
 	else { //no ready, unsuspended processes; restore state
 		cop = NULL;
+		tempnode = NULL;
 		_SS = ss_save;
 		_SP = sp_save;
 		ss_save = NULL;
