@@ -1228,7 +1228,7 @@ void interrupt dispatcher() {
 void interrupt sys_call() {	
 	ss_save_temp = _SS;
 	sp_save_temp = _SP;
-	cop->stack_top = (struct params*)(MK_FP(ss_save_temp,sp_save_temp));
+	cop->stack_top = (unsigned char *)(MK_FP(ss_save_temp,sp_save_temp));
     new_ss = FP_SEG(sys_stack);
 	new_sp = FP_OFF(sys_stack) + STACK_SIZE;
     _SS = new_ss;
