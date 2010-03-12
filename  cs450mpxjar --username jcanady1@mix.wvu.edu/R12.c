@@ -734,11 +734,11 @@ int show_All() {
     int bufsize = BIGBUFF;
     int i = 2, x = 0;
     char buffer[BIGBUFF] = {0};
-	temppcb = tail1;	
+	temppcb = head1;	
 	errx = 0;
 	printf("\nPROCESS PROPERTIES------------------------");
-	if(cop != NULL) printf("\nCOP: %8s",cop->name);
-	else printf("\nNo COP");
+	if(cop != NULL) printf("\nCOP: %-8s\n",cop->name);
+	else printf("\nNo COP\n");
 	for (x;x<=1;x++) {
 	  while(temppcb != NULL) {
 	printf("\nName: %-8s", temppcb->name);
@@ -748,7 +748,7 @@ int show_All() {
 		else printf("    State: %-7s","Blocked");
 		if(temppcb->suspended == SUSP) printf("    Suspended?: Yes");
 		else printf("    Suspended?: No\n");
-		temppcb = temppcb->next;
+		temppcb = temppcb->prev;
 		i=i++;
 		if(i > 23) {        //paging
 	      printf("Press any key to continue");
