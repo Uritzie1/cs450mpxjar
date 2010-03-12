@@ -1,0 +1,10 @@
+Function Help
+
+Name: Dispatch
+
+Usage: dispat
+
+Inputs: none
+
+Description:  Calls dispatcher who loads the next read process 
+or takes no action if none are ready

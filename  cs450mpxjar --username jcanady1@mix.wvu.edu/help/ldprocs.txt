@@ -1,0 +1,9 @@
+Function Help
+
+Name: Load Processes
+
+Usage: ldprocs
+
+Inputs: none
+
+Description:  Loads 5 predefined processes.

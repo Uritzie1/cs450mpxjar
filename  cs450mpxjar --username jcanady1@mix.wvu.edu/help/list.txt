@@ -31,4 +31,12 @@ ShowReady	shready		displays limited info on all ready PCBs
 
 ShowBlocked	shblock		displays limited info on all blocked PCBs
 
+Terminate	term		terminates the indicated programs
+
+Dispatch	dispat		calls dispactchs to load next ready process
+
+Load		load		load a specified program
+
+Load Processes	ldprocs		load 5 predefied processes
+
 Quit		quit		quits JAROS :'(
