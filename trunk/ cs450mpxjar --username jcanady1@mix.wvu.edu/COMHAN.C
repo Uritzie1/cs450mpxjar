@@ -105,7 +105,7 @@ int main() {
 struct TEST* test;
 struct TEST* test2;
 
-  sys_init(MODULE_R2);
+  sys_init(MODULE_R3);
   err = init_r1();
   err = init_r2();
 
