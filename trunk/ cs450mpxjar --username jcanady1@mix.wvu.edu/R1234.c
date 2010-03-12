@@ -607,7 +607,7 @@ int block() {  //temp command
 	  temppcb = qRemove(buff, temppcb);
 	  temppcb->state = BLOCKED;
 	  insert(temppcb, BLOCKED);
-	  printf("\nPCB successfully blocked!");
+	  if(temppcb!=NULL) printf("\nPCB successfully blocked!");
 	}
 	return errx;
 }
@@ -636,7 +636,7 @@ int unblock() {
 	  temppcb = qRemove(buff, temppcb);
       temppcb->state = READY;
 	  insert(temppcb, RUNNING);
-	  printf("\nPCB successfully unblocked!");
+	  if(temppcb!=NULL) printf("\nPCB successfully unblocked!");
     }
     return errx;
 }
@@ -663,7 +663,7 @@ int suspend() {
     temppcb = findPCB(buff, temppcb);
     if (errx < OK) return errx;
     if(temppcb->state != SUSP) temppcb->suspended = SUSP;
-    printf("\nPCB successfully suspended!");
+    if(temppcb!=NULL) printf("\nPCB successfully suspended!");
     return errx;
 }
 
@@ -688,7 +688,7 @@ int resume() {
 	toLowerCasex(buff);
 	temppcb = findPCB(buff, temppcb);
 	temppcb->suspended = NOTSUSP;
-	printf("\nPCB successfully resumed!");
+	if(temppcb!=NULL) printf("\nPCB successfully resumed!");
 	return errx;
 }
 
@@ -1409,6 +1409,7 @@ int load_prog(char fname[], int pri) {
 	
 	err4 = sys_load_program(newNode->load_address, newNode->mem_size, "PROCS",fname);
 	if(err4>=OK) err4 = insert(newNode,RUNNING);
+	printf("\nname: %s",newNode->name);
 	return err4;
 }
 
