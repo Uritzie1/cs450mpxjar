@@ -196,9 +196,7 @@ int comhan() {
       if(err < OK) err_hand(err);
     }
     //R3 commands
-    else if (!strncmp(cmd,fcns[DISPATCH],strlen(fcns[DISPATCH])+1)) {
-      err = dispatcher();
-      if(err < OK) err_hand(err);
+    else if (!strncmp(cmd,fcns[DISPATCH],strlen(fcns[DISPATCH])+1)) dispatcher();
     }
     else if (!strncmp(cmd,fcns[LOADPROCS],strlen(fcns[LOADPROCS])+1)) {
       err = load_test();
