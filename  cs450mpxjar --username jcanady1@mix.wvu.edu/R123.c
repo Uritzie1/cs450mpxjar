@@ -592,6 +592,7 @@ int block() {  //temp command
 	  temppcb = qRemove(buff, temppcb);
 	  temppcb->state = BLOCKED;
 	  insert(temppcb, BLOCKED);
+	  printf("\nPCB successfully blocked!");
 	}
 	return errx;
 }
@@ -620,6 +621,7 @@ int unblock() {
 	  temppcb = qRemove(buff, temppcb);
       temppcb->state = READY;
 	  insert(temppcb, RUNNING);
+	  printf("\nPCB successfully unblocked!");
     }
     return errx;
 }
@@ -646,6 +648,7 @@ int suspend() {
     temppcb = findPCB(buff, temppcb);
     if (errx < OK) return errx;
     if(temppcb->state != SUSP) temppcb->suspended = SUSP;
+    printf("\nPCB successfully suspended!");
     return errx;
 }
 
@@ -670,6 +673,7 @@ int resume() {
 	toLowerCasex(buff);
 	temppcb = findPCB(buff, temppcb);
 	temppcb->suspended = NOTSUSP;
+	printf("\nPCB successfully resumed!");
 	return errx;
 }
 
@@ -836,6 +840,7 @@ int delete_PCB() { //temp function
 		trimx(buff);
 		tmp = qRemove(buff,tmp);
 		free_PCB(tmp);
+		printf("PCB successfully deleted!");
 	//	}
 		//else
 		//	return ERR_UTDSC;
@@ -918,6 +923,7 @@ int create_PCB() { //temp fcn
 	  errx = setup_PCB(newPCBptr, name, proc_class, priority);
 	  if (errx < OK) return errx;
 	  errx = insert(newPCBptr,RUNNING);
+	  printf("\nPCB successfully created!");
 	}
 	return errx;
 	
@@ -1276,6 +1282,7 @@ int load_test() {
 			err3 = insert(np,RUNNING);
 		}
 	}
+	else printf("\nProcess with name 'test1' already exists.");
 
 	findPCB("test2",np);
 	if(errx == ERR_PCBNF){
@@ -1293,6 +1300,7 @@ int load_test() {
 			err3 = insert(np,RUNNING);
 		}
 	}
+	else printf("\nProcess with name 'test2' already exists.");
 
 	findPCB("test3",np);
 	if(errx == ERR_PCBNF){
@@ -1310,6 +1318,7 @@ int load_test() {
 			err3 = insert(np,RUNNING);
 		}
 	}
+	else printf("\nProcess with name 'test3' already exists.");
 
 	findPCB("test4",np);
 	if(errx == ERR_PCBNF){
@@ -1327,6 +1336,7 @@ int load_test() {
 			err3 = insert(np,RUNNING);
 		}
 	}
+    else printf("\nProcess with name 'test4' already exists.");
 
 	findPCB("test5",np);
 	if(errx == ERR_PCBNF){
@@ -1344,5 +1354,7 @@ int load_test() {
 			err3 = insert(np,RUNNING);
 		}
 	}
-	return errx;
+	else printf("\nProcess with name 'test5' already exists.");
+	if(err3<OK) printf("\nTest processes loaded successfully!");
+	return err3;
 }
