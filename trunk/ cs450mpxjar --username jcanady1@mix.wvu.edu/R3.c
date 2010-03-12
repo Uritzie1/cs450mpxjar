@@ -101,6 +101,7 @@ int init_r3() {
 /** Procedure Name: init_r3
 */
 int cleanup_r3() {
+    return 0;
 }
 
 /**
@@ -113,7 +114,7 @@ void interrupt dispatcher() {
 		ss_save = _SS;
 		sp_save = _SP;
 	}
-	tempnode = head1;	
+	tempnode = getRHead();	
 	while(tempnode != NULL) { //look for a non-suspended process
 		if(tempnode->suspended == NOTSUSP) break;
 		tempnode = tempnode -> next;

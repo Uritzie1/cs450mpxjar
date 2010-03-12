@@ -126,6 +126,7 @@ struct PCB* findPCB(char *name, struct PCB *PCBptr);
 struct PCB* qRemove(char *name, struct PCB *set);
 void toLowerCasex(char str[BIGBUFF]);
 void trimx(char ary[BIGBUFF]);
+struct PCB* getRHead();
 
 /** Procedure Name: init_r2
 * \param none
@@ -771,4 +772,8 @@ void toLowerCasex(char str[BIGBUFF]) {
 	 }
    }
    for(i = 0;i < BIGBUFF;i++) ary[i] = temp[i];
+}
+
+struct PCB* getRHead() {
+       return head1;
 }

@@ -32,7 +32,12 @@
 #include "mpx_supt.h"
 #include "R12.h"
 
-
+// Global Variables
+int err = 0;  //error code
+char * fcns[18] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0",NULL};  //functions list
+char wd[BIGBUFF*2] = {0};  //working directory
+struct PCB *tail1=NULL, *tail2=NULL, *head1=NULL, *head2=NULL;
+int errx = 0;
 
 
 // Function Prototypes
@@ -71,6 +76,7 @@ struct PCB* findPCB(char *name, struct PCB *PCBptr);
 struct PCB* qRemove(char *name, struct PCB *set);
 void toLowerCasex(char str[BIGBUFF]);
 void trimx(char ary[BIGBUFF]);
+struct PCB* getRHead();
 
 /** Procedure Name: main
  * \param none
@@ -1133,4 +1139,8 @@ void toLowerCasex(char str[BIGBUFF]) {
 	 }
    }
    for(i = 0;i < BIGBUFF;i++) ary[i] = temp[i];
+}
+
+struct PCB* getRHead() {
+       return head1;
 }
