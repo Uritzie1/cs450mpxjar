@@ -346,37 +346,21 @@ int show_All() {
     int bufsize = BIGBUFF;
     int i = 2, x = 0;
     char buffer[BIGBUFF] = {0};
-    
-    struct TESTX* test;
-struct TESTX* test2;
-  test = (struct TESTX*)sys_alloc_mem(sizeof(struct TESTX));
-  test2 = (struct TESTX*)sys_alloc_mem(sizeof(struct TESTX));
-  printf("\nptr = %u",test);
-  printf("\nptr2 = %u",test2);
-  printf("\nequal?: %d",test==test2);
-  errx = sys_free_mem(test);
-  err_hand(errx);
-  errx = sys_free_mem(test2);
-  err_hand(errx);
-
-
-
-
-	temppcb = tail1;
-	
+	temppcb = tail1;	
 	errx = 0;
 	printf("\nPROCESS PROPERTIES------------------------");
 	for (x;x<=1;x++) {
 	  while(temppcb != NULL) {
-	printf("\n\nName: %s", temppcb->name);
-	    if(temppcb->state == READY) printf("\nState: Ready");
-	    else if(temppcb->state == RUNNING) printf("\nState: Running");
-		else printf("\nState: Blocked");
-		if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
-		else printf("\nSuspended?: No\n");
+    printf("\n\nName: %s", temppcb->name);
+	printf("  Priority: %d",temppcb->priority);
+	    if(temppcb->state == READY) printf("  State: Ready");
+	    else if(temppcb->state == RUNNING) printf("  State: Running");
+		else printf("  State: Blocked");
+		if(temppcb->suspended == SUSP) printf("  Suspended?: Yes");
+		else printf("  Suspended?: No\n");
 		temppcb = temppcb->next;
 		i=i+4;
-		if(i > 20) {        //paging
+		if(i > 19) {        //paging
 	      printf("Press any key to continue");
 	      errx = sys_req(READ, TERMINAL, buffer, &bufsize);
 	      i = 0;
