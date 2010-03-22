@@ -21,6 +21,7 @@
 #include <dos.h>
 
 // Status and Error Codes
+#define OK 0
 #define COM_OPEN_NULL_EFLAG_P -101
 #define COM_OPEN_INV_BAUD_RATE_DIV -102
 #define COM_OPEN_PORT_OPEN -103
@@ -164,7 +165,7 @@ int com_close() {
 	outportb(COM1_INT_EN,0x00);
 	//Restore the original interrupt vector
 	setvect(COM1_INT_ID, oldfunc);
-	return NO_ERROR;
+	return OK;
 }
 
 /**
@@ -219,7 +220,7 @@ int com_read(char* buf_p, int *count_p) {
 		*(com_port.event_flag_p) = 1; //set event flag to signal end of read!
 	}
 	// In either case, return 0 to signify no errors have occurred. If more reading is needed, interrupt will finish
-	return NO_ERROR;
+	return OK;
 }
 
 /**
@@ -250,7 +251,7 @@ int com_write(char* buf_p, int *count_p) {
 	mask = mask | 0x02;
 	mask = mask & ~0x01;//attempting to disable read interrupts
 	outportb(COM1_INT_EN,mask);
-	return NO_ERROR;
+	return OK;
 }
 
 /**
