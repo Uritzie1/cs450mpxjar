@@ -8,8 +8,10 @@
  * \version: 5.0
  *
  * Components: err_hand, init_r1, cleanup_r1, disp_dir, comhan, terminate_mpx,
- *             help, get_Version, date, valid_date, toLowerCase, trim
+ *             he
+ lp, get_Version, date, valid_date, toLowerCase, trim
  *
+
  *******************************************************************************
  * Change Log:
  *

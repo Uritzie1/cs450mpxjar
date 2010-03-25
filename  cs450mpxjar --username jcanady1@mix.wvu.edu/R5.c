@@ -63,9 +63,9 @@
 /** \struct DCB
   */
 typedef struct DCB {
-	int flagOpen;         //
+	int flagOpen;         //is COM open
 	int* eventFlagp;	   //
-	int status;		       //
+	int status;		       //COM current status
 	char* in_buff;	       //
 	int *in_count;	       //
 	int in_done;	       //
@@ -82,8 +82,9 @@ typedef struct DCB {
 // Global Variables
 static DCB com_port;
 static void interrupt (*oldfunc) (void);
+char iochar;
+char mask;
 int intType;
-static char temp;
 
 // Function Prototypes
 int com_open (int *eflag_p, int baud_rate);
@@ -146,37 +147,51 @@ void interrupt com_check() {
 /**
   */
 void readCom() {
-	/*
-Read a character from the input register
-If current status is NOT reading, no process is currently requesting data, so we add to the ring buffer
-If the ring buffer is full, discard the character and return;
-If the ring buffer is not full, store the character in the ring buffer and increment the ring buffer indexes
-Put the character in the ring buffer at the index indicated by the “ring buffer in” attribute in the DCB
-If current status is reading- a process is currently requesting data so we:
-Store the character in the input buffer and increment the count
-Check to see if we have finished reading- this happens  if the character you just read was a ‘\r’  OR if the input buffer has been filled.  If this has occurred:
-Null terminate the Input buffer
-Set  device status to idle
-Set the event flag- this indicates that an operation has been completed
-Set input count = input done, so the calling function knows how many characters you placed into the buffer*/
+
+	iochar = inportb(COM1_BASE);
+	if(com_port->status == READING){
+		if(iochar != '\r') {	//if we are not done reading
+			com_port->in_buff[com_port.in_done] = iochar;
+			com_port->in_done++;}
+		if(iochar == '\r'){ //if were are done reading
+			com_port->in_buff[com_port->in_done] = '\0';
+			com_port->status == IDLE;
+			*(com_port-eventFlagp) == 1;
+			*(com_port->in_count) = com_port->in_done;
+	}
+	else{//COM not Reading
+		if(com_port->ring_buffer_count < RING_SIZE){ // Ring Buffer not full
+			com_port->ring_buffer[ring_buffer_in] = iochar;
+			com_port->ring_buffer_in++;
+			com_port->ring_buffer_count++;
+
+			if(com_port->ring_buffer_in > (RING_BUFFER_SIZE -1))//wrapping around
+				com_port->ring_buffer_in = 0;
+		}
+
+
+	}
 }
 
 /**
   */
 void writeCom() {
-	/*
-	If the current status is NOT writing, Ignore the interrupt and return.
-If the requestor’s output buffer has not been completely copied
-Copy the next character to the output register and increment the appropriate counts
-Return
-Otherwise, all characters have been transferred- so we clear the interrupt
-Reset the status to idle. 
-Set the event  flag to indicate completion of an operation
-Disable write interrupts by clearing bit 1 in the interrupt enable register.
-mask = inportb(COM1_INT_EN);
-mask = mask & ~0x02;
-outportb(COM1_INT_EN ,mask);
-*/
+	if(com_port->status == WRITING)
+	{
+		if(com_port->out_done != *(com_put->out_count){//if writting is sitll possible
+			iochar = com_port->out_buff[com_port->out_done];
+			com_port->out_done++;
+			outportb(COM1_BASE,iochar);
+		}
+		else{//done writting
+			com_port->status = IDLE;
+			*(com_port->eventFlagp) = 1;
+
+			mask = inportb(COM1_INT_EN);
+			mask = mask & ~0x02;
+			outportb(COM1_INT_EN,mask);
+		}
+	}
 }
 /**
   */
