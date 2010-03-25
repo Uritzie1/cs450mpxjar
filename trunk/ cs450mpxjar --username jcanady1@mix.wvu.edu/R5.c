@@ -101,14 +101,37 @@ void stop_com_request();
 
 /**
   */
-int com_open (int *eflag_p, int baud_rate) {
+int com_open (int *eflag_p, int baud_rate) 
+{
+	int mask;
 	
 	return OK;
 }
 
 /**
   */
-int com_close() {
+int com_close() 
+{
+	int mask;
+	
+	if (com_port.flagOpen != OPEN)
+	{
+		return -201;
+	}
+	
+	else
+	{
+		com_port.flagOpen = CLOSED;
+		disable();
+		mask = inportb(PIC_MASK);
+		mask = mask | 0x10;
+		outportb(PIC_, mask);
+		enable();
+		
+		outportb(COM1_MS, 0x00);
+		outportb(COM1_INT_EN, 0x00);
+		setvect(COM1_INT_ID, oldfunc);
+	}
 
 	return OK;
 }
