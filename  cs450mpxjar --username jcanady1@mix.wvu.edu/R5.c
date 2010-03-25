@@ -77,11 +77,11 @@ typedef struct DCB {
 	int ring_buffer_in;    //
 	int ring_buffer_out;   //
 	int ring_buffer_count; //
-} DCB;
+};
 
 
 // Global Variables
-static DCB com_port;
+struct DCB com_port;
 static void interrupt (*oldfunc) (void);
 char iochar;
 char mask;
@@ -183,7 +183,7 @@ int com_close() {
 		disable();
 		mask = inportb(PIC_MASK);
 		mask = mask | 0x10;
-		outportb(PIC_, mask);
+		outportb(PIC_MASK, mask);
 		enable();
 		
 		outportb(COM1_MS, 0x00);
