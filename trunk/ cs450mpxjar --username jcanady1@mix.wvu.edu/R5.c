@@ -27,7 +27,7 @@
 #define ERR_OPEN_INV_BAUD_RATE -102
 #define ERR_OPEN_PORT_OPEN -103
 #define ERR_CLOSE_PORT_NOT_OPEN -104
-#define ERR_COM_READ_PORT_NOT_OPEN -105
+#define ERR_READ_PORT_NOT_OPEN -105
 #define ERR_READ_INV_BUFF_ADDR -106
 #define ERR_READ_INV_COUNT_VAR -107
 #define ERR_READ_DEVICE_BUSY -108
@@ -50,7 +50,7 @@
 #define COM1_INT_EN COM1_BASE+1
 #define COM1_BRD_LSB COM1_BASE
 #define COM1_BRD_MSB COM1_BASE+1
-//#define COM1_INT_ID_REG COM1_BASE+2
+#define COM1_INT_ID COM1_BASE+2
 #define COM1_LC COM1_BASE+3
 #define COM1_MC COM1_BASE+4
 //#define COM1_LS COM1_BASE+5
@@ -100,7 +100,7 @@ void stop_com_request();
 /**
  */
 int com_open (int *eflag_p, int baud_rate) {
-	if (eflag_p = NULL) return ERR_OPEN_NULL_EFLAGP;
+	if (eflag_p == NULL) return ERR_OPEN_NULL_EFLAGP;
 	if (baud_rate <= 0) return ERR_OPEN_INV_BAUD_RATE;
 	if (com_port->flagOpen == OPEN) return ERR_OPEN_PORT_OPEN;
 	else {
@@ -143,7 +143,7 @@ int com_read(char* buf_p, int *count_p) {
 		com_port->in_done = 0;
 		com_port->eflag_p = 0;
 		disable();
-		com_port->status = READ;
+		com_port->status = READING;
 	}
     return OK;
 }
@@ -151,10 +151,10 @@ int com_read(char* buf_p, int *count_p) {
 /**
  */
 int com_write(char *buf_p, int *count_p) {
-    if (com_port->flagOpen != OPEN) return COM_WRITE_PORT_NOT_OPEN;
-	if (buf_p == NULL) return COM_WRITE_INV_BUFF_ADDR;
-	if (count_p == NULL) return COM_WRITE_INV_COUNT_VAR;
-	if (com_port->status != IDLE) return COM_WRITE_DEVICE_BUSY;
+    if (com_port->flagOpen != OPEN) return ERR_WRITE_PORT_NOT_OPEN;
+	if (buf_p == NULL) return ERR_WRITE_INV_BUFF_ADDR;
+	if (count_p == NULL) return ERR_WRITE_INV_COUNT_VAR;
+	if (com_port->status != IDLE) return ERR_WRITE_DEVICE_BUSY;
 	else {
 		com_port->out_buff = buf_p;
 		com_port->out_count = count_p;
