@@ -106,7 +106,7 @@ int com_open (int *eflag_p, int baud_rate) {
 	else {
 		// Initialize DCB
 		int new_baud_rate;
-		com_port->status = IDLE;
+		(com_port->status) = IDLE;
 		com_port->flagOpen = OPEN;
 		com_port->eventFlagp = eflag_p;
 		com_port->ring_buffer_in = 0;
