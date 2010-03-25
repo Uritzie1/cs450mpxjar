@@ -22,18 +22,18 @@
 
 // Status and Error Codes
 #define OK 0
-#define COM_OPEN_NULL_EFLAG_P -101
-#define COM_OPEN_INV_BAUD_RATE_DIV -102
-#define COM_OPEN_PORT_OPEN -103
-#define COM_CLOSE_PORT_NOT_OPEN -201
-#define COM_READ_PORT_NOT_OPEN -301
-#define COM_READ_INV_BUFF_ADDR -302
-#define COM_READ_INV_COUNT_VAR -303
-#define COM_READ_DEVICE_BUSY -304
-#define COM_WRITE_PORT_NOT_OPEN -401
-#define COM_WRITE_INV_BUFF_ADDR -402
-#define COM_WRITE_INV_COUNT_VAR -403
-#define COM_WRITE_DEVICE_BUSY -404
+#define ERR_OPEN_NULL_EFLAGP -101
+#define ERR_OPEN_INV_BAUD_RATE -102
+#define ERR_OPEN_PORT_OPEN -103
+#define ERR_CLOSE_PORT_NOT_OPEN -104
+#define ERR_COM_READ_PORT_NOT_OPEN -105
+#define ERR_READ_INV_BUFF_ADDR -106
+#define ERR_READ_INV_COUNT_VAR -107
+#define ERR_READ_DEVICE_BUSY -108
+#define ERR_WRITE_PORT_NOT_OPEN -109
+#define ERR_WRITE_INV_BUFF_ADDR -110
+#define ERR_WRITE_INV_COUNT_VAR -111
+#define ERR_WRITE_DEVICE_BUSY -112
 
 // Constants
 #define COM1_READ 0x02
@@ -100,33 +100,32 @@ void stop_com_request();
  */
 int com_open (int *eflag_p, int baud_rate) 
 {
-	int mask;
 	
 	if (eflag_p = NULL) //COM_OPEN_NULL_EFLAG_P
 	{
-		return -101;
+		return ERR_OPEN_NULL_EFLAGP;
 	}
 	
 	if (baud_rate <= 0) //COM_OPEN_INV_BAUD_RATE_DIV
 	{
-		return -102;
+		return ERR_OPEN_INV_BAUD_RATE;
 	}
 	
-	if (com_port.flagOpen == OPEN) //COM_OPEN_PORT_OPEN
+	if (com_port->flagOpen == OPEN) //COM_OPEN_PORT_OPEN
 	{
-		return -103;
+		return ERR_OPEN_PORT_OPEN;
 	}
 	
 	else 
 	{
 		// Initialize DCB
 		int new_baud_rate;
-		com_port.status = IDLE;
-		com_port.flagOpen = OPEN;
-		com_port.eventFlagp = eflag_p;
-		com_port.ring_buffer_in = 0;
-		com_port.ring_buffer_out = 0;
-		com_port.ring_buffer_count = 0;
+		com_port->status = IDLE;
+		com_port->flagOpen = OPEN;
+		com_port->eventFlagp = eflag_p;
+		com_port->ring_buffer_in = 0;
+		com_port->ring_buffer_out = 0;
+		com_port->ring_buffer_count = 0;
 		oldfunc = getvect(COM1_INT_ID);
 		
 		new_baud_rate = 115200 / (long) baud_rate;
@@ -150,34 +149,34 @@ int com_open (int *eflag_p, int baud_rate)
  */
 int com_read(char* buf_p, int *count_p) 
 {
-	if (com_port.flagOpen != OPEN)
+	if (com_port->flagOpen != OPEN)
 	{
-		return -301;
+		return ERR_COM_READ_PORT_NOT_OPEN;
 	}
 	
 	if (buf_p == NULL)
 	{
-		return -302;
+		return ERR_READ_INV_BUFF_ADDR;
 	}
 	
 	if (count_p == NULL)
 	{
-		return -303;
+		return ERR_READ_INV_COUNT_VAR;
 	}
 	
-	if (com_port.status != IDLE)
+	if (com_port->status != IDLE)
 	{
-		return -304;
+		return ERR_READ_DEVICE_BUSY;
 	}
 	
 	else
 	{
-		com_port.ring_buffer_in = buf_p;
-		com_port.in_count = count_p;
-		com_port.in_done = 0;
-		com_port.eflag_p = 0;
+		com_port->ring_buffer_in = buf_p;
+		com_port->in_count = count_p;
+		com_port->in_done = 0;
+		com_port->eflag_p = 0;
 		disable();
-		com_port.status = READ;
+		com_port->status = READ;
 	}
 	
    	
@@ -188,39 +187,38 @@ int com_read(char* buf_p, int *count_p)
  */
 int com_write(char *buf_p, int *count_p)
 {
-	int mask;
-	
-	if (com_port.flagOpen != OPEN)
+		
+	if (com_port->flagOpen != OPEN)
 	{
-		return -401;
+		return COM_WRITE_PORT_NOT_OPEN;
 	}
 	
 	if (buf_p == NULL)
 	{
-		return -402;
+		return COM_WRITE_INV_BUFF_ADDR;
 	}
 	
 	if (count_p == NULL)
 	{
-		return -403;
+		return COM_WRITE_INV_COUNT_VAR;
 	}
 	
-	if (com_port.status != IDLE)
+	if (com_port->status != IDLE)
 	{
-		return -404;
+		return COM_WRITE_DEVICE_BUSY;
 	}
 	
 	else
 	{
-		com_port.out_buff = buf_p;
-		com_port.out_count = count_p;
-		com_port.out_done = 0;
-		com_port.status = WRITING;
-		com_port.eventFlagp = 0;
+		com_port->out_buff = buf_p;
+		com_port->out_count = count_p;
+		com_port->out_done = 0;
+		com_port->status = WRITING;
+		com_port->eventFlagp = 0;
 		
 		outportb(COM1_BASE, *com_port.out_buff);
-		com_port.out_buffer++;
-		com_port.out_done++;
+		com_port->out_buffer++;
+		com_port->out_done++;
 		disable();
 		
 		mask = inportb(COM1_INT_EN);
@@ -234,11 +232,10 @@ int com_write(char *buf_p, int *count_p)
  */
 int com_close() 
 {
-	int mask;
 	
 	if (com_port.flagOpen != OPEN)
 	{
-		return -201;
+		return ERR_CLOSE_PORT_NOT_OPEN;
 	}
 	
 	else
@@ -261,19 +258,19 @@ int com_close()
 				
 		/**
 		 */
-				void interrupt com_check() {
-					
-					if(com_port->flagOpen == OPEN)
-					{
-						//gets interupt from COM1
-						tType = inportb(COM1_ID);
-						tType = tType & 0x07; 
-						//which op to call
-						if(tType == COM1_READ) readCom();
-						else if (tType == COM1_WRITE) writeCom();
-					}
-					
-				}
+void interrupt com_check() {
+
+	if(com_port->flagOpen == OPEN)
+	{
+		//gets interupt from COM1
+		tType = inportb(COM1_ID);
+		tType = tType & 0x07; 
+		//which op to call
+		if(tType == COM1_READ) readCom();
+		else if (tType == COM1_WRITE) writeCom();
+	}
+
+}
 
 /**
   */
@@ -344,5 +341,17 @@ void writeCom() {
 /**
   */
 void stop_com_request() {
+
+	char temp;
+
+	//set Com to idle
+	com_port.status = IDLE;
+
+	temp = inportb(COM1_INT_EN);//turns read ints back on
+	temp = temp & ~0x02; //disable write
+	temp = temp | 0x01; //enable read
+	outportb(COM1_INT_EN, temp);
+	//set event flag
+	*(com_port->eventFlagp) = 1;
 
 }
