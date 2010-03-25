@@ -81,7 +81,7 @@ typedef struct DCB {
 
 
 // Global Variables
-struct DCB com_port;
+struct DCB *com_port;
 static void interrupt (*oldfunc) (void);
 char iochar;
 char mask;
