@@ -7,11 +7,8 @@
  * \date 3/15/2010
  * \version: 5.0
  *
- * Components: err_hand, init_r1, cleanup_r1, disp_dir, comhan, terminate_mpx,
- *             he
- lp, get_Version, date, valid_date, toLowerCase, trim
+ * Components: 
  *
-
  *******************************************************************************
  * Change Log:
  *
@@ -61,7 +58,7 @@
 //Structures
 
 /** \struct DCB
-  */
+ */
 typedef struct DCB {
 	int open_flag;         //
 	int* event_flag_p;	   //
@@ -100,7 +97,7 @@ void stop_com_request();
 
 
 /**
-  */
+ */
 int com_open (int *eflag_p, int baud_rate) {
 	//Variables
 	int baud_rate_div, mask;
@@ -148,7 +145,7 @@ int com_open (int *eflag_p, int baud_rate) {
 }
 
 /**
-  */
+ */
 int com_close() {
 	//Variables
 	int mask;
@@ -171,7 +168,7 @@ int com_close() {
 }
 
 /**
-  */
+ */
 int com_read(char* buf_p, int *count_p) {
    	// Check parameters (not null)
 	if(buf_p == NULL) return COM_READ_INV_BUFF_ADDR;
