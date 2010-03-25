@@ -133,7 +133,7 @@ int com_open (int *eflag_p, int baud_rate) {
 /**
  */
 int com_read(char* buf_p, int *count_p) {
-	if (com_port->flagOpen != OPEN) return ERR_COM_READ_PORT_NOT_OPEN;
+	if (com_port->flagOpen != OPEN) return ERR_READ_PORT_NOT_OPEN;
 	if (buf_p == NULL) return ERR_READ_INV_BUFF_ADDR;
 	if (count_p == NULL) return ERR_READ_INV_COUNT_VAR;
 	if (com_port->status != IDLE) return ERR_READ_DEVICE_BUSY;
@@ -172,7 +172,7 @@ int com_write(char *buf_p, int *count_p) {
 		outportb(COM1_INT_EN, mask);
 		enable();
 	}
-
+}
 
 /**
  */
@@ -194,8 +194,8 @@ int com_close() {
 }
 				
 				
-		/**
-		 */
+/**
+ */
 void interrupt com_check() {
 	if(com_port->flagOpen == OPEN) {
 		//gets interupt from COM1
