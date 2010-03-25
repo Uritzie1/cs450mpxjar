@@ -96,59 +96,133 @@ void readCom();
 void writeCom();
 void stop_com_request();
 
-
-
-
 /**
-  */
+ */
 int com_open (int *eflag_p, int baud_rate) 
 {
 	int mask;
 	
-	return OK;
-}
-
-/**
-  */
-int com_close() 
-{
-	int mask;
-	
-	if (com_port.flagOpen != OPEN)
+	if (eflag_p = NULL) //COM_OPEN_NULL_EFLAG_P
 	{
-		return -201;
+		return -101;
 	}
 	
-	else
+	if (baud_rate <= 0) //COM_OPEN_INV_BAUD_RATE_DIV
 	{
-		com_port.flagOpen = CLOSED;
-		disable();
-		mask = inportb(PIC_MASK);
-		mask = mask | 0x10;
-		outportb(PIC_, mask);
-		enable();
-		
-		outportb(COM1_MS, 0x00);
-		outportb(COM1_INT_EN, 0x00);
-		setvect(COM1_INT_ID, oldfunc);
+		return -102;
 	}
-
-	return OK;
-}
-
-/**
-  */
-int com_read(char* buf_p, int *count_p) {
-   	
-    return OK;
-}
-
-/**
-  */
-int com_write(char* buf_p, int *count_p) {
-
-	return OK;
-}
+	
+	if (com_port.flagOpen == OPEN) //COM_OPEN_PORT_OPEN
+	{
+		return -103;
+	}
+	
+	else 
+	{
+		// Initialize DCB
+		int new_baud_rate;
+		com_port.status = IDLE;
+		com_port.flagOpen = OPEN;
+		com_port.eventFlagp = eflag_p;
+		com_port.ring_buffer_in = 0;
+		com_port.ring_buffer_out = 0;
+		com_port.ring_buffer_count = 0;
+		oldfunc = getvect(COM1_INT_ID);
+		setvect(COM1_INT_ID, &
+				}
+				
+				
+				return OK;
+				}
+				
+		/**
+		 */
+				int com_close() 
+		{
+			int mask;
+			
+			if (com_port.flagOpen != OPEN)
+			{
+				return -201;
+			}
+			
+			else
+			{
+				com_port.flagOpen = CLOSED;
+				disable();
+				mask = inportb(PIC_MASK);
+				mask = mask | 0x10;
+				outportb(PIC_, mask);
+				enable();
+				
+				outportb(COM1_MS, 0x00);
+				outportb(COM1_INT_EN, 0x00);
+				setvect(COM1_INT_ID, oldfunc);
+			}
+			
+			return OK;
+		}
+				
+		/**
+		 */
+				int com_read(char* buf_p, int *count_p) 
+		{
+			if (com_port.flagOpen != OPEN)
+			{
+				return -301;
+			}
+			
+			if (buf_p == NULL)
+			{
+				return -302;
+			}
+			
+			if (count_p == NULL)
+			{
+				return -303;
+			}
+			
+			if (com_port.status != IDLE)
+			{
+				return -304;
+			}
+			
+			else
+			{
+				com_port.ring_buffer_in = buf_p;
+				com_port.in_count = count_p;
+				com_port.in_done = 0;
+				com_port.eflag_p = 0;
+				disable();
+				com_port.status = READ;
+			}
+			
+			
+			return OK;
+		}
+				
+		/**
+		 */
+				int com_write(char* buf_p, int *count_p) {
+					
+					return OK;
+				}
+				
+		/**
+		 */
+				void interrupt com_check() {
+					
+					if(com_port->flagOpen == OPEN)
+					{
+						//gets interupt from COM1
+						tType = inportb(COM1_ID);
+						tType = tType & 0x07; 
+						//which op to call
+						if(tType == COM1_READ) readCom();
+						else if (tType == COM1_WRITE) writeCom();
+					}
+					
+				}
 
 /**
   */
