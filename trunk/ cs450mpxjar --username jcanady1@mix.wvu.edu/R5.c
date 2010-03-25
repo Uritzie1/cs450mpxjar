@@ -100,13 +100,14 @@ void stop_com_request();
 /**
  */
 int com_open (int *eflag_p, int baud_rate) {
+    int new_baud_rate;
 	if (eflag_p == NULL) return ERR_OPEN_NULL_EFLAGP;
 	if (baud_rate <= 0) return ERR_OPEN_INV_BAUD_RATE;
 	if (com_port->flagOpen == OPEN) return ERR_OPEN_PORT_OPEN;
 	else {
 		// Initialize DCB
-		int new_baud_rate;
-		(com_port->status) = IDLE;
+        com_port->status = IDLE;	
+		//com_port->status = IDLE;
 		com_port->flagOpen = OPEN;
 		com_port->eventFlagp = eflag_p;
 		com_port->ring_buffer_in = 0;
@@ -199,11 +200,11 @@ int com_close() {
 void interrupt com_check() {
 	if(com_port->flagOpen == OPEN) {
 		//gets interupt from COM1
-		tType = inportb(COM1_ID);
-		tType = tType & 0x07; 
+		intType = inportb(COM1_ID);
+		intType = tType & 0x07; 
 		//which op to call
-		if(tType == COM1_READ) readCom();
-		else if (tType == COM1_WRITE) writeCom();
+		if(intType == COM1_READ) readCom();
+		else if (intType == COM1_WRITE) writeCom();
 	}
 }
 
@@ -212,11 +213,11 @@ void interrupt com_check() {
 void interrupt com_check() {
 	if(com_port->flagOpen == OPEN) {
 		//gets interupt from COM1
-		tType = inportb(COM1_ID);
-		tType = tType & 0x07; 
+		intType = inportb(COM1_ID);
+		intType = intType & 0x07; 
 		//which op to call
-		if(tType == COM1_READ) readCom();
-		else if (tType == COM1_WRITE) writeCom();
+		if(intType == COM1_READ) readCom();
+		else if (intType == COM1_WRITE) writeCom();
 	}	
 }
 
