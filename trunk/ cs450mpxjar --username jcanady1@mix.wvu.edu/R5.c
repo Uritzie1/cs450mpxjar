@@ -128,85 +128,136 @@ int com_open (int *eflag_p, int baud_rate)
 		com_port.ring_buffer_out = 0;
 		com_port.ring_buffer_count = 0;
 		oldfunc = getvect(COM1_INT_ID);
-		setvect(COM1_INT_ID, &
-				}
+		
+		new_baud_rate = 115200 / (long) baud_rate;
+		outportb(COM1_LC, 0x80);
+		outportb(COM1_BRD_LSB, new_baud_rate & 0xFF);
+		outportb(COM1_BRD_MSB, (new_baud_rate >> 8) & 0xFF);
+		outportb(COM1_LC, 0x03);
+		disable();
+		mask = inportb(PIC_MASK);
+		mask = mask & 0x10;
+		outportb(PIC_MASK, mask);
+		enable();
+		outportb(COM1_MC, 0x08);
+		outportb(COM1_INT_EN, 0x01);
+	}
 				
+	return OK;
+}
+
+/**
+ */
+int com_read(char* buf_p, int *count_p) 
+{
+	if (com_port.flagOpen != OPEN)
+	{
+		return -301;
+	}
+	
+	if (buf_p == NULL)
+	{
+		return -302;
+	}
+	
+	if (count_p == NULL)
+	{
+		return -303;
+	}
+	
+	if (com_port.status != IDLE)
+	{
+		return -304;
+	}
+	
+	else
+	{
+		com_port.ring_buffer_in = buf_p;
+		com_port.in_count = count_p;
+		com_port.in_done = 0;
+		com_port.eflag_p = 0;
+		disable();
+		com_port.status = READ;
+	}
+	
+   	
+    return OK;
+}
+
+/**
+ */
+int com_write(char *buf_p, int *count_p)
+{
+	int mask;
+	
+	if (com_port.flagOpen != OPEN)
+	{
+		return -401;
+	}
+	
+	if (buf_p == NULL)
+	{
+		return -402;
+	}
+	
+	if (count_p == NULL)
+	{
+		return -403;
+	}
+	
+	if (com_port.status != IDLE)
+	{
+		return -404;
+	}
+	
+	else
+	{
+		com_port.out_buff = buf_p;
+		com_port.out_count = count_p;
+		com_port.out_done = 0;
+		com_port.status = WRITING;
+		com_port.eventFlagp = 0;
+		
+		outportb(COM1_BASE, *com_port.out_buff);
+		com_port.out_buffer++;
+		com_port.out_done++;
+		disable();
+		
+		mask = inportb(COM1_INT_EN);
+		mask = mask | 0x02;
+		outportb(COM1_INT_EN, mask);
+		enable();
+	}
+
+
+/**
+ */
+int com_close() 
+{
+	int mask;
+	
+	if (com_port.flagOpen != OPEN)
+	{
+		return -201;
+	}
+	
+	else
+	{
+		com_port.flagOpen = CLOSED;
+		disable();
+		mask = inportb(PIC_MASK);
+		mask = mask | 0x10;
+		outportb(PIC_, mask);
+		enable();
+		
+		outportb(COM1_MS, 0x00);
+		outportb(COM1_INT_EN, 0x00);
+		setvect(COM1_INT_ID, oldfunc);
+	}
+	
+	return OK;
+}
 				
-				return OK;
-				}
-				
-		/**
-		 */
-				int com_close() 
-		{
-			int mask;
-			
-			if (com_port.flagOpen != OPEN)
-			{
-				return -201;
-			}
-			
-			else
-			{
-				com_port.flagOpen = CLOSED;
-				disable();
-				mask = inportb(PIC_MASK);
-				mask = mask | 0x10;
-				outportb(PIC_, mask);
-				enable();
-				
-				outportb(COM1_MS, 0x00);
-				outportb(COM1_INT_EN, 0x00);
-				setvect(COM1_INT_ID, oldfunc);
-			}
-			
-			return OK;
-		}
-				
-		/**
-		 */
-				int com_read(char* buf_p, int *count_p) 
-		{
-			if (com_port.flagOpen != OPEN)
-			{
-				return -301;
-			}
-			
-			if (buf_p == NULL)
-			{
-				return -302;
-			}
-			
-			if (count_p == NULL)
-			{
-				return -303;
-			}
-			
-			if (com_port.status != IDLE)
-			{
-				return -304;
-			}
-			
-			else
-			{
-				com_port.ring_buffer_in = buf_p;
-				com_port.in_count = count_p;
-				com_port.in_done = 0;
-				com_port.eflag_p = 0;
-				disable();
-				com_port.status = READ;
-			}
-			
-			
-			return OK;
-		}
-				
-		/**
-		 */
-				int com_write(char* buf_p, int *count_p) {
-					
-					return OK;
-				}
 				
 		/**
 		 */
