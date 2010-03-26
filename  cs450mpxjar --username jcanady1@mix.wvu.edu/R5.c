@@ -37,8 +37,8 @@
 #define ERR_WRITE_DEVICE_BUSY -112
 
 // Constants
-#define COM1_READ 0x02
-#define COM1_WRITE 0x04
+#define COM1_READ 0x04
+#define COM1_WRITE 0x02
 #define IDLE 0
 #define READING 1
 #define WRITING 2
@@ -196,7 +196,7 @@ int com_close() {
 void interrupt com_check() {
 	if(com_port->flagOpen == OPEN) {
 		//gets interupt from COM1
-		intType = inportb(COM1_ID);
+		intType = inportb(COM1_INT_ID);
 		intType = intType & 0x07; 
 		//which op to call
 		if(intType == COM1_READ) readCom();
