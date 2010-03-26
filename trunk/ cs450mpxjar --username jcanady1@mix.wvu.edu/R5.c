@@ -137,14 +137,40 @@ int com_read(char* buf_p, int *count_p) {
 	if (buf_p == NULL) return ERR_READ_INV_BUFF_ADDR;
 	if (count_p == NULL) return ERR_READ_INV_COUNT_VAR;
 	if (com_port->status != IDLE) return ERR_READ_DEVICE_BUSY;
-	else {
-		com_port->in_buff = buf_p;
-		com_port->in_count = count_p;
-		com_port->in_done = 0;
-		com_port->eventFlagp = 0;
-		disable();
-		com_port->status = READING;
+	
+	com_port->in_buff = buf_p;
+	com_port->in_count = count_p;
+	com_port->in_done = 0;
+	com_port->eventFlagp = 0;
+	disable();
+	com_port->status = READING;
+	
+	while(com_port->ring_buffer_count > 0) { //loop while the ring buffer isn't empty
+		//check first to see if requested count has been reached, or next character is a '/r'
+		if(*(com_port->in_count) == com_port->in_done) { //finished copying chars
+			com_port->status = IDLE;
+			break;
+		}
+		if(com_port->ring_buffer[com_port->ring_buffer_out] == '\r') { //carriage return means end of input
+			com_port->status = IDLE; //prevent interrupts from copying more characters into the in_buff
+			com_port->ring_buffer_out++; //advance out pointer so that '\r' isn't copied for the next call
+			if(com_port->ring_buffer_out > (RING_SIZE - 1)) com_port->ring_buffer_out = 0;
+			com_port->ring_buffer_count--;
+			break;
+		}
+		com_port->in_buff[com_port->in_done] = com_port->ring_buffer[com_port->ring_buffer_out]; //copy a character
+		com_port->in_done++;
+		com_port->ring_buffer_count--;
+		com_port->ring_buffer_out++;
+		if(com_port->ring_buffer_out > (RING_SIZE -1)) com_port->ring_buffer_out = 0;
 	}
+    enable();
+	if(com_port->status == IDLE) { //Check to see if input is done
+		com_port->in_buff[com_port->in_done] = '\0'; //null-terminate buffer
+		*(com_port->in_count) = com_port->in_done; //returning number of characters written to calling process
+		*(com_port->eventFlagp) = 1; //set event flag to signal end of read
+	}	
+	enable();
     return OK;
 }
 
@@ -164,7 +190,6 @@ int com_write(char *buf_p, int *count_p) {
 	*(com_port->eventFlagp) = 0;
 		
 	outportb(COM1_BASE, *(com_port->out_buff));
-	//com_port->out_buff++;
 	com_port->out_done++;
 		
 	tmask = inportb(COM1_INT_EN);
@@ -216,7 +241,7 @@ void readCom() {
 			com_port->in_buff[com_port->in_done] = iochar;
 			com_port->in_done++;
         }
-		if(iochar == '\r') { //if were are done reading
+		if(iochar == '\r' || com_port->in_done == *(com_port->in_count)) { //if were are done reading
 			com_port->in_buff[com_port->in_done] = '\0';
 			com_port->status = IDLE;
 			*(com_port->eventFlagp) = 1;
