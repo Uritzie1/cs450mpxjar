@@ -99,7 +99,7 @@ void stop_com_request();
 /**
  */
 int com_open (int *eflag_p, int baud_rate) {
-    int new_baud_rate;
+    int new_baud_rate, tmask;
 	if (eflag_p == NULL) return ERR_OPEN_NULL_EFLAGP;
 	if (baud_rate <= 0) return ERR_OPEN_INV_BAUD_RATE;
 	if (com_port->flagOpen == OPEN) return ERR_OPEN_PORT_OPEN;
@@ -121,9 +121,9 @@ int com_open (int *eflag_p, int baud_rate) {
 	outportb(COM1_LC, 0x03);
 	disable();
 	
-	mask = inportb(PIC_MASK);
-	mask = mask & ~0x10;
-	outportb(PIC_MASK, mask);
+	tmask = inportb(PIC_MASK);
+	tmask = tmask & ~0x10;
+	outportb(PIC_MASK, tmask);
 	enable();
 	outportb(COM1_MC, 0x08);
 	outportb(COM1_INT_EN, 0x01);			
@@ -151,6 +151,7 @@ int com_read(char* buf_p, int *count_p) {
 /**
  */
 int com_write(char *buf_p, int *count_p) {
+    int tmask;
     if (com_port->flagOpen != OPEN) return ERR_WRITE_PORT_NOT_OPEN;
 	if (buf_p == NULL) return ERR_WRITE_INV_BUFF_ADDR;
 	if (count_p == NULL || *count_p <= 0) return ERR_WRITE_INV_COUNT_VAR;
@@ -166,21 +167,22 @@ int com_write(char *buf_p, int *count_p) {
 	com_port->out_buff++;
 	com_port->out_done++;
 		
-	mask = inportb(COM1_INT_EN);
-	mask = mask | 0x02;
-	outportb(COM1_INT_EN, mask);
+	tmask = inportb(COM1_INT_EN);
+	tmask = tmask | 0x02;
+	outportb(COM1_INT_EN, tmask);
 	return OK;
 }
 
 /**
  */
 int com_close() {
+    int tmask;
 	if (com_port->flagOpen != OPEN) return ERR_CLOSE_PORT_NOT_OPEN;
 	com_port->flagOpen = CLOSED;
 	disable();
-	mask = inportb(PIC_MASK);
-	mask = mask | 0x10;
-	outportb(PIC_MASK, mask);
+	tmask = inportb(PIC_MASK);
+	tmask = tmask | 0x10;
+	outportb(PIC_MASK, tmask);
 	enable();
 		
 	outportb(COM1_MC, 0x00);
