@@ -240,7 +240,7 @@ void readCom() {
   */
 void writeCom() {
 	if(com_port->status == WRITING) {
-		if(com_port->out_done != *(com_put->out_count) { //if writting is still possible
+		if(com_port->out_done != *(com_port->out_count)) { //if writting is still possible
 			iochar = com_port->out_buff[com_port->out_done];
 			com_port->out_done++;
 			outportb(COM1_BASE,iochar);
