@@ -207,6 +207,7 @@ void interrupt com_check() {
 		if(intType == COM1_READ) readCom();
 		else if (intType == COM1_WRITE) writeCom();
 	}
+	outportb(PIC_CMD, EOI);
 }
 
 
