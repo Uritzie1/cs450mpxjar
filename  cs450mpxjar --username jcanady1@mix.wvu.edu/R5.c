@@ -104,30 +104,30 @@ int com_open (int *eflag_p, int baud_rate) {
 	if (eflag_p == NULL) return ERR_OPEN_NULL_EFLAGP;
 	if (baud_rate <= 0) return ERR_OPEN_INV_BAUD_RATE;
 	if (com_port->flagOpen == OPEN) return ERR_OPEN_PORT_OPEN;
-	else {
-		// Initialize DCB
-        com_port->status = IDLE;	
-		//com_port->status = IDLE;
-		com_port->flagOpen = OPEN;
-		com_port->eventFlagp = eflag_p;
-		com_port->ring_buffer_in = 0;
-		com_port->ring_buffer_out = 0;
-		com_port->ring_buffer_count = 0;
-		oldfunc = getvect(COM1_INT_ID);
-		
-		new_baud_rate = 115200 / (long) baud_rate;
-		outportb(COM1_LC, 0x80);
-		outportb(COM1_BRD_LSB, new_baud_rate & 0xFF);
-		outportb(COM1_BRD_MSB, (new_baud_rate >> 8) & 0xFF);
-		outportb(COM1_LC, 0x03);
-		disable();
-		mask = inportb(PIC_MASK);
-		mask = mask & 0x10;
-		outportb(PIC_MASK, mask);
-		enable();
-		outportb(COM1_MC, 0x08);
-		outportb(COM1_INT_EN, 0x01);
-	}				
+	
+	// Initialize DCB
+    com_port->status = IDLE;	
+	com_port->flagOpen = OPEN;
+	com_port->eventFlagp = eflag_p;
+	com_port->ring_buffer_in = 0;
+	com_port->ring_buffer_out = 0;
+	com_port->ring_buffer_count = 0;
+	oldfunc = getvect(COM1_INT_ID);
+	setvect(COM1_INT_ID, &com_check);
+    	
+	new_baud_rate = 115200 / (long) baud_rate;
+	outportb(COM1_LC, 0x80);
+	outportb(COM1_BRD_LSB, new_baud_rate & 0xFF);
+	outportb(COM1_BRD_MSB, (new_baud_rate >> 8) & 0xFF);
+	outportb(COM1_LC, 0x03);
+	disable();
+	
+	mask = inportb(PIC_MASK);
+	mask = mask & 0x10;
+	outportb(PIC_MASK, mask);
+	enable();
+	outportb(COM1_MC, 0x08);
+	outportb(COM1_INT_EN, 0x01);			
 	return OK;
 }
 
@@ -177,18 +177,16 @@ int com_write(char *buf_p, int *count_p) {
  */
 int com_close() {
 	if (com_port->flagOpen != OPEN) return ERR_CLOSE_PORT_NOT_OPEN;
-	else {
-		com_port->flagOpen = CLOSED;
-		disable();
-		mask = inportb(PIC_MASK);
-		mask = mask | 0x10;
-		outportb(PIC_MASK, mask);
-		enable();
+	com_port->flagOpen = CLOSED;
+	disable();
+	mask = inportb(PIC_MASK);
+	mask = mask | 0x10;
+	outportb(PIC_MASK, mask);
+	enable();
 		
-		outportb(COM1_MS, 0x00);
-		outportb(COM1_INT_EN, 0x00);
-		setvect(COM1_INT_ID, oldfunc);
-	}	
+	outportb(COM1_MS, 0x00);
+	outportb(COM1_INT_EN, 0x00);
+	setvect(COM1_INT_ID, oldfunc);
 	return OK;
 }
 				
