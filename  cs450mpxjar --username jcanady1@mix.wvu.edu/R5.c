@@ -56,8 +56,8 @@
 //#define COM1_LS COM1_BASE+5
 #define COM1_MS COM1_BASE+6
 #define PIC_MASK 0x21
-//#define PIC_CMD 0x20
-//#define EOI 0x20
+#define PIC_CMD 0x20
+#define EOI 0x20
 
 //Structures
 
@@ -154,25 +154,24 @@ int com_read(char* buf_p, int *count_p) {
 int com_write(char *buf_p, int *count_p) {
     if (com_port->flagOpen != OPEN) return ERR_WRITE_PORT_NOT_OPEN;
 	if (buf_p == NULL) return ERR_WRITE_INV_BUFF_ADDR;
-	if (count_p == NULL) return ERR_WRITE_INV_COUNT_VAR;
+	if (count_p == NULL || *count_p <= 0) return ERR_WRITE_INV_COUNT_VAR;
 	if (com_port->status != IDLE) return ERR_WRITE_DEVICE_BUSY;
-	else {
-		com_port->out_buff = buf_p;
-		com_port->out_count = count_p;
-		com_port->out_done = 0;
-		com_port->status = WRITING;
-		com_port->eventFlagp = 0;
+	
+	com_port->out_buff = buf_p;
+	com_port->out_count = count_p;
+	com_port->out_done = 0;
+	com_port->status = WRITING;
+	*(com_port->eventFlagp) = 0;
 		
-		outportb(COM1_BASE, *com_port->out_buff);
-		com_port->out_buff++;
-		com_port->out_done++;
-		disable();
+	outportb(COM1_BASE, *com_port->out_buff);
+	//com_port->out_buff++;
+	com_port->out_done++;
+	disable();
 		
-		mask = inportb(COM1_INT_EN);
-		mask = mask | 0x02;
-		outportb(COM1_INT_EN, mask);
-		enable();
-	}
+	mask = inportb(COM1_INT_EN);
+	mask = mask | 0x02;
+	outportb(COM1_INT_EN, mask);
+	enable();
 	return OK;
 }
 
