@@ -139,7 +139,7 @@ int com_read(char* buf_p, int *count_p) {
 	if (count_p == NULL) return ERR_READ_INV_COUNT_VAR;
 	if (com_port->status != IDLE) return ERR_READ_DEVICE_BUSY;
 	else {
-		com_port->ring_buffer_in = buf_p;
+		com_port->in_buff = buf_p;
 		com_port->in_count = count_p;
 		com_port->in_done = 0;
 		com_port->eventFlagp = 0;
@@ -261,7 +261,7 @@ void stop_com_request() {
 	char temp;
 
 	//set Com to idle
-	com_port.status = IDLE;
+	com_port->status = IDLE;
 	temp = inportb(COM1_INT_EN);//turns read ints back on
 	temp = temp & ~0x02; //disable write
 	temp = temp | 0x01; //enable read
