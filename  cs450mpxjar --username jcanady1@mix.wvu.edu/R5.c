@@ -164,7 +164,7 @@ int com_write(char *buf_p, int *count_p) {
 	*(com_port->eventFlagp) = 0;
 		
 	outportb(COM1_BASE, *(com_port->out_buff));
-	com_port->out_buff++;
+	//com_port->out_buff++;
 	com_port->out_done++;
 		
 	tmask = inportb(COM1_INT_EN);
