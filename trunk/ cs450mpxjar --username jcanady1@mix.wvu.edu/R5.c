@@ -141,7 +141,7 @@ int com_read(char* buf_p, int *count_p) {
 	com_port->in_buff = buf_p;
 	com_port->in_count = count_p;
 	com_port->in_done = 0;
-	com_port->eventFlagp = 0;
+	*(com_port->eventFlagp) = 0;
 	disable();
 	com_port->status = READING;
 	
@@ -170,7 +170,6 @@ int com_read(char* buf_p, int *count_p) {
 		*(com_port->in_count) = com_port->in_done; //returning number of characters written to calling process
 		*(com_port->eventFlagp) = 1; //set event flag to signal end of read
 	}	
-	enable();
     return OK;
 }
 
@@ -236,6 +235,7 @@ void interrupt com_check() {
   */
 void readCom() {
 	iochar = inportb(COM1_BASE);
+	if(temp < 0 || temp > 127)  return; //ignoring non-ascii characters
 	if(com_port->status == READING) {
 		if(iochar != '\r') { //if we are not done reading
 			com_port->in_buff[com_port->in_done] = iochar;
@@ -253,7 +253,7 @@ void readCom() {
 			com_port->ring_buffer[com_port->ring_buffer_in] = iochar;
 			com_port->ring_buffer_in++;
 			com_port->ring_buffer_count++;
-			if(com_port->ring_buffer_in > (RING_SIZE -1)) com_port->ring_buffer_in = 0; //wrapping around
+			if(com_port->ring_buffer_in > (RING_SIZE -1)) com_port->ring_buffer_in = 0; //wrap around
 		}
 	}
 }
@@ -262,7 +262,7 @@ void readCom() {
   */
 void writeCom() {
 	if(com_port->status == WRITING) {
-		if(com_port->out_done != *(com_port->out_count)) { //if writting is still possible
+		if(com_port->out_done != *(com_port->out_count)) { //if writing is still possible
 			iochar = com_port->out_buff[com_port->out_done];
 			com_port->out_done++;
 			outportb(COM1_BASE,iochar);
@@ -280,13 +280,11 @@ void writeCom() {
 /**
   */
 void stop_com_request() {
-	char temp;
-	//set Com to idle
+	char temp;	
 	com_port->status = IDLE;
 	temp = inportb(COM1_INT_EN);//turns read ints back on
 	temp = temp & ~0x02; //disable write
 	temp = temp | 0x01; //enable read
 	outportb(COM1_INT_EN, temp);
-	//set event flag
 	*(com_port->eventFlagp) = 1;
 }
