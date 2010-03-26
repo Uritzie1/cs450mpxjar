@@ -53,7 +53,6 @@
 #define COM1_INT_ID COM1_BASE+2
 #define COM1_LC COM1_BASE+3
 #define COM1_MC COM1_BASE+4
-//#define COM1_LS COM1_BASE+5
 #define COM1_MS COM1_BASE+6
 #define PIC_MASK 0x21
 #define PIC_CMD 0x20
@@ -77,15 +76,15 @@ typedef struct DCB {
 	int ring_buffer_in;    //
 	int ring_buffer_out;   //
 	int ring_buffer_count; //
-};
+} ;
 
 
 // Global Variables
-struct DCB *com_port;
+static struct DCB *com_port;
 static void interrupt (*oldfunc) (void);
-char iochar;
-char mask;
-int intType;
+static char iochar;
+static char mask;
+static int intType;
 
 // Function Prototypes
 int com_open (int *eflag_p, int baud_rate);
@@ -123,7 +122,7 @@ int com_open (int *eflag_p, int baud_rate) {
 	disable();
 	
 	mask = inportb(PIC_MASK);
-	mask = mask & 0x10;
+	mask = mask & ~0x10;
 	outportb(PIC_MASK, mask);
 	enable();
 	outportb(COM1_MC, 0x08);
@@ -184,7 +183,7 @@ int com_close() {
 	outportb(PIC_MASK, mask);
 	enable();
 		
-	outportb(COM1_MS, 0x00);
+	outportb(COM1_MC, 0x00);
 	outportb(COM1_INT_EN, 0x00);
 	setvect(COM1_INT_ID, oldfunc);
 	return OK;
@@ -255,7 +254,6 @@ void writeCom() {
   */
 void stop_com_request() {
 	char temp;
-
 	//set Com to idle
 	com_port->status = IDLE;
 	temp = inportb(COM1_INT_EN);//turns read ints back on
