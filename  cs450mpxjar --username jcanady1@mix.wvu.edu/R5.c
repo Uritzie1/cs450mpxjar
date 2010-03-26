@@ -164,14 +164,12 @@ int com_write(char *buf_p, int *count_p) {
 	*(com_port->eventFlagp) = 0;
 		
 	outportb(COM1_BASE, *com_port->out_buff);
-	//com_port->out_buff++;
+	com_port->out_buff++;
 	com_port->out_done++;
-	disable();
 		
 	mask = inportb(COM1_INT_EN);
 	mask = mask | 0x02;
 	outportb(COM1_INT_EN, mask);
-	enable();
 	return OK;
 }
 
