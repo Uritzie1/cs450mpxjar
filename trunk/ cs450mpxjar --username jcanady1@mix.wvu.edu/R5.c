@@ -235,7 +235,7 @@ void interrupt com_check() {
   */
 void readCom() {
 	iochar = inportb(COM1_BASE);
-	if(temp < 0 || temp > 127)  return; //ignoring non-ascii characters
+	if(iochar < 0 || iochar > 127)  return; //ignoring non-ascii characters
 	if(com_port->status == READING) {
 		if(iochar != '\r') { //if we are not done reading
 			com_port->in_buff[com_port->in_done] = iochar;
