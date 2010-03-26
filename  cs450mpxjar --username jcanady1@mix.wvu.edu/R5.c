@@ -142,7 +142,7 @@ int com_read(char* buf_p, int *count_p) {
 		com_port->ring_buffer_in = buf_p;
 		com_port->in_count = count_p;
 		com_port->in_done = 0;
-		com_port->eflag_p = 0;
+		com_port->eventFlagp = 0;
 		disable();
 		com_port->status = READING;
 	}
@@ -163,8 +163,8 @@ int com_write(char *buf_p, int *count_p) {
 		com_port->status = WRITING;
 		com_port->eventFlagp = 0;
 		
-		outportb(COM1_BASE, *com_port.out_buff);
-		com_port->out_buffer++;
+		outportb(COM1_BASE, *com_port->out_buff);
+		com_port->out_buff++;
 		com_port->out_done++;
 		disable();
 		
@@ -173,14 +173,15 @@ int com_write(char *buf_p, int *count_p) {
 		outportb(COM1_INT_EN, mask);
 		enable();
 	}
+	return OK;
 }
 
 /**
  */
 int com_close() {
-	if (com_port.flagOpen != OPEN) return ERR_CLOSE_PORT_NOT_OPEN;
+	if (com_port->flagOpen != OPEN) return ERR_CLOSE_PORT_NOT_OPEN;
 	else {
-		com_port.flagOpen = CLOSED;
+		com_port->flagOpen = CLOSED;
 		disable();
 		mask = inportb(PIC_MASK);
 		mask = mask | 0x10;
@@ -201,24 +202,11 @@ void interrupt com_check() {
 	if(com_port->flagOpen == OPEN) {
 		//gets interupt from COM1
 		intType = inportb(COM1_ID);
-		intType = tType & 0x07; 
-		//which op to call
-		if(intType == COM1_READ) readCom();
-		else if (intType == COM1_WRITE) writeCom();
-	}
-}
-
-/**
-  */
-void interrupt com_check() {
-	if(com_port->flagOpen == OPEN) {
-		//gets interupt from COM1
-		intType = inportb(COM1_ID);
 		intType = intType & 0x07; 
 		//which op to call
 		if(intType == COM1_READ) readCom();
 		else if (intType == COM1_WRITE) writeCom();
-	}	
+	}
 }
 
 
@@ -226,22 +214,24 @@ void interrupt com_check() {
   */
 void readCom() {
 	iochar = inportb(COM1_BASE);
-	if(com_port->status == READING){
+	if(com_port->status == READING) {
 		if(iochar != '\r') { //if we are not done reading
-			com_port->in_buff[com_port.in_done] = iochar;
-			com_port->in_done++;}
+			com_port->in_buff[com_port->in_done] = iochar;
+			com_port->in_done++;
+        }
 		if(iochar == '\r') { //if were are done reading
 			com_port->in_buff[com_port->in_done] = '\0';
-			com_port->status == IDLE;
-			*(com_port-eventFlagp) == 1;
+			com_port->status = IDLE;
+			*(com_port->eventFlagp) = 1;
 			*(com_port->in_count) = com_port->in_done;
-	}
-	else { //COM not Reading
-		if(com_port->ring_buffer_count < RING_SIZE){ // Ring Buffer not full
-			com_port->ring_buffer[ring_buffer_in] = iochar;
+	    }
+    }
+    else { //COM not Reading
+		if(com_port->ring_buffer_count < RING_SIZE ) { // Ring Buffer not full
+			com_port->ring_buffer[com_port->ring_buffer_in] = iochar;
 			com_port->ring_buffer_in++;
 			com_port->ring_buffer_count++;
-			if(com_port->ring_buffer_in > (RING_BUFFER_SIZE -1)) com_port->ring_buffer_in = 0; //wrapping around
+			if(com_port->ring_buffer_in > (RING_SIZE -1)) com_port->ring_buffer_in = 0; //wrapping around
 		}
 	}
 }
@@ -250,12 +240,12 @@ void readCom() {
   */
 void writeCom() {
 	if(com_port->status == WRITING) {
-		if(com_port->out_done != *(com_put->out_count){ //if writting is still possible
+		if(com_port->out_done != *(com_put->out_count) { //if writting is still possible
 			iochar = com_port->out_buff[com_port->out_done];
 			com_port->out_done++;
 			outportb(COM1_BASE,iochar);
 		}
-		else{ //done writting
+		else { //done writting
 			com_port->status = IDLE;
 			*(com_port->eventFlagp) = 1;
 			mask = inportb(COM1_INT_EN);
