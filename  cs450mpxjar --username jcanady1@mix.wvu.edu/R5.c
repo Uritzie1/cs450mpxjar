@@ -45,12 +45,12 @@
 #define CLOSED 0
 #define OPEN 1
 #define RING_SIZE 128
-#define COM1_ID 0x0c
+#define COM1_INT_ID 0x0c
 #define COM1_BASE 0x3f8
 #define COM1_INT_EN COM1_BASE+1
 #define COM1_BRD_LSB COM1_BASE
 #define COM1_BRD_MSB COM1_BASE+1
-#define COM1_INT_ID COM1_BASE+2
+#define COM1_INT_ID_REG COM1_BASE+2
 #define COM1_LC COM1_BASE+3
 #define COM1_MC COM1_BASE+4
 #define COM1_MS COM1_BASE+6
@@ -163,7 +163,7 @@ int com_write(char *buf_p, int *count_p) {
 	com_port->status = WRITING;
 	*(com_port->eventFlagp) = 0;
 		
-	outportb(COM1_BASE, *com_port->out_buff);
+	outportb(COM1_BASE, *(com_port->out_buff));
 	com_port->out_buff++;
 	com_port->out_done++;
 		
@@ -197,7 +197,7 @@ int com_close() {
 void interrupt com_check() {
 	if(com_port->flagOpen == OPEN) {
 		//gets interupt from COM1
-		intType = inportb(COM1_INT_ID);
+		intType = inportb(COM1_INT_ID_REG);
 		intType = intType & 0x07; 
 		//which op to call
 		if(intType == COM1_READ) readCom();
