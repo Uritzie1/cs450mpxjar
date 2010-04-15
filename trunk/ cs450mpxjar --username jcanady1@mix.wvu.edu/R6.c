@@ -1,97 +1,108 @@
-/* contains stuff to be added to other modules.*/
+/**
+ * File Name: R6.c
+ * \title JAROS
+ * \author Jonroy Canady
+ * \author Adam Trainer
+ * \author Rob Wayland   
+ * \date 4/15/2010
+ * \version: 6.0
+ *
+ * Components: 
+ *
+ *******************************************************************************
+ * Change Log:
+ *
+ *        4/15/2010  JC,RW,AT   Preliminary Code
+ */
 
 
-struct IOD
-{
+//Structures
+struct IOD {
 	char name[NAME_LENGTH];
 	PCB *requestor;
 	int request;
 	char *tran_buff;
 	int *buff_count;
 	struct IOD *next;
-}IOD;
+};
 
-
-struct IOCB
-{	int event_flag;
+struct IOCB {	
+    int event_flag;
 	int count;
 	struct IOD *head;
 	struct IOD *tail;
-}IOCB;
+};
 
+//Globals
 struct IOCB com_queue;
 struct IOCB term_queue;
 
-int IOschedule()
-{
+
+int IOschedule() {
 	int retq = 0;
 	int device_id = param_p->device_id;
 	struct *newIOD = createIOD();
 
-	if(device_id = COM){
+	if(device_id = COM) {
 		retq = enqueue(newIOD,com_queue);
-		if(retq == 1){
-			switch(IOD->request){
-				{case READ:
+		if(retq == 1) {
+			switch(IOD->request) {
+			case READ: {
 					//com_read
 					break;}
-			case WRITE:{
+			case WRITE: {
 					//com_write
 					break;}
-			case CLEAR:{
+			case CLEAR: {
 				    //com_clear
 					break;}
-			case GOTOXY:{
+			case GOTOXY: {
 				    //com_cotoxy
 					break;}
-			default:{
-					return ERR_UNKN_REQUEST}
+			default: {
+					return ERR_UNKN_REQUEST;}
 			}
 		}
 	}
-	else if(device_id = TERM)
-	{
-				retq = enqueue(newIOD,com_queue);
-		if(retq == 1){
-			switch(IOD->request){
-			case READ:{
+	else if(device_id = TERM) {
+	    retq = enqueue(newIOD,com_queue);
+		if(retq == 1) {
+			switch(IOD->request) {
+			case READ: {
 					//trm_read
 					break;}
-			case WRITE:{
+			case WRITE: {
 					//trm_write
 					break;}
-			case CLEAR:{
+			case CLEAR: {
 				    //trm_clear
 					break;	  }
-			case GOTOXY:{
+			case GOTOXY: {
 				    //trm_cotoxy
 					break;}
-			default:{
+			default: {
 					return ERR_UNKN_REQUEST}
 			}
-	}
-	else
-		return ERR_UNKN_DEVICE;
+	    }
+    }
+    else return ERR_UNKN_DEVICE;
 
-	  cop->state = BLOCKED;
-	  insert(cop, BLOCKED);
-
-	  return OK;
-
+    cop->state = BLOCKED;
+    insert(cop, BLOCKED);
+    return OK;
 }
-int enqueue(struct *IOD nIOD, struct *IOCB queue)
-{
+
+
+int enqueue(struct *IOD nIOD, struct *IOCB queue) {
 	int retv = 0;
 
-	if(queue->count = 0)
-	{
+	if(queue->count = 0) {
 		queue->head = nIOD;
 		queue->tail = nIOD;
 		queue->count = queue->count++;
 		retv = 1;
 	}
-	else
-	{
+	else {
 		queue->tail->next = nIOD;
 		queue->tail = nIOD;
 		queue->count = queue->count++;
@@ -100,9 +111,7 @@ int enqueue(struct *IOD nIOD, struct *IOCB queue)
 }
 
 
-
-struct *IOD createIOD()
-{
+struct *IOD createIOD() {
 	struct IOD *newIOD = NULL;
 	newIOD = sys_alloc_mem((sizeof(struct PCB)));
 	newIOD->name = cop->name;
