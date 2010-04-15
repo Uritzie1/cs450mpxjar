@@ -55,16 +55,16 @@ int IOschedule()
 		if(retq == 1){
 			switch(IOD->request){
 			case READ:{
-					//com_read
+					//trm_read
 					break;}
 			case WRITE:{
-					//com_write
+					//trm_write
 					break;}
 			case CLEAR:{
-				    //com_clear
+				    //trm_clear
 					break;	  }
 			case GOTOXY:{
-				    //com_cotoxy
+				    //trm_cotoxy
 					break;}
 			default:{
 					return ERR_UNKN_REQUEST}
