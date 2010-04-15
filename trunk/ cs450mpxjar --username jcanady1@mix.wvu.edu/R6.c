@@ -38,6 +38,28 @@ struct IOCB com_queue;
 struct IOCB term_queue;
 
 
+int main() {
+  sys_init(MODULE_F);
+  err = init_r1();
+  err = init_r2();
+  err = init_r3();
+  err = init_f();
+  com_open();
+  
+  load_prog("COMHAN", 127, SYS);
+  load_prog("IDLE.MPX", -127, SYS);
+  dispatcher();
+  
+  com_close();
+  err = cleanup_r1();
+  err = cleanup_r2();
+  err = cleanup_r3();
+  err = cleanup_f();
+  terminate_mpx();
+  return 0;
+}
+
+
 int IOschedule() {
 	int retq = 0;
 	int device_id = param_p->device_id;
