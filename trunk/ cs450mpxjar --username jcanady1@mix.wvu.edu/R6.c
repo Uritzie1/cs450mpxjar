@@ -76,6 +76,8 @@ int IOschedule()
 	  cop->state = BLOCKED;
 	  insert(cop, BLOCKED);
 
+	  return OK;
+
 }
 int enqueue(struct *IOD nIOD, struct *IOCB queue)
 {
