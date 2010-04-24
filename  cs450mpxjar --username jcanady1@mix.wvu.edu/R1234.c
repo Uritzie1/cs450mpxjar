@@ -1423,7 +1423,7 @@ int load_prog(char * fname, int pri, int procClass) {
 	if(NULL == (newNode = allocate_PCB())) return ERR_UCPCB;
 
 	setup_PCB(newNode,fname,procClass,pri);
-	if(!strcmp(fname, "IDLE\0", 5)) newNode->suspended = NOTSUSP;
+	if(!strncmp(fname, "IDLE\0", 5)) newNode->suspended = NOTSUSP;
 	else newNode->suspended = SUSP;
 
     newNode->mem_size = progLength;
