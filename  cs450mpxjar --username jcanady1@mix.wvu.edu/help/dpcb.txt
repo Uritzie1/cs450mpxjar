@@ -1,10 +1,15 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: Delete PCB
+NAME
+	dpcb -- delete a PCB
 
-Usage: deletepcb
+SYNOPSIS
+	dpcb
+	Please Enter the Name of the Process to Delete: NAME
+	PCB Successfully Deleted!
 
-Inputs: name of PCB
+DESCRIPTION
+	The dpcb command deallocates an existing PCB.
 
-Description:  Finds the PCB with user inputted name
-and deletes PCB freeing memory.
+ERRORS
+	ERR_PCBNF -- PCB not found

@@ -5,15 +5,15 @@ NAME
 
 SYNOPSIS
 	cpcb
-	Please Enter the Name of the Process to be Created: PCB_Name
-	Please Enter the Class of the Process to be Created: PCB_Class
-	Please Enter the Priority of the Process to be Created: PCB_Priority
+	Please Enter the Name of the Process to be Created: NAME
+	Please Enter the Class of the Process to be Created: CLASS
+	Please Enter the Priority of the Process to be Created: PRIORITY
 
 DESCRIPTION
 	The cpcb command allocates and setups a new PCB.  By default,
 	the process is initially in the Ready state.
 
 ERRORS
-	ERR_PRONTL -- Process name is too long
-	ERR_NAMEAE -- Process name already in use
-	ERR_INVCLS -- Invalid process class
+	ERR_PRONTL -- process name is too long
+	ERR_NAMEAE -- process name already in use
+	ERR_INVCLS -- invalid process class

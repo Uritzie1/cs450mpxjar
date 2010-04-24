@@ -1,11 +1,16 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: Help
+NAME
+	help -- display all available commands
 
-Usage: help
+SYNOPSIS
+	help
+	Help: Enter Command (or List for Command List): COMMAND
+	...
 
-Inputs: function name to show help for it, 
-or "list" to give limited help on all functions
+DESCRIPTION
+	The help command displays "help" information for MPX and for each 	command.  Paging is supported.
 
-Description:  Using the help command prompts the user for a 
-function name and then displays detailed help on that function.
+ERRORS
+	ERROR_SUP_FILNFD -- file not found 
+	ERR_INVCOM       -- invalid command
