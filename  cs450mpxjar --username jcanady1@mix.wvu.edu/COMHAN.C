@@ -4,7 +4,7 @@
  **																																	   **
  **		FILENAME -- COMHAN.c																										   **	
  **      AUTHORS -- Jonroy Canaday, Adam Trainer, Robert Wayland																	   **
- **      VERSION -- 2.0,																											   **
+ **      VERSION -- 2.0																												   **
  ** LAST UPDATED -- April 24, 2010																									   **
  **																																	   **
  **   COMPONENTS -- cleanup_r1, comhan, date, disp_dir, err_hand, get_Version, help, init_r1, terminate_mpx, toLowerCase, trim,		   **
@@ -18,15 +18,15 @@
  **       01/28/2010  JC, RW       slight function editing of COMHAN.c																   **
  **       02/01/2010  JC, RW       initial errors resolved; successful compilation of COMHAN.c										   **
  **       02/02/2010  JC, RW       version and help functionality added to COMHAN.c													   **
- **       02/03/2010  JC           dir, date, and err_hand functionality added, functional R1 COMHAN.c								   **
+ **       02/03/2010  JC           dir, date, and err_hand functionality added; functional R1 COMHAN.c								   **
  **       02/04/2010  JC, RW, AT   help functionality added; documentation added; completed R1 COMHAN.c								   **
- **       02/08/2010  JC           dir functionality improved; additional documentation added										   **
- **		  04/23/2010  AT		   code review, additional documentation added														   **
+ **       02/08/2010  JC           dir functionality improved; documentation added													   **
+ **		  04/23/2010  AT		   code review; additional documentation added														   **
  ****************************************************************************************************************************************
  ****************************************************************************************************************************************
  */
 
-/* Included ANSI Files */
+/* Included ANSI C Files */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -293,6 +293,7 @@ int comhan()
 		
 		/* Error Handling for Invalid Commands */
 		else if (!strncmp(cmd, "\n", 1));
+		
 		else err_hand(ERR_INVCOM);
 	}
 	
