@@ -1,10 +1,16 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: Dispatch
+NAME
+	dispat -- identify the next READY process, if any, and load its
+		   context from its PCB
 
-Usage: dispat
+SYNOPSIS
+	***NONE***
 
-Inputs: none
-
-Description:  Calls dispatcher who loads the next read process 
-or takes no action if none are ready
+DESCRIPTION
+	The dispat command identifies the next READY process, if any, and 	dispatches it by loading its context from its PCB.  Assuming that a 	PCB is found in the ready queue, the dispatcher must perform the 	following steps:
+	
+	1. Remove the first PCB from the READY queue.
+	2. Set a pointer to this PCB identifying it as the RUNNING process.
+	3. Copy the stack pointer from this PCB to the actual SP to prepare
+	   for context restoration.

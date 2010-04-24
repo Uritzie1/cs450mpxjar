@@ -1,14 +1,21 @@
 			 JAROS General Commands Manual
 
 NAME
+	date -- display and change the system date
+
+SYNOPSIS
 	date
-	The current date is (MM/DD/YYYY):
-	Would you like to change the date (Y/N)? Y
-	Please enter the new year (YYYY): 
+	The Current Date Is (MM/DD/YYYY): CURRENT_DATE
+	Would You Like to Change the Date (Y/N): Yes_or_No
+	Please Enter the New Year (YYYY): YEAR
+	Please Enter the New Month (MM): MONTH
+	Please Enter the New Day (DD): DAY
+	You Input MONTH/DAY/YEAR 
 
-Usage: date
+DESCRIPTION
+	The date command displays and if specified, changes the system 		date.
 
-Inputs: Day, Month and Year of new date, or nothing to display only date.
-
-Description:  Using the date command prompts the user for a new 
-date if desired or simply displays the current date.
+ERRORS
+	ERR_INVYR  -- invalid year parameter
+	ERR_INVMON -- invalid month parameter
+	ERR_INVDAY -- invalid day parameter

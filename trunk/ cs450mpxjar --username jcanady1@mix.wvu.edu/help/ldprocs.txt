@@ -1,9 +1,13 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: Load Processes
+NAME
+	ldprocs -- load five, pre-defined processes
 
-Usage: ldprocs
+SYNOPSIS
+	***NONE***
 
-Inputs: none
+DESCRIPTION
+	The ldprocs loads 5, pre-defined processes for testing purposes.
 
-Description:  Loads 5 predefined processes.
+ERRORS
+	ERR_PCBNF -- PCB not found

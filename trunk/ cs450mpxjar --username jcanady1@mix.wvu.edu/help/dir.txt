@@ -1,9 +1,17 @@
-Funtion Help
+			 JAROS General Commands Manual
 
-Name:  List Directory
+NAME
+	dir -- display information about all files present in a specific
+	       directory
 
-Usage: dir
+SYNOPSIS
+	dir
+	File Name	Size (bytes)
+	   É		     É
 
-Inputs: none
+DESCRIPTION
+	The dir command displays information about all files present in a
+	specific directory which contains executable MPX processes.  
 
-Description:  Lists all the files in the current directory
+ERRORS
+	ERR_SUP_NOENTR --  no more directory entries

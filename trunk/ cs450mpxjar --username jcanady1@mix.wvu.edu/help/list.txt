@@ -1,6 +1,6 @@
-Function list:
+			 JAROS General Commands Manual
 
-Name:		Usage:		Description:
+NAME		USAGE		DESCRIPTION
 Version		ver		list the current version
 
 Help		help		displays help information
