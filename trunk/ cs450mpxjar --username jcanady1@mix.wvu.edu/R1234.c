@@ -1375,7 +1375,8 @@ int load_test() {
 	return err3;
 }
 
-
+/*
+ */
 int load_prog(char * fname, int pri) {
 	int offset_p;
 	int progLength;
