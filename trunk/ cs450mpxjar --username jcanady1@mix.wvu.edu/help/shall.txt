@@ -1,9 +1,10 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: Show All
+NAME
+	shall -- display information about all PCBs which are currently in 		 use
 
-Usage: showall
-
-Inputs: none
-
-Description:  Prints all PCB current enqueued.
+SYNOPSIS
+	shall
+	
+DESCRIPTION
+	The shall command displays information about all PCBs which are 	currently in use.

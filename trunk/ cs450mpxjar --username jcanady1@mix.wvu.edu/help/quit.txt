@@ -1,9 +1,11 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: quit
+NAME
+	quit - stop execution of MPX
 
-Usage: quit
+SYNOPSIS
+	quit
+	Are You Sure You Want to Terminate MPX (Y/N): Yes_or_No
 
-Inputs: none
-
-Description:  Quits JAROS after confirmation.
+DESCRIPTION
+	The quit command stops execution of MPX and returns to the host 	operating system.

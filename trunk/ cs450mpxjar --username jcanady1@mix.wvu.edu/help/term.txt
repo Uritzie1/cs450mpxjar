@@ -1,10 +1,11 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: Terminate
+NAME
+	term -- terminate a process by deallocating its PCB and releasing 		its allocated program memory
 
-Usage: term
+SYNOPSIS
+	term
+	Please Enter the Name of the Process to be Deleted: NAME
 
-Inputs: name of process
-
-Description:  Finds the process with user inputted name
-and deletes process freeing memory.
+DESCRIPTION
+	The term command terminates a process by deallocating its PCB and 	releasing its allocated program memory.

@@ -1,16 +1,11 @@
 			 JAROS General Commands Manual
 
 NAME
-	help -- display all available commands
+	help -- display information about a command
 
 SYNOPSIS
 	help
 	Help: Enter Command (or List for Command List): COMMAND
-	...
 
 DESCRIPTION
 	The help command displays "help" information for MPX and for each 	command.  Paging is supported.
-
-ERRORS
-	ERROR_SUP_FILNFD -- file not found 
-	ERR_INVCOM       -- invalid command

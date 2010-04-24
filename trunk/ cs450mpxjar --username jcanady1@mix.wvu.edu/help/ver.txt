@@ -1,9 +1,10 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: Version
+NAME
+	ver -- display a brief description of the version of MPX that is 	       currently running
 
-Usage: ver
+SYNOPSIS
+	ver
 
-Inputs: none
-
-Description: Version returns the current version number of JAROS.
+DESCRIPTION
+	The ver command displays a brief description of the version of MPX 	that is currently running.

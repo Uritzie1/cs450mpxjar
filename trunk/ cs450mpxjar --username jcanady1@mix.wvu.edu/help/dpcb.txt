@@ -6,10 +6,6 @@ NAME
 SYNOPSIS
 	dpcb
 	Please Enter the Name of the Process to Delete: NAME
-	PCB Successfully Deleted!
 
 DESCRIPTION
 	The dpcb command deallocates an existing PCB.
-
-ERRORS
-	ERR_PCBNF -- PCB not found

@@ -11,9 +11,4 @@ SYNOPSIS
 
 DESCRIPTION
 	The cpcb command allocates and setups a new PCB.  By default,
-	the process is initially in the Ready state.
-
-ERRORS
-	ERR_PRONTL -- process name is too long
-	ERR_NAMEAE -- process name already in use
-	ERR_INVCLS -- invalid process class
+	the process is initially in the READY state.

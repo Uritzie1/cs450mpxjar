@@ -1,11 +1,10 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: Help
+NAME
+	shready -- display information about all processes which are 			   currently in the READY state or SUSPENDED-READY state
 
-Usage: help
+SYNOPSIS
+	shready
 
-Inputs: function name to show help for it, 
-or "list" to give limited help on all functions
-
-Description:  Using the help command prompts the user for a 
-function name and then displays detailed help on that function.
+DESCRIPTION
+	The shready command displays information about all process which 	are currently in the READY state or SUSPENDED-READY state.
