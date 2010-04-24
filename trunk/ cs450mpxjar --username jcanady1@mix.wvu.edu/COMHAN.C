@@ -97,7 +97,7 @@ void trim(char ary[BIGBUFF]);
  **        Procedure Name -- main																									   **
  **               Purpose -- The main function is where the the program begins execution.											   **
  **            Parameters -- N/A																									   **
- **			 Return Value -- int																									   **
+ **			 Return Value -- int - an error code																					   **
  **     Procedures Called -- sys_init, init_r1, init_r2, init_r3, comhan, cleanup_r1, cleanup_r2, cleanup_r3, terminate_mpx			   **
  **  Global Data Accessed -- int err																								   **
  **  Summary of Algorithm -- The main function initializes the system, calls comhan, cleans up the OS, and terminates JAROS.  		   **
@@ -115,6 +115,7 @@ int main()
 	err = cleanup_r2();
 	err = cleanup_r3();
 	terminate_mpx();
+	
 	return 0;
 }
 
@@ -123,7 +124,7 @@ int main()
  **        Procedure Name -- comhan																									   **
  **               Purpose -- The comhan function is where JAROS begins execution.													   **
  **            Parameters -- N/A																									   **
- **			 Return Value -- int																									   **
+ **			 Return Value -- int - an error code																					   **
  **     Procedures Called -- printf, memset, sys_req, trim, toLowerCase, strncmp, strlen, terminate_mpx, get_Version, help, err_hand,  **
  **							 date, disp_dir, create_PCB, delete_PCB, block, unblock, suspend, resume, set_Priority, show_PCB,		   **
  **						     show_All, show_Ready, show_Blocked, load_test															   **
@@ -307,7 +308,7 @@ int comhan()
  **							 (apparently) contains executable MPX processes.  These files are recognized by their filename extension:  **
  **							 ".mpx".																								   **
  **            Parameters -- N/A																									   **
- **			 Return Value -- int																									   **
+ **			 Return Value -- int - an error code																					   **
  **     Procedures Called -- memset, strcat, sys_open_dir, printf, sys_get_entry, sys_close_dir										   **
  **  Global Data Accessed -- int err, char wd[]																						   **
  **  Summary of Algorithm -- The disp_dir function opens the current working directory, display the contents of the directory,		   **
@@ -353,7 +354,7 @@ int disp_dir()
  **			 Return Value -- void																									   **
  **     Procedures Called -- memset, printf, sys_req, err_hand, trim, toLowerCase, cleanup_r1, cleanup_r2, cleanup_r3. sys_exit		   **
  **  Global Data Accessed -- int err																								   **
- **  Summary of Algorithm -- The terminate_mpx function prompts the user for confirmation.  If "Y", JAROS continues execution. 		   **
+ **  Summary of Algorithm -- The terminate_mpx function prompts the user for confirmation.  If "Y", JAROS terminates execution. 	   **
  ****************************************************************************************************************************************
  ****************************************************************************************************************************************
  */
@@ -398,158 +399,236 @@ void terminate_mpx()
  **			 Return Value -- void																									   **
  **     Procedures Called -- printf																									   **
  **  Global Data Accessed -- N/A																									   **
- **  Summary of Algorithm -- The get_Version prints the value of the VERSION macro.													   **
+ **  Summary of Algorithm -- The get_Version function prints the value of the VERSION macro.										   **
  ****************************************************************************************************************************************
  ****************************************************************************************************************************************
  */
 void get_Version()
 {
-	printf("JAROS Current Version: %f", VERSION);
+	printf("JAROS Current Version -- %f", VERSION);
 }
 
-/** Procedure Name: trim
- * \praram ary is a character array that holds the string to be trimmed
- * \return none
- * Procedures Called: isspace
- * Globals Used: none
- * \details Description/Purpose: trims all white space AND newlines from the entirety of
- *   the string passed in.
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- trim																									   **
+ **               Purpose -- The trim function removes extraneous whitespace and newlines from user input.							   **
+ **            Parameters -- char [] - a buffer containing user input																   **
+ **			 Return Value -- void																									   **
+ **     Procedures Called -- isspace																								   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The trim function loops through a buffer, removing whitespace and newlines from the user input.		   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
  */
- void trim(char ary[BIGBUFF]) {
-   char temp[BIGBUFF] = {0};
-   int i,j = 0;
-   for(i = 0;i<BIGBUFF;i++) {
-	 if(!isspace(ary[i])) {
-	   if(ary[i] == 12) j++;  //trims newlines
-	   else {
-	     temp[j] = ary[i];
-	     j++;
-	   }
-	 }
-   }
-   for(i = 0;i < BIGBUFF;i++) ary[i] = temp[i];
+ void trim(char ary[BIGBUFF]) 
+{
+	char temp[BIGBUFF] = {0};
+	int i,j = 0;
+	
+	for (i = 0; i < BIGBUFF; i++) 
+	{
+		if (!isspace(ary[i])) 
+		{
+			if (ary[i] == 12) j++;  // Trim Newlines
+			
+			else 
+			{
+				temp[j] = ary[i];
+				j++;
+			}
+		}
+	}
+	
+	for (i = 0; i < BIGBUFF; i++) ary[i] = temp[i];
 }
 
-/** Procedure Name: help
- * \param none
- * \return err an integer error code
- * Procedures Called: sys_req, err_hand, trim, strcat, fopen, fgets, fclose
- * Globals Used: 
- * @var fcns
- * @var err
- * \details Description/Purpose: displays a list of available functions and a short
- *   description of each.  It then asks the user to input a function name if
- *   s/he wants a more detailed description.
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- help																									   **
+ **               Purpose -- The help function displays help information for MPX and for each command.								   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- sys_req, trim, toLowerCase, strlen, strncmp, strcat, fopen, fgets, printf, err_hand, fclose			   **
+ **  Global Data Accessed -- int err, char wd[]																						   **
+ **  Summary of Algorithm -- The help function processes user input, and displays help information for a specific command.			   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
  */
-int help() {
-  FILE *fptr = 0;
-  int i,j = 0;
-  int bufsize = BIGBUFF;
-  char buffer[BIGBUFF] = {0};
-  char wdc[BIGBUFF*2] = {0};
-  char tbuffer[9] = "\\help\\";
-  for(i = 0; i < BIGBUFF * 2; i++)
-  wdc[i] = wd[i];
-
-  printf("Help: enter command (or list for command list): ");
-  if ((err = sys_req(READ, TERMINAL, buffer, &bufsize)) < OK) return err;
-  trim(buffer);
-  toLowerCase(buffer);
-  for(i = 0; i < strlen(fcns);i++) if(!strncmp(fcns[i],buffer, strlen(fcns[i]))) j++;
-  if(j > 0){                //build file path
-    strcat(wdc,tbuffer);
-    strcat(wdc,buffer);
-    strcat(wdc,".txt");
-    //printf("%s",wdc);
-    if ((fptr = fopen(wdc,"r")) > 0) {
-      i = 0;
-      while(fgets(buffer,BIGBUFF,fptr)) {
-	    printf("%s",buffer);
-	    i++;
-	    if(i == 24) {        //paging
-	      printf("Press any key to continue");
-	      err = sys_req(READ, TERMINAL, buffer, &bufsize);
-	      i = 0;
-	    }
-      }
-    }
-    else {
-      printf("Help: ");
-      err_hand(ERR_SUP_FILNFD);
-    }
-  }
-  else err_hand(ERR_INVCOM);
-  fclose(fptr);
-  return err;
+int help() 
+{
+	FILE *fptr           = 0;
+	int i,j              = 0;
+	int bufsize          = BIGBUFF;
+	char buffer[BIGBUFF] = {0};
+	char wdc[BIGBUFF*2]  = {0};
+	char tbuffer[9]      = "\\help\\";
+	
+	for (i = 0; i < BIGBUFF * 2; i++) wdc[i] = wd[i];
+	
+	printf("Enter a Command or Type \'list\' for a List of Available Commands: ");
+	
+	if ((err = sys_req(READ, TERMINAL, buffer, &bufsize)) < OK) return err;
+	
+	trim(buffer);
+	toLowerCase(buffer);
+	
+	for (i = 0; i < strlen(fcns); i++) if (!strncmp(fcns[i], buffer, strlen(fcns[i]))) j++;
+	
+	if (j > 0) // Build File Path
+	{                
+		strcat(wdc,tbuffer);
+		strcat(wdc,buffer);
+		strcat(wdc,".txt");
+		//printf("%s",wdc);
+		
+		if ((fptr = fopen(wdc,"r")) > 0) 
+		{
+			i = 0;
+			
+			while (fgets(buffer, BIGBUFF, fptr)) 
+			{
+				printf("%s",buffer);
+				i++;
+				
+				if (i == 24) // Paging Functionality 
+				{
+					printf("Press Any Key to Continue");
+					err = sys_req(READ, TERMINAL, buffer, &bufsize);
+					i = 0;
+				}
+			}
+		}
+		
+		else 
+		{
+			printf("Help: ");
+			err_hand(ERR_SUP_FILNFD);
+		}
+	}
+	
+	else err_hand(ERR_INVCOM);
+	
+	fclose(fptr);
+	
+	return err;
 }
 
-/** Procedure Name: date
- * \param: none
- * \return err an integer error code
- * Procedures Called: sys_get_date, sys_req, atoi, err_hand, valid_date, sys_set_date
- * Globals Used: 
- * @var err
- *\details Description/Purpose: displays the current date in MM/DD/YYYY format. It then
- *   asks the user if s/he wants to set a new date. If so, it asks for a new
- *   year, then a new month, and lastly a new day. Determines date validity.
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- date																									   **
+ **               Purpose -- The help function displays the current date and prompts the user as to whether or not he wants to		   **
+							 change the system date.																				   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- sys_get_date, printf, sys_req, trim, toLowerCase, atoi, err_hand										   **
+ **  Global Data Accessed -- int err																								   **
+ **  Summary of Algorithm -- The help function processes user input, and displays help information for a specific command.			   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
  */
-int date() {
-  char buff[BIGBUFF];
-  int buffsize = BIGBUFF;
-  int x = 1, temp;
-  date_rec *date_p;
+int date() 
+{
+	char buff[BIGBUFF];
+	int buffsize = BIGBUFF;
+	int x = 1, temp;
+	date_rec *date_p;
   
-  sys_get_date(date_p);      //show current date and prompt for change
-  printf("The current date is (MM/DD/YYYY): %d/%d/%d",date_p->month,date_p->day,date_p->year);
-  printf("\nWould you like to change the date (Y/N)? ");
-  err = sys_req(READ, TERMINAL, buff, &buffsize);
-  if (err < OK) return err;
-  trim(buff);
-  toLowerCase(buff);
-  if (buff[0] == 'y') {
-    while (x) {  //change year prompt
-      printf("Please enter the new year (YYYY): ");
-      err = sys_req(READ, TERMINAL, buff, &buffsize);
-      if (err < OK) return err;
-      temp = atoi(buff);
-      if (temp==0) err_hand(ERR_INVYR);  //validate input
-      else if (temp >= 0 && temp < 10000) x = 0;
-      else err_hand(ERR_INVYR);
-    }
-    x = 1;
-    date_p->year = temp; 
-
-    while(x) {  //change month prompt
-      printf("Please enter the new month (MM): ");
-      err = sys_req(READ, TERMINAL, buff, &buffsize);
-      if (err < OK) return err;
-      temp = atoi(buff);
-      if (temp==0) err_hand(ERR_INVMON);  //validate input
-      else if (temp >= 1 && temp <= 12) x = 0;
-      else err_hand(ERR_INVMON);
-    }
-    x = 1;
-    date_p->month = temp;
-
-    while(x) {  //change day prompt
-      printf("Please enter the new day (DD): ");
-      err = sys_req(READ, TERMINAL, buff, &buffsize);
-      if (err < OK) return err;
-      temp = atoi(buff);
-      printf("You input %d/%d/%d\n",date_p->month,temp,date_p->year);
-      if (temp==0) err_hand(ERR_INVDAY);  //validate input
-      else if (valid_date(date_p->year,date_p->month,temp)) x = 0;
-      else err_hand(ERR_INVDAY);
-    }
-    date_p->day = temp;
-
-    err = sys_set_date(date_p);
-    if (err < OK) return err;
-    printf("The new date is (MM/DD/YYYY): %d/%d/%d",date_p->month,date_p->day,date_p->year);
-  }
-  else printf("Date change aborted.");
-  return err;
+	sys_get_date(date_p);
+	printf("The Current Date Is (MM/DD/YYYY): %d/%d/%d",date_p->month,date_p->day,date_p->year);
+	printf("\nWould You Like to Change the Date (Y/N): ");
+	err = sys_req(READ, TERMINAL, buff, &buffsize);
+  
+	if (err < OK) return err;
+  
+	trim(buff);
+	toLowerCase(buff);
+  
+	if (buff[0] == 'y') 
+	{
+		/* Change Year */
+		while (x) 
+		{
+			printf("Please Enter the New Year (YYYY): ");
+			err = sys_req(READ, TERMINAL, buff, &buffsize);
+			
+			if (err < OK) return err;
+			
+			temp = atoi(buff);
+			
+			if (temp==0) err_hand(ERR_INVYR); // Validate Input
+			
+			else if (temp >= 0 && temp < 10000) x = 0;
+			
+			else err_hand(ERR_INVYR);
+		}
+		
+		x			 = 1;
+		date_p->year = temp; 
+		
+		/* Change Month */
+		while (x) 
+		{
+			printf("Please Enter the New Month (MM): ");
+			err = sys_req(READ, TERMINAL, buff, &buffsize);
+      
+			if (err < OK) return err;
+      
+			temp = atoi(buff);
+      
+			if (temp==0) err_hand(ERR_INVMON); // Validate Input
+      
+			else if (temp >= 1 && temp <= 12) x = 0;
+      
+			else err_hand(ERR_INVMON);
+		}
+		
+		x			  = 1;
+		date_p->month = temp;
+		
+		/* Change Day */
+		while (x) 
+		{
+			printf("Please Enter the New Day (DD): ");
+			err = sys_req(READ, TERMINAL, buff, &buffsize);
+      
+			if (err < OK) return err;
+			
+			temp = atoi(buff);
+      
+			printf("You Input %d/%d/%d\n",date_p->month,temp,date_p->year);
+      
+			if (temp==0) err_hand(ERR_INVDAY);  //validate input
+      
+			else if (valid_date(date_p->year,date_p->month,temp)) x = 0;
+      
+			else err_hand(ERR_INVDAY);
+		}
+		
+		date_p->day = temp;
+		err = sys_set_date(date_p);
+		
+		if (err < OK) return err;
+    
+		printf("The New Date Is (MM/DD/YYYY): %d/%d/%d",date_p->month,date_p->day,date_p->year);
+	}
+	
+	else printf("Aborted Date Change");
+  
+	return err;
 }
+
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- valid_date																								   **
+ **               Purpose -- The valid_date function verifies that the user-inputted date is a valid date.							   **
+ **            Parameters -- int yr, int mo, int day																				   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- sys_get_date, printf, sys_req, trim, toLowerCase, atoi, err_hand										   **
+ **  Global Data Accessed -- int err																								   **
+ **  Summary of Algorithm -- The help function processes user input, and displays help information for a specific command.			   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
 
 /** Procedure Name: valid_date
  * \param yr int representing the year
@@ -562,7 +641,8 @@ int date() {
  * \details Description/Purpose: validates the date passed in, checking that the day is
  *   within the range allowed by the month. Accounts for leap years.
  */
-int valid_date(int yr, int mo, int day) {
+int valid_date(int yr, int mo, int day) 
+{
   int leap = 0, valid = 1;
   if (((yr % 4 == 0) && (yr % 100 != 0)) || (yr % 400 == 0)) leap = 1;  //determine if leap year
   if ((mo == 1 || mo == 3 || mo == 5 || mo == 7 || mo == 8 || mo == 10 || mo == 12 || mo == 14) && (day >= 1 && day <= 31)) return valid; //check 31-day months
