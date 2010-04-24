@@ -102,7 +102,7 @@ void interrupt sys_call();
 void interrupt dispatcher();
 int load_test();
 //
-int load_prog(char * fname, int pri);
+int load_prog(char * fname, int pri, int procClass);
 int terminate();
 int load();
 
@@ -117,14 +117,44 @@ int load();
  *   terminate)
  */
 int main() {
+  struct PCB *np;
+  struct context *npc;
+  
   sys_init(MODULE_R4);
   err = init_r1();
   err = init_r2();
   err = init_r3();
-  err = comhan();
+  err = init_f();
+  com_open();
+  
+  np = allocate_PCB();
+  if (np == NULL) err = ERR_UCPCB;
+  else {
+    err = setup_PCB(np, "comhan",SYS,127);
+    if (err < OK) return err;
+   	sys_free_mem(np->stack_base);
+	np->stack_base = (unsigned char*)sys_alloc_mem(COMHAN_STACK_SIZE*sizeof(unsigned char));
+	np->stack_top = np->stack_base + COMHAN_STACK_SIZE - sizeof(struct context);
+    npc = (struct context*) np->stack_top;
+    npc->IP = FP_OFF(&comhan); 
+    npc->CS = FP_SEG(&comhan);
+    npc->FLAGS = 0x200;
+    npc->DS = _DS;
+    npc->ES = _ES;
+    err = insert(np,RUNNING);
+  }
+  
+  load_prog("IDLE\0", -128, SYS);
+  temppcb = findPCB(buff, temppcb);
+  temppcb->suspended = NOTSUSP;
+  
+  dispatcher();
+  
+  com_close();
   err = cleanup_r1();
   err = cleanup_r2();
   err = cleanup_r3();
+  err = cleanup_f();
   terminate_mpx();
   return 0;
 }
@@ -990,13 +1020,13 @@ int free_PCB(struct PCB *PCBptr) {
 * \param name : char array with PCB name
 * \param proc_class : class of the PCB
 * \param priority : int that set priority
-* \return an integer error code (o for now)
+* \return an integer error code (0 for now)
 * Procedures Called: sys_req, trim, toLowerCase, findPCB
 * Globals Used: err
 * \brief Description: sets the contents of a PCB
 */
 int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
-    errx = 0;
+    err = 0;
 	strncpy((PCBptr->name), name,PROCESS_NAME_LENGTH);
 	(PCBptr->proc_class) = proc_class;
 	(PCBptr->priority) = priority;
@@ -1377,7 +1407,7 @@ int load_test() {
 
 /*
  */
-int load_prog(char * fname, int pri) {
+int load_prog(char * fname, int pri, int procClass) {
 	int offset_p;
 	int progLength;
 	struct PCB *newNode;
@@ -1395,8 +1425,9 @@ int load_prog(char * fname, int pri) {
 	if(err4 < OK) return err4;
 	if(NULL == (newNode = allocate_PCB())) return ERR_UCPCB;
 
-	setup_PCB(newNode,fname,APP,pri);
-	newNode->suspended = SUSP;
+	setup_PCB(newNode,fname,procClass,pri);
+	if(!strcmp(fname, "IDLE\0", 5)) newNode->suspended = NOTSUSP;
+	else newNode->suspended = SUSP;
 
     newNode->mem_size = progLength;
 	newNode->load_address = (unsigned char*)sys_alloc_mem(progLength);
@@ -1409,7 +1440,7 @@ int load_prog(char * fname, int pri) {
 	cp->ES = _ES;
 	cp->FLAGS = 0x200;
 	
-	err4 = sys_load_program(newNode->load_address, newNode->mem_size, "PROCS",fname);
+	err4 = sys_load_program(newNode->load_address, newNode->mem_size, "MPXFILES",fname);
 	if(err4>=OK) err4 = insert(newNode,RUNNING);
 	if(err4>=OK) printf("Program successfully loaded!");
 	return err4;
@@ -1434,7 +1465,7 @@ int load() {
     temppcb = findPCB(buff,temppcb);
 	if (temppcb != NULL) return ERR_NAMEAE;
     strncpy(name,buff,PROCESS_NAME_LENGTH);
-    load_prog(name,0);
+    load_prog(name,0,APP);
     return err4;
 }
 

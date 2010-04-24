@@ -15,6 +15,7 @@
  *        4/15/2010  JC,RW,AT   Preliminary Code
  */
 
+#define COMHAN_STACK_SIZE 4096
 
 //Structures
 struct IOD {
@@ -50,20 +51,26 @@ int main() {
   com_open();
   
   np = allocate_PCB();
-  if (np == NULL) err3 = ERR_UCPCB;
+  if (np == NULL) err = ERR_UCPCB;
   else {
-    err3 = setup_PCB(np, "test5",0,0);
-    if (err3 < OK) return err3;
+    err = setup_PCB(np, "comhan",SYS,127);
+    if (err < OK) return err;
+   	sys_free_mem(np->stack_base);
+	np->stack_base = (unsigned char*)sys_alloc_mem(COMHAN_STACK_SIZE*sizeof(unsigned char));
+	np->stack_top = np->stack_base + COMHAN_STACK_SIZE - sizeof(struct context);
     npc = (struct context*) np->stack_top;
-    npc->IP = FP_OFF(&COMHAN); 
-    npc->CS = FP_SEG(&test5_R3);
+    npc->IP = FP_OFF(&comhan); 
+    npc->CS = FP_SEG(&comhan);
     npc->FLAGS = 0x200;
     npc->DS = _DS;
     npc->ES = _ES;
-    err3 = insert(np,RUNNING);
+    err = insert(np,RUNNING);
   }
   
-  load_prog("IDLE.MPX", -127, SYS);
+  load_prog("IDLE\0", -128, SYS);
+  temppcb = findPCB(buff, temppcb);
+  temppcb->suspended = NOTSUSP;
+  
   dispatcher();
   
   com_close();
