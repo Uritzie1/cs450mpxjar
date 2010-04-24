@@ -53,16 +53,16 @@
 #define NUM_DEVS	3
 
 // Status & Error Codes
-#define ERR_INVCOM (-201)    //Invalid command
-#define ERR_INVYR  (-202)    //Invalid year
-#define ERR_INVMON (-203)    //Invalid month
-#define ERR_INVDAY (-204)    //Invalid day
-#define ERR_PCBNF  (-205)    //PCB Not Found
-#define ERR_QUEEMP (-206)    //Queue is Empty
-#define ERR_UCPCB  (-207)    //Unable to Create PCB
-#define ERR_PRONTL (-208)    //Process Name too Long
-#define ERR_NAMEAE (-209)    //Process Name Already Exists
-#define ERR_INVCLS (-210)    //Invalid Class
+#define ERR_INVCOM (-201)    // Invalid Command
+#define ERR_INVYR  (-202)    // Invalid Year
+#define ERR_INVMON (-203)    // Invalid Month
+#define ERR_INVDAY (-204)    // Invalid Day
+#define ERR_PCBNF  (-205)    // PCB Not Found
+#define ERR_QUEEMP (-206)    // Queue Is Empty
+#define ERR_UCPCB  (-207)    // Unable to Create PCB
+#define ERR_PRONTL (-208)    // Process Name Too Long
+#define ERR_NAMEAE (-209)    // Process Name Already Exists
+#define ERR_INVCLS (-210)    // Invalid Class
 
 /* Macros */
 #define PROCESS_NAME_LENGTH 10
