@@ -73,10 +73,10 @@
 #define VERSION    2.0
 
 /* Global Variables */
-int err            = 0;  // Stores Error Codes
+int err            = 0;  // Error Codes
 char * fcns[20]    = {"date\0", "help\0", "ver\0", "dir\0", "quit\0", "list\0", "cpcb\0", "dpcb\0", "block\0", "unblock\0", "suspend\0", 
-					  "resume\0", "setpri\0", "shpcb\0", "shall\0", "shready\0", "shblock\0", "dispat\0", "ldprocs\0", NULL}; // List of Functions
-char wd[BIGBUFF*2] = {0}; // Working Directory
+					  "resume\0", "setpri\0", "shpcb\0", "shall\0", "shready\0", "shblock\0", "dispat\0", "ldprocs\0", NULL}; // Available Functions
+char wd[BIGBUFF * 2] = {0}; // Working Directory
 
 /* Function Prototypes */
 int cleanup_r1();
@@ -153,13 +153,13 @@ int comhan()
  ****************************************************************************************************************************************
  */
 		/* Quit */
-		if (!strncmp(cmd,fcns[QUIT],strlen(fcns[QUIT])+1)) terminate_mpx();
+		if (!strncmp(cmd, fcns[QUIT], strlen(fcns[QUIT]) + 1)) terminate_mpx();
 		
 		/* Display Version */
-		else if (!strncmp(cmd,fcns[VER],strlen(fcns[VER]))) get_Version();
+		else if (!strncmp(cmd, fcns[VER], strlen(fcns[VER]))) get_Version();
 		
 		/* Display Help Information */
-		else if (!strncmp(cmd,fcns[HELP],strlen(fcns[HELP])+1)) 
+		else if (!strncmp(cmd, fcns[HELP], strlen(fcns[HELP]) + 1)) 
 		{
 			err = help(NULL);
       
@@ -167,7 +167,7 @@ int comhan()
 		}
 		
 		/* Display Date */
-		else if (!strncmp(cmd,fcns[DATE],strlen(fcns[DATE])+1)) 
+		else if (!strncmp(cmd, fcns[DATE], strlen(fcns[DATE]) + 1)) 
 		{
 			err = date();
       
@@ -175,7 +175,7 @@ int comhan()
 		}
 		
 		/* Display Directory */
-		else if (!strncmp(cmd,fcns[DIR],strlen(fcns[DIR])+1)) 
+		else if (!strncmp(cmd, fcns[DIR], strlen(fcns[DIR]) + 1)) 
 		{
 			err = disp_dir();
 			
@@ -186,148 +186,225 @@ int comhan()
  *											    				    R2 Commands											     		    *
  ****************************************************************************************************************************************
  */
-	/* Create PCB */	
-    else if (!strncmp(cmd,fcns[CREATEPCB],strlen(fcns[CREATEPCB])+1)) 
-	{
-		err = create_PCB();
-      
-		if (err < OK) err_hand(err);
-    }
-	
-	/* Delete PCB */
-    else if (!strncmp(cmd,fcns[DELPCB],strlen(fcns[DELPCB])+1)) 
-	{
-        err = delete_PCB();
-      
-		if (err < OK) err_hand(err);
-    }
-	
-	/* Block */
-    else if (!strncmp(cmd,fcns[BLOCK],strlen(fcns[BLOCK])+1)) 
-	{
-		err = block();
-      
-		if (err < OK) err_hand(err);
-    }
-    else if (!strncmp(cmd,fcns[UNBLOCK],strlen(fcns[UNBLOCK])+1)) {
-      err = unblock();
-      if(err < OK) err_hand(err);
-    }
-    else if (!strncmp(cmd,fcns[SUSPEND],strlen(fcns[SUSPEND])+1)) {
-      err = suspend();
-      if(err < OK) err_hand(err);
-    }
-    else if (!strncmp(cmd,fcns[RES],strlen(fcns[RES])+1)) {
-      err = resume();
-      if(err < OK) err_hand(err);
-    }
-    else if (!strncmp(cmd,fcns[SETPRI],strlen(fcns[SETPRI])+1)) {
-      err = set_Priority();
-      if(err < OK) err_hand(err);
-    }
-    else if (!strncmp(cmd,fcns[SHOWPCB],strlen(fcns[SHOWPCB])+1)) {
-      err = show_PCB();
-      if(err < OK) err_hand(err);
-    }
-    else if (!strncmp(cmd,fcns[SHOWALL],strlen(fcns[SHOWALL])+1)) {
-      err = show_All();
-      if(err < OK) err_hand(err);
-    }
-    else if (!strncmp(cmd,fcns[SHOWREADY],strlen(fcns[SHOWREADY])+1)) {
-      err = show_Ready();
-      if(err < OK) err_hand(err);
-    }
-    else if (!strncmp(cmd,fcns[SHOWBLOCKED],strlen(fcns[SHOWBLOCKED])+1)) {
-      err = show_Blocked();
-      if(err < OK) err_hand(err);
-    }
-    //R3 commands
-    else if (!strncmp(cmd,fcns[DISPATCH],strlen(fcns[DISPATCH])+1)) dispatcher();
-    }
-    else if (!strncmp(cmd,fcns[LOADPROCS],strlen(fcns[LOADPROCS])+1)) {
-      err = load_test();
-      if(err < OK) err_hand(err);
-    }
-    //end new commands
-    else if (!strncmp(cmd,"\n",1)) ;
-    else err_hand(ERR_INVCOM);
-  }
-  //terminate_mpx();
-  //return 0;
-}
+		/* Create PCB */	
+		else if (!strncmp(cmd, fcns[CREATEPCB], strlen(fcns[CREATEPCB]) + 1)) 
+		{
+			err = create_PCB();
+		  
+			if (err < OK) err_hand(err);
+		}
+		
+		/* Delete PCB */
+		else if (!strncmp(cmd,fcns[DELPCB], strlen(fcns[DELPCB]) + 1)) 
+		{
+			err = delete_PCB();
+		  
+			if (err < OK) err_hand(err);
+		}
+		
+		/* Block */
+		else if (!strncmp(cmd, fcns[BLOCK], strlen(fcns[BLOCK]) + 1)) 
+		{
+			err = block();
+		  
+			if (err < OK) err_hand(err);
+		}
 
-/** Procedure Name: disp_dir
- * \param none
- * \return err an integer error code
- * Procedures Called: memset, sys_open_dir, sys_get_entry, sys_close_dir
- * Globals Used: 
- * @var err
- * \details Description/Purpose: disp_dir neatly prints a list of .mpx files found in
- *   the MPXFILES folder as well as their sizes in bytes.
+		/* Unblock */
+		else if (!strncmp(cmd,fcns[UNBLOCK], strlen(fcns[UNBLOCK]) + 1)) 
+		{
+			err = unblock();
+		  
+			if (err < OK) err_hand(err);
+		}
+		
+		/* Suspend */
+		else if (!strncmp(cmd, fcns[SUSPEND], strlen(fcns[SUSPEND]) + 1)) 
+		{
+			err = suspend();
+		  
+			if (err < OK) err_hand(err);
+		}
+		
+		/* Resume */
+		else if (!strncmp(cmd, fcns[RES], strlen(fcns[RES]) + 1)) 
+		{
+			err = resume();
+		  
+			if (err < OK) err_hand(err);
+		}
+		
+		/* Set Priority */
+		else if (!strncmp(cmd, fcns[SETPRI], strlen(fcns[SETPRI]) + 1)) 
+		{
+			err = set_Priority();
+		  
+			if (err < OK) err_hand(err);
+		}
+		
+		/* Show PCB */
+		else if (!strncmp(cmd, fcns[SHOWPCB], strlen(fcns[SHOWPCB]) + 1)) 
+		{
+			err = show_PCB();
+		  
+			if (err < OK) err_hand(err);
+		}
+		
+		/* Show All */
+		else if (!strncmp(cmd, fcns[SHOWALL], strlen(fcns[SHOWALL]) + 1)) 
+		{
+			err = show_All();
+		  
+			if (err < OK) err_hand(err);
+		}
+		
+		/* Show Ready */
+		else if (!strncmp(cmd, fcns[SHOWREADY], strlen(fcns[SHOWREADY]) + 1)) 
+		{
+			err = show_Ready();
+		  
+			if (err < OK) err_hand(err);
+		}
+		
+		/* Show Blocked */
+		else if (!strncmp(cmd, fcns[SHOWBLOCKED], strlen(fcns[SHOWBLOCKED]) + 1)) 
+		{
+			err = show_Blocked();
+		  
+			if (err < OK) err_hand(err);
+		}
+
+/**
+ ****************************************************************************************************************************************
+ *											    				    R3 Commands											     		    *
+ ****************************************************************************************************************************************
  */
-int disp_dir() {
-  char namebuff[SMALLBUFF];
-  long filesize;
-  char wdc[BIGBUFF*2] = {0};
-  int i;
-  memset(namebuff, '\0', SMALLBUFF);
-  for(i = 0; i < BIGBUFF * 2; i++) wdc[i] = wd[i];
-  strcat(wdc,"\\MPXFILES\\");   //build directory from current working directory
-  
-  err = sys_open_dir(wdc);
-  if(err < OK) return err;
-  printf("\nFile Name     Size (bytes)");  //print list of MPX files
-  while ((err = sys_get_entry(namebuff, SMALLBUFF, &filesize)) == OK) {
-    printf("\n%-9.9s     %ld", namebuff, filesize);
-  }
-  if(err < OK && err != ERR_SUP_NOENTR) return err;
-  err = sys_close_dir();
-  printf("\n");
-  return err;
+		/* Dispatch */
+		else if (!strncmp(cmd,fcns[DISPATCH],strlen(fcns[DISPATCH])+1)) dispatcher();
+		
+		/* Load Processes */
+		else if (!strncmp(cmd,fcns[LOADPROCS],strlen(fcns[LOADPROCS])+1)) 
+		{
+			err = load_test();
+			
+			if (err < OK) err_hand(err);
+		}
+		
+		/* Error Handling for Invalid Commands */
+		else if (!strncmp(cmd, "\n", 1));
+		else err_hand(ERR_INVCOM);
+	}
+	
+	// terminate_mpx();
+	
+	return 0;
 }
 
-/** Procedure Name: terminate_mpx
- * \Param none
- * \return none
- * Procedures Called: memset, sys_req, err_hand, cleanup_r1, sys_exit
- * Globals Used: 
- * @var err
- * \details Description/Purpose: confirms that the user really wishes to terminate MPX.
- *   If yes, it cleans up and exits. If no, it tells the user such and returns.
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- disp_dir																								   **
+ **               Purpose -- The disp_dir function displays information about all files present in a specific directory which          **
+ **							 (apparently) contains executable MPX processes.  These files are recognized by their filename extension:  **
+ **							 ".mpx".																								   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int																									   **
+ **     Procedures Called -- memset, strcat, sys_open_dir, printf, sys_get_entry, sys_close_dir										   **
+ **  Global Data Accessed -- int err, char wd[]																						   **
+ **  Summary of Algorithm -- The disp_dir function opens the current working directory, display the contents of the directory,		   **
+ **							 and closes the directory.																				   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
  */
-void terminate_mpx() {
-  char buff[BIGBUFF];
-  int buffsize = BIGBUFF;
-  memset(buff, '\0', BIGBUFF);
+int disp_dir() 
+{
+	char namebuff[SMALLBUFF];
+	long filesize;
+	char wdc[BIGBUFF*2] = {0};
+	int i;
+	memset(namebuff, '\0', SMALLBUFF);
   
-  printf("Are you sure you want to terminate MPX? (Y/N): ");
-  err = sys_req(READ, TERMINAL, buff, &buffsize);
-  if (err < OK) {
-    err_hand(err);
-    return;
-  }
-  trim(buff);
-  toLowerCase(buff);
-  if (buff[0] == 'y') {
-    err = cleanup_r1();
-    err = cleanup_r2();
-    err = cleanup_r3();
-    if (err < OK) err_hand(err);
-    sys_exit();
-  }
-  else printf("Termination cancelled.");
+	for (i = 0; i < BIGBUFF * 2; i++) wdc[i] = wd[i];
+	
+	strcat(wdc,"\\MPXFILES\\");
+	err = sys_open_dir(wdc);
+	
+	if (err < OK) return err;
+  
+	printf ("\nFilename     Size (bytes)");  //print list of MPX files
+	
+	while ((err = sys_get_entry(namebuff, SMALLBUFF, &filesize)) == OK) 
+	{
+		printf("\n%-9.9s     %ld", namebuff, filesize);
+	}
+  
+	if (err < OK && err != ERR_SUP_NOENTR) return err;
+  
+	err = sys_close_dir();
+	printf("\n");
+	
+	return err;
 }
 
-/** Procedure Name: get_Version
- * \param none
- * \return none
- * Procedures Called: printf
- * Globals Used: none
- * \brief Description/Purpose: simply prints a single line with the version constant
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- terminate_mpx																							   **
+ **               Purpose -- The terminate_mpx function stops execution of JAROS and returns to the host operating system.			   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- void																									   **
+ **     Procedures Called -- memset, printf, sys_req, err_hand, trim, toLowerCase, cleanup_r1, cleanup_r2, cleanup_r3. sys_exit		   **
+ **  Global Data Accessed -- int err																								   **
+ **  Summary of Algorithm -- The terminate_mpx function prompts the user for confirmation.  If "Y", JAROS continues execution. 		   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+void terminate_mpx() 
+{
+	char buff[BIGBUFF];
+	int buffsize = BIGBUFF;
+	memset(buff, '\0', BIGBUFF);
+	
+	printf("Are You Sure You Want to Terminate JAROS (Y/N): ");
+	err = sys_req(READ, TERMINAL, buff, &buffsize);
+	
+	if (err < OK) 
+	{
+		err_hand(err);
+		
+		return;
+	}
+	
+	trim(buff);
+	toLowerCase(buff);
+	
+	if (buff[0] == 'y') 
+	{
+		err = cleanup_r1();
+		err = cleanup_r2();
+		err = cleanup_r3();
+		
+		if (err < OK) err_hand(err);
+		
+		sys_exit();
+  }
+	
+  else printf("Termination Cancelled");
+}
+
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- get_Version																							   **
+ **               Purpose -- The get_Version function displays a brief description of the version of JAROS that is currently running.  **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- void																									   **
+ **     Procedures Called -- printf																									   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The get_Version prints the value of the VERSION macro.													   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
  */
 void get_Version()
 {
- printf("JAROS current version: %f",VERSION);
+	printf("JAROS Current Version: %f", VERSION);
 }
 
 /** Procedure Name: trim
@@ -537,39 +614,40 @@ void toLowerCase(char str[BIGBUFF]) {
  * Globals Used: none
  * \brief Description/Purpose: prints out an error message based on the error code passed in
  */
-void err_hand(int err_code) {
-  if(err_code == ERR_INVCOM) printf("Invalid command. Type \"help\" for more info.");
-  else if(err_code == ERR_INVYR) printf("Invalid year parameter.  Please enter a year from 1-9999\n");
-  else if(err_code == ERR_INVMON) printf("Invalid month parameter.  Please enter a month from 1-12\n");
-  else if(err_code == ERR_INVDAY) printf("Invalid day parameter.  Please enter a day from 1-31 depending on the month.\n");
-  else if(err_code == ERR_SUP_INVDEV) printf("Invalid device ID.");
-  else if(err_code == ERR_SUP_INVOPC) printf("Invalid op code.");
-  else if(err_code == ERR_SUP_INVPOS) printf("Invalid character position.");
-  else if(err_code == ERR_SUP_RDFAIL) printf("Read failed.");
-  else if(err_code == ERR_SUP_WRFAIL) printf("Write failed.");
-  else if(err_code == ERR_SUP_INVMEM) printf("Invalid memory block pointer.");
-  else if(err_code == ERR_SUP_FRFAIL) printf("Free failed.");
-  else if(err_code == ERR_SUP_INVDAT) printf("Invalid date.");
-  else if(err_code == ERR_SUP_DATNCH) printf("Date not changed.");
-  else if(err_code == ERR_SUP_INVDIR) printf("Invalid directory name.");
-  else if(err_code == ERR_SUP_DIROPN) printf("Directory open error.");
-  else if(err_code == ERR_SUP_DIRNOP) printf("No directory is open.");
-  else if(err_code == ERR_SUP_NOENTR) printf("No more directory entries.");
-  else if(err_code == ERR_SUP_NAMLNG) printf("Name too long for buffer.");
-  else if(err_code == ERR_SUP_DIRCLS) printf("Directory close error.");
-  else if(err_code == ERR_SUP_LDFAIL) printf("Program load failed.");
-  else if(err_code == ERR_SUP_FILNFD) printf("File not found.");
-  else if(err_code == ERR_SUP_FILINV) printf("File invalid.");
-  else if(err_code == ERR_SUP_PROGSZ) printf("Program size error.");
-  else if(err_code == ERR_SUP_LDADDR) printf("Invalid load address.");
-  else if(err_code == ERR_SUP_NOMEM) printf("Memory allocation error.");
-  else if(err_code == ERR_SUP_MFREE) printf("Memory free error.");
-  else if(err_code == ERR_SUP_INVHAN) printf("Invalid handler address.");
-  else if(err_code == ERR_PCBNF) printf("PCB not found.");
-  else if(err_code == ERR_QUEEMP) printf("Queue is empty.");
-  else if(err_code == ERR_PRONTL) printf("Process name is too long.");
-  else if(err_code == ERR_NAMEAE) printf("Process name already in use.");
-  else if(err_code == ERR_INVCLS) printf("Invalid process class.");
+void err_hand(int err_code) 
+{
+  if (err_code == ERR_INVCOM) printf("Invalid command. Type \"help\" for more info.");
+  else if (err_code == ERR_INVYR) printf("Invalid year parameter.  Please enter a year from 1-9999\n");
+  else if (err_code == ERR_INVMON) printf("Invalid month parameter.  Please enter a month from 1-12\n");
+  else if (err_code == ERR_INVDAY) printf("Invalid day parameter.  Please enter a day from 1-31 depending on the month.\n");
+  else if (err_code == ERR_SUP_INVDEV) printf("Invalid device ID.");
+  else if (err_code == ERR_SUP_INVOPC) printf("Invalid op code.");
+  else if (err_code == ERR_SUP_INVPOS) printf("Invalid character position.");
+  else if (err_code == ERR_SUP_RDFAIL) printf("Read failed.");
+  else if (err_code == ERR_SUP_WRFAIL) printf("Write failed.");
+  else if (err_code == ERR_SUP_INVMEM) printf("Invalid memory block pointer.");
+  else if (err_code == ERR_SUP_FRFAIL) printf("Free failed.");
+  else if (err_code == ERR_SUP_INVDAT) printf("Invalid date.");
+  else if (err_code == ERR_SUP_DATNCH) printf("Date not changed.");
+  else if (err_code == ERR_SUP_INVDIR) printf("Invalid directory name.");
+  else if (err_code == ERR_SUP_DIROPN) printf("Directory open error.");
+  else if (err_code == ERR_SUP_DIRNOP) printf("No directory is open.");
+  else if (err_code == ERR_SUP_NOENTR) printf("No more directory entries.");
+  else if (err_code == ERR_SUP_NAMLNG) printf("Name too long for buffer.");
+  else if (err_code == ERR_SUP_DIRCLS) printf("Directory close error.");
+  else if (err_code == ERR_SUP_LDFAIL) printf("Program load failed.");
+  else if (err_code == ERR_SUP_FILNFD) printf("File not found.");
+  else if (err_code == ERR_SUP_FILINV) printf("File invalid.");
+  else if (err_code == ERR_SUP_PROGSZ) printf("Program size error.");
+  else if (err_code == ERR_SUP_LDADDR) printf("Invalid load address.");
+  else if (err_code == ERR_SUP_NOMEM) printf("Memory allocation error.");
+  else if (err_code == ERR_SUP_MFREE) printf("Memory free error.");
+  else if (err_code == ERR_SUP_INVHAN) printf("Invalid handler address.");
+  else if (err_code == ERR_PCBNF) printf("PCB not found.");
+  else if (err_code == ERR_QUEEMP) printf("Queue is empty.");
+  else if (err_code == ERR_PRONTL) printf("Process name is too long.");
+  else if (err_code == ERR_NAMEAE) printf("Process name already in use.");
+  else if (err_code == ERR_INVCLS) printf("Invalid process class.");
   else printf("Invalid error code %d", err_code);
   err = 0;
 }
