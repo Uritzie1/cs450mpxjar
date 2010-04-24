@@ -127,12 +127,12 @@ struct PCB* getRHead();
 /****************************************************************************************************************************************
  ****************************************************************************************************************************************
  **        Procedure Name -- init_r2																							       **
- **               Purpose -- The init_r2 function initializes the current working directory.										   **
+ **               Purpose -- The init_r2 function does nothing.																		   **
  **            Parameters -- N/A																									   **
  **			 Return Value -- int																									   **
  **     Procedures Called -- N/A																									   **
  **  Global Data Accessed -- N/A																								       **
- **  Summary of Algorithm -- The init_r2 initializes the current working directory.													   **
+ **  Summary of Algorithm -- The init_r2 does nothing.																				   **
  ****************************************************************************************************************************************
  ****************************************************************************************************************************************
  */
