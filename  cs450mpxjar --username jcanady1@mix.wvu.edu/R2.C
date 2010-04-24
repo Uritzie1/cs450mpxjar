@@ -1,39 +1,43 @@
-/**
-* File Name: 
-* \title JAROS
-* \author Jonroy Canady
-* \author Adam Trainer
-* \author Rob Wayland   
-* \date 3/8/2010
-* \version: 2.71
-*
-* Components: 
-*
-*******************************************************************************
-* Change Log:
-*
-*        2/12/2010  JC           File created with placeholders
-*        2/15/2010  JC           block, unblock, suspend, resume, set_Priority, 
-*                                show_PCB, show_All, show_Ready, show_Blocked functions all added
-*		 2/16/2010  AT			 create_PCB, free_PCB, allocate_PCB
-*        2/18/2010  RW,JC        Completed all functions and added all comments
-*        3/08/2010  JC           
-*/
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **																FILE INFORMATION													   **
+ **																																	   **
+ **		FILENAME -- R2.c																											   **	
+ **      AUTHORS -- Jonroy Canaday, Adam Trainer, Robert Wayland																	   **
+ **      VERSION -- 2.71																											   **
+ ** LAST UPDATED -- April 24, 2010																									   **
+ **																																	   **
+ **   COMPONENTS --  allocate_PCB, block, cleanup_r2, create_PCB, delete_PCB, findPCB, free_PCB, getRHead, init_r2, insert, isEmpty,   ** 
+ **					 resume, qRemove, set_Priority, setup_PCB, show_All, show_Blocked, show_PCB, show_Ready, suspend unblock,		   **
+ **					 toLowerCasex, trimx 																					           **
+ **																																	   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **																   CHANGE LOG														   **
+ **																																	   **
+ **		  02/12/2010  JC           template of R2.c created																			   **
+ **       02/15/2010  JC           block, unblock, suspend, resume, set_Priority, show_PCB, show_All, show_Ready, show_Blocked		   **
+ **								  functions have been added to R2.c																	   **
+ **       02/16/2010  AT		  create_PCB, free_PCB, allocate_PCB functions have been added to R2.c								   **
+ **       02/18/2010  RW,JC, AT   all functions are complete; documentation	added													   **
+ **		  04/24/2010  AT		  code review; additional documentation added 													       **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
 
-
-// Included ANSI C Files
+/* Included ANSI C Files */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-// Constants
+/* Macros */
 #define BIGBUFF 80
 #define SMALLBUFF 10
 #define TINYBUFF 2
 #define OK 0
 
-/* Service operation codes */
+/* Service Operation Code */
 #define IDLE	0
 #define	READ	1
 #define	WRITE	2
@@ -41,14 +45,14 @@
 #define GOTOXY	4
 #define EXIT	5
 
-/* Device ID codes */
+/* Device ID Codes */
 #define NO_DEV		0
 #define	TERMINAL	1
 #define	PRINTER		2
 #define	COM_PORT	3
 #define NUM_DEVS	3
 
-// Status and Error Codes
+// Status & Error Codes
 #define ERR_INVCOM (-201)    //Invalid command
 #define ERR_INVYR  (-202)    //Invalid year
 #define ERR_INVMON (-203)    //Invalid month
@@ -60,7 +64,7 @@
 #define ERR_NAMEAE (-209)    //Process Name Already Exists
 #define ERR_INVCLS (-210)    //Invalid Class
 
-// Constants
+/* Macros */
 #define PROCESS_NAME_LENGTH 10
 #define SYSTEM 1
 #define APP 0
@@ -72,32 +76,30 @@
 #define STACK_SIZE 1024
 
 
-// Global Variables
-struct PCB *tail1=NULL, *tail2=NULL, *head1=NULL, *head2=NULL;
-int errx = 0;
+/* Global Variables */
+struct PCB *tail1 = NULL, *tail2 = NULL, *head1 = NULL, *head2 = NULL;
+int errx          = 0;
 
-// Structures
-/** \struct PCB
-* The PCB represents a process control block, containing all information about a process and pointers to the next/prev PCBs in a queue.
-*/
-typedef struct PCB {
-	char name[PROCESS_NAME_LENGTH];         //Process Name
-	int id;                                 //Process ID#
-	int proc_class;						    //Process Class
-	int priority;					        //Priority Value (-128 to 127)
-	int state;						        //Process State Flag (Running, Ready, Blocked)
-	int suspended;					        //Process Suspended Flag
-	unsigned char stack[STACK_SIZE];        //PCB Stack
-	unsigned char* stack_base;				//Pointer to base of stack
-	unsigned char* stack_top;				//Pointer to top of stack
-	int mem_size;							//Memory size
-	unsigned char* load_address;			//Pointer to loading address
-	unsigned char* execution_address;		//Pointer to execution address
-	struct PCB *prev;				        //Pointer to previous PCB node
-	struct PCB *next;				       	//Pointer to next PCB node
-} ;
+/* Process Control Block (PCB) Data Structure */
+typedef struct PCB 
+{
+	char name[PROCESS_NAME_LENGTH];         // Process Name
+	int id;                                 // Process ID#
+	int proc_class;						    // Process Class
+	int priority;					        // Priority Value (-128 to 127)
+	int state;						        // Process State Flag (Running, Ready, Blocked)
+	int suspended;					        // Process Suspended Flag
+	unsigned char stack[STACK_SIZE];        // PCB Stack
+	unsigned char* stack_base;				// Pointer to Base of Stack
+	unsigned char* stack_top;				// Pointer to Top of Stack
+	int mem_size;							// Memory Size
+	unsigned char* load_address;			// Pointer to Loading Address
+	unsigned char* execution_address;		// Pointer to Execution Address
+	struct PCB *prev;				        // Pointer to Previous PCB Node
+	struct PCB *next;				       	// Pointer to Next PCB Node
+};
 
-// Function Prototypes
+/* Function Prototypes */
 int init_r2();
 int cleanup_r2();
 int block();
@@ -115,23 +117,28 @@ int free_PCB(struct PCB *PCBptr);
 int create_PCB();
 int delete_PCB();
 int isEmpty(int q);
-int insert(struct PCB *newPCB,int q);
+int insert(struct PCB *newPCB, int q);
 struct PCB* findPCB(char *name, struct PCB *PCBptr);
 struct PCB* qRemove(char *name, struct PCB *set);
 void toLowerCasex(char str[BIGBUFF]);
 void trimx(char ary[BIGBUFF]);
 struct PCB* getRHead();
 
-/** Procedure Name: init_r2
-* \param none
-* \return err an integer error code (0 for now)
-* Procedures Called: _getdcwd
-* Globals Used:
-* @var wd
-* \brief Description/Purpose: finds the working directory and writes it to the global
-*/
-int init_r2() {
-    return 0;
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- init_r2																							       **
+ **               Purpose -- The init_r2 function initializes the current working directory.										   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int																									   **
+ **     Procedures Called -- N/A																									   **
+ **  Global Data Accessed -- N/A																								       **
+ **  Summary of Algorithm -- The init_r2 initializes the current working directory.													   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int init_r2() 
+{
+	return 0;
 }
 
 /** Procedure Name: init_r2
