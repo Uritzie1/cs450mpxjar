@@ -6,12 +6,7 @@ NAME
 
 SYNOPSIS
 	dir
-	File Name	Size (bytes)
-	   É		     É
 
 DESCRIPTION
 	The dir command displays information about all files present in a
-	specific directory which contains executable MPX processes.  
-
-ERRORS
-	ERR_SUP_NOENTR --  no more directory entries
+	specific directory which contains executable MPX processes.

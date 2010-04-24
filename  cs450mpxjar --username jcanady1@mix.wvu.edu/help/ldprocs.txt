@@ -8,6 +8,3 @@ SYNOPSIS
 
 DESCRIPTION
 	The ldprocs loads 5, pre-defined processes for testing purposes.
-
-ERRORS
-	ERR_PCBNF -- PCB not found

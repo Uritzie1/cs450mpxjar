@@ -10,12 +10,6 @@ SYNOPSIS
 	Please Enter the New Year (YYYY): YEAR
 	Please Enter the New Month (MM): MONTH
 	Please Enter the New Day (DD): DAY
-	You Input MONTH/DAY/YEAR 
 
 DESCRIPTION
 	The date command displays and if specified, changes the system 		date.
-
-ERRORS
-	ERR_INVYR  -- invalid year parameter
-	ERR_INVMON -- invalid month parameter
-	ERR_INVDAY -- invalid day parameter

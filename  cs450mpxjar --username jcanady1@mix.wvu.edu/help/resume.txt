@@ -1,10 +1,11 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: Resume
+NAME
+	resume -- resume a process
 
-Usage: resume
+SYNOPSIS
+	resume
+	Please Enter the Name of the Process to be Resumed: NAME
 
-Inputs: prompts for a PCB name.
-
-Description:  The PCB is found using inputted name, and
-the PCB is unsuspended.
+DESCRIPTION
+	The resume command places a specified process in a non-suspended 	state.  The state chosen will be either READY or BLOCKED, depending 	on its previous state.

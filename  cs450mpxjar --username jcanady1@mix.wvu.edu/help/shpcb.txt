@@ -1,9 +1,12 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: Show PCB
+NAME
+	shpcb -- display all information contained in a single PCB for a
+		 process specified by name
 
-Usage: showPCB
+SYNOPSIS
+	shpcb
+	Please Enter a Process Name: NAME
 
-Inputs: prompted for PCB name
-
-Description:  prints all of the PCB members
+DESCRIPTION
+	The shpcb command displays all information contained in a single 	PCB for a process specified by name.  The process name is the only 	argument.

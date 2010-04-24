@@ -1,42 +1,44 @@
 			 JAROS General Commands Manual
 
-NAME		USAGE		DESCRIPTION
-Version		ver		list the current version
+COMMAND					DESCRIPTION
+block					block a PCB
 
-Help		help		displays help information
+cpcb					create a new PCB
 
-Directory	dir		list contents of current directory
+date					display and change the system date
 
-Date		date		displays date and allows changes
+dir					display information about all files 					present in a specific directory
 
-Block		block		sets PCB to blocked status
+dispat					identify the next READY process, if 					any, and load its context from its 					PCB
 
-Unblock		unblock		sets PCB to ready status
+dpcb					delete a PCB
 
-Suspend		suspend		sets PCB to suspended status
+help					display information about a command
 
-Resume		resume		sets PCB to non-suspended status
+ldprocs					load five, pre-defined processes
 
-SetPriority	setpri		reassigns a PCB's priority level
+list					display all available commands
 
-CreatePCB	cpcb		creates a PCB
+load					allocate and setup a new PCB
 
-DeletePCB	dpcb		deletes a PCB
+quit					stop execution of MPX
 
-ShowPCB		shpcb		displays detailed info on a PCB
+resume					resume a process	
 
-ShowAll		shall		displays limited info on all PCBs
+setpri					change the priority of a specified 					process
 
-ShowReady	shready		displays limited info on all ready PCBs
+shall					display information about all PCBs 					which are currently in use
 
-ShowBlocked	shblock		displays limited info on all blocked PCBs
+shlock					display information about all 						processes which are currently in 					the BLOCKED or the SUSPENDED-						BLOCKED state
 
-Terminate	term		terminates the indicated programs
+shpcb					display all information contained 					in a single PCB for a process 						specified by name
 
-Dispatch	dispat		calls dispactchs to load next ready process
+shready					display information about all 						processes which are currently in 					the READY state or SUSPENDED-READY
 
-Load		load		load a specified program
+suspend					place a specified process in a 						suspended state
 
-Load Processes	ldprocs		load 5 predefied processes
+term					terminate a process by deallocating 					its PCB and releasing its allocated 					program memory
 
-Quit		quit		quits JAROS :'(
+unblock					place a specified process in a 						READY state; its SUSPENDED status 					is not be changed
+
+ver					display a brief description of the 					version of MPX that is currently 					running

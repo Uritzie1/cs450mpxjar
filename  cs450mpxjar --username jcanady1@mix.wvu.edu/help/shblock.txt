@@ -1,9 +1,10 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: Show Blocked
+NAME
+	shblock -- display information about all processes which are 			  currently in the BLOCKED or the SUSPENDED-BLOCKED state. 
 
-Usage: showblocked
+SYNOPSIS
+	shblock
 
-Inputs: none
-
-Description: Prints all PCB in the blocked queue.
+DESCRIPTION
+	The shlock command displays information about all processes which 	are currently in the BLOCKED state or the SUSPENDED-BLOCKED state.
