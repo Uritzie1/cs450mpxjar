@@ -141,169 +141,258 @@ int init_r2()
 	return 0;
 }
 
-/** Procedure Name: init_r2
-* \param none
-* \return  an integer error code (0 for now)
-* Procedures Called: none
-* Globals Used: none
-* \breef Description/Purpose: none for now
-*/
-int cleanup_r2() {
-    struct PCB *temppcb = tail1;
-    while (temppcb != NULL) {
-      tail1 = temppcb;
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- cleanup_r2																							       **
+ **               Purpose -- The cleanup_r2 function releases all allocated PCB.													   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int																									   **
+ **     Procedures Called -- free_PCB																								   **
+ **  Global Data Accessed -- PCB *tail1 - a PCB, PCB *tail2 - a PCB																       **
+ **  Summary of Algorithm -- The cleanup function loops through all of the PCBs and releases all allocated PCBs.					   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int cleanup_r2() 
+{
+	struct PCB *temppcb = tail1;
+    
+	while (temppcb != NULL) 
+	{
+      tail1   = temppcb;
       temppcb = tail1->next;
       free_PCB(tail1);
     }
+	
     temppcb = tail2;
-    while (temppcb != NULL) {
-      tail2 = temppcb;
+    
+	while (temppcb != NULL) 
+	{
+      tail2   = temppcb;
       temppcb = tail2->next;
       free_PCB(tail2);
     }
+	
     return 0;
 }
 
-/**  Procedure Name: block
-* \param none
-* \return an integer error code 
-* Procedures Called: trim, toLowerCase, findPCB, qRemove, insertPCB, sys_req
-* Globals Used: err
-* \brief Description: moves a PCB from ready to blocked queue 
-*/
-int block() {  //temp command
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- block																									   **
+ **               Purpose -- The block function moves the specified PCB from the READY to BLOCKED queue.							   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- memset, printf, sys_req, trimx, toLowerCasex, findPCB qRemove, insert									   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The block function prompts the user for the name of the process to be block, processes the input, and	   **
+ **						     moves the process from the READY to the BLOCKED queue.													   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int block() 
+{
 	char buff[BIGBUFF];
-	int buffsize = BIGBUFF;
+	int buffsize        = BIGBUFF;
 	struct PCB *temppcb = NULL;
 	memset(buff, '\0', BIGBUFF);
-
-    errx = 0;
-	printf("Please enter the name of the process to be blocked: ");
+	errx = 0;
+	
+	printf("Please Enter the Name of the Process to be Blocked: ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
+	
 	if (errx < OK) return errx;
+	
 	trimx(buff);
 	toLowerCasex(buff);
 	temppcb = findPCB(buff, temppcb);
+	
 	if (errx < OK) return errx;
-	if(temppcb->state != BLOCKED) {
-	  temppcb = qRemove(buff, temppcb);
+	
+	if (temppcb->state != BLOCKED) 
+	{
+	  temppcb        = qRemove(buff, temppcb);
 	  temppcb->state = BLOCKED;
 	  insert(temppcb, BLOCKED);
 	}
+	
 	return errx;
 }
 
-/**  Procedure Name: unblock
-* \param none
-* \return an integer error code 
-* Procedures Called: findPCB, insertPCB, removePCB, toLowerCase, trim
-* Globals Used: err
-* \brief Description: moves a PCB from blocked to ready queue 
-*/
-int unblock() {
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- unblock																								   **
+ **               Purpose -- The unblock function places a specified process in the READY state, while retaining its SUSPENDED		   **
+ **							 status.  The process is removed from the BLOCKED queue, if necessary, and inserted in the READY queue.    **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- memset, printf, sys_req, trimx, toLowerCasex, findPCB, qRemove, insert									   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The unblock function prompts the user for the name of the process to be unblocked, processes the input,   ** 
+ **							 and moves the process from the BLOCKED to the RUNNING queue.											   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int unblock() 
+{
     char buff[BIGBUFF];
-    int buffsize = BIGBUFF;
+    int buffsize        = BIGBUFF;
     struct PCB *temppcb = NULL;
     memset(buff, '\0', BIGBUFF);
     
     errx = 0;
-    printf("Please enter the name of the process to be unblocked: ");
+    
+	printf("Please Enter the Name of the Process to be Unblocked: ");
     errx = sys_req(READ, TERMINAL, buff, &buffsize);
-    if (errx < OK) return errx;
-    trimx(buff);
+    
+	if (errx < OK) return errx;
+    
+	trimx(buff);
     toLowerCasex(buff);
     temppcb = findPCB(buff, temppcb);
-    if(temppcb->state == BLOCKED) {
-	  temppcb = qRemove(buff, temppcb);
+    
+	if (temppcb->state == BLOCKED) 
+	{
+	  temppcb        = qRemove(buff, temppcb);
       temppcb->state = READY;
 	  insert(temppcb, RUNNING);
     }
+	
     return errx;
 }
 
-/**  Procedure Name: suspend
-* \param none
-* \return an integer error code
-* Procedures Called: findPCB, sys_req, trim, toLowerCase
-* Globals Used: err
-* \brief Description: suspends a PCB
-*/
-int suspend() {
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- suspend																								   **
+ **               Purpose -- The suspend function places a specified process in a SUSPENDED state. The state chosen will			   **
+ **							 be either SUSPENDED-READY or SUSPENDED-BLOCKED, depending on its previous state.						   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- memset, printf, sys_req, trimx, toLowerCasex, findPCB, qRemove, insert									   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The unblock function prompts the user for the name of the process to be suspended, processes the input,   ** 
+ **							 and moves the process from	the SUSPENDED-READY or SUSPENDED-BLOCKED state, depending on its previous      **
+ **							 state.																									   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int suspend() 
+{
     char buff[BIGBUFF];
-    int buffsize = BIGBUFF;
+    int buffsize        = BIGBUFF;
     struct PCB *temppcb = NULL;
     memset(buff, '\0', BIGBUFF);
     
     errx = 0;
-    printf("Please enter the name of the process to be suspended: ");
-    errx = sys_req(READ, TERMINAL, buff, &buffsize);
-    if (errx < OK) return errx;
-    trimx(buff);
+    printf("Please Enter the Name of the Process to be Suspended: ");
+    
+	errx = sys_req(READ, TERMINAL, buff, &buffsize);
+    
+	if (errx < OK) return errx;
+    
+	trimx(buff);
     toLowerCasex(buff);
     temppcb = findPCB(buff, temppcb);
-    if (errx < OK) return errx;
-    if(temppcb->state != SUSP) temppcb->suspended = SUSP;
-    return errx;
-}
-
-/**  Procedure Name: resume
-* \param none
-* \return an integer error code
-* Procedures Called: sys_req, trim, toLowerCase, findPCB
-* Globals Used: err
-* \brief Description: sets PCB to not suspended 
-*/
-int resume() {
-	char buff[BIGBUFF];
-	int buffsize = BIGBUFF;
-	struct PCB *temppcb = NULL;
-	memset(buff, '\0', BIGBUFF);
-
-    errx = 0;
-	printf("Please enter the name of the process to be resumed: ");
-	errx = sys_req(READ, TERMINAL, buff, &buffsize);
+    
 	if (errx < OK) return errx;
-	trimx(buff);
-	toLowerCasex(buff);
-	temppcb = findPCB(buff, temppcb);
-	temppcb->suspended = NOTSUSP;
+    
+	if (temppcb->state != SUSP) temppcb->suspended = SUSP;
+    
 	return errx;
 }
 
-/**  Procedure Name: set_Priority
-* \param none
-* \return an integer error code
-* Procedures Called: sys_req, trim, toLowerCase, findPCB, inset, qremove
-* Globals Used: err
-* \brief Description: sets the priority level for a specified PCB 
-*/
-int set_Priority() {
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- resume																									   **
+ **               Purpose -- The resume function places a specified process in a non-SUSPENDED state. The state chosen will			   **
+ **							 be either READY or BLOCKED, depending on its previous state.											   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- memset, printf, sys_req, trimx, toLowerCasex, findPCB													   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The unblock function prompts the user for the name of the process to be resumed, processes the input,     ** 
+ **							 and moves the process from	the READY or BLOCKED state, depending on its previous state.				   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int resume()
+{
 	char buff[BIGBUFF];
-	int buffsize = BIGBUFF, temp;
+	int buffsize        = BIGBUFF;
 	struct PCB *temppcb = NULL;
 	memset(buff, '\0', BIGBUFF);
 
     errx = 0;
-	printf("Please enter the name of the process to be reprioritized: ");
+	
+	printf("Please Enter the Name of the Process to be Resumed: ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
+	
 	if (errx < OK) return errx;
+	
+	trimx(buff);
+	toLowerCasex(buff);
+	
+	temppcb            = findPCB(buff, temppcb);
+	temppcb->suspended = NOTSUSP;
+	
+	return errx;
+}
+
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- set_Priority																							   **
+ **               Purpose -- The set_Priority function changes the priority of a specified process.									   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- memset, printf, sys_req, trimx, toLowerCasex, findPCB, atoi, qRemove, insert 							   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The set_Priority function prompts the user for the name of the process to be reprioritized, its new	   **
+ **							 priority level, removes the process from either the READY or BLOCKED queue, reprioritizes the process,	   **
+ **							 and inserts it back in the READY or BLOCKED queue.														   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int set_Priority() 
+{
+	char buff[BIGBUFF];
+	int buffsize        = BIGBUFF, temp;
+	struct PCB *temppcb = NULL;
+	memset(buff, '\0', BIGBUFF);
+
+    errx = 0;
+	
+	printf("Please Enter the Name of the Process to be Reprioritized: ");
+	errx = sys_req(READ, TERMINAL, buff, &buffsize);
+	
+	if (errx < OK) return errx;
+	
 	trimx(buff);
 	toLowerCasex(buff);
 	temppcb = findPCB(buff, temppcb);
+	
 	if (errx < OK) return errx;
-	printf("Please enter the new priority level where 127 is the highest(-128 to 127): ");
+	
+	printf("Please Enter the New Priority Level Where 127 is the Highest(-128 to 127): ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
+	
 	if (errx < OK) return errx;
-	temp = atoi(buff);
+	
+	temp    = atoi(buff);
 	temppcb = qRemove(temppcb->name, temppcb);	
-	if(temp<=127 && temp>=-128) temppcb->priority = temp;
-	else {
-      temppcb->priority = 0;
-      printf("\nInvalid priority level.  Priority defaulted to 0.");
+	
+	if (temp<=127 && temp>=-128) temppcb->priority = temp;
+	
+	else 
+	{
+		temppcb->priority = 0;
+		printf("\nInvalid Priority Leve - Priority Defaulted to 0");
     }
+	
 	if (temppcb->state == BLOCKED) insert(temppcb, BLOCKED);
+	
 	else insert(temppcb, RUNNING);
-	printf("\nPriority for %s successfully set to %d",temppcb->name,temppcb->priority);
+	
+	printf("\nPriority for %s Successfully Set to %d",temppcb->name, temppcb->priority);
+	
 	return errx;
 }
 
