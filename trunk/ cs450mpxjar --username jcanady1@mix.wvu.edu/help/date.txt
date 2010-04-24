@@ -1,6 +1,10 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: Date
+NAME
+	date
+	The current date is (MM/DD/YYYY):
+	Would you like to change the date (Y/N)? Y
+	Please enter the new year (YYYY): 
 
 Usage: date
 

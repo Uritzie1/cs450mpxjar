@@ -1,13 +1,19 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: createpcb
+NAME
+	cpcb -- create a new PCB
 
-Usage: createpcb
+SYNOPSIS
+	cpcb
+	Please Enter the Name of the Process to be Created: PCB_Name
+	Please Enter the Class of the Process to be Created: PCB_Class
+	Please Enter the Priority of the Process to be Created: PCB_Priority
 
-Inputs: Prompts for inputs in this order:
-Name of PCB: ID of PCB
-Class of PCB: system or application
-Priority of PCB: priority level of PCB
+DESCRIPTION
+	The cpcb command allocates and setups a new PCB.  By default,
+	the process is initially in the Ready state.
 
-
-Description:  Creates a PCB struct, and prompts user for name, class, and priority
+ERRORS
+	ERR_PRONTL -- Process name is too long
+	ERR_NAMEAE -- Process name already in use
+	ERR_INVCLS -- Invalid process class

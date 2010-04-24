@@ -1,10 +1,15 @@
-Function Help
+			 JAROS General Commands Manual
 
-Name: block
+NAME
+	block -- block a PCB
 
-Usage: block
+SYNOPSIS
+	block
+	Please Enter the Name of the Process to be Blocked: PCB_Name
 
-Inputs: name of the PCB to be blocked
+DESCRIPTION
+	The block command moves the specified PCB from the Ready to Blocked 	queue.
 
-Description:  Block command takes the specified
-PCB name and places it in the blocked queue.
+ERRORS
+	ERR_PCBNF -- PCB not found
+	
