@@ -517,7 +517,7 @@ int help()
  ****************************************************************************************************************************************
  **        Procedure Name -- date																									   **
  **               Purpose -- The help function displays the current date and prompts the user as to whether or not he wants to		   **
-							 change the system date.																				   **
+ **							 change the system date.																				   **
  **            Parameters -- N/A																									   **
  **			 Return Value -- int - an error code																					   **
  **     Procedures Called -- sys_get_date, printf, sys_req, trim, toLowerCase, atoi, err_hand										   **
@@ -621,113 +621,164 @@ int date()
  ****************************************************************************************************************************************
  **        Procedure Name -- valid_date																								   **
  **               Purpose -- The valid_date function verifies that the user-inputted date is a valid date.							   **
- **            Parameters -- int yr, int mo, int day																				   **
- **			 Return Value -- int - an error code																					   **
- **     Procedures Called -- sys_get_date, printf, sys_req, trim, toLowerCase, atoi, err_hand										   **
- **  Global Data Accessed -- int err																								   **
- **  Summary of Algorithm -- The help function processes user input, and displays help information for a specific command.			   **
+ **            Parameters -- int - year, int - month, int - day																		   **
+ **			 Return Value -- int - a boolean value 																					   **
+ **     Procedures Called -- N/A																									   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The valid_date function verifies that the user-inputted date is a valid date.  It checks for leap years   **
+ **							 and checks for a valid number of days in a month.														   **
  ****************************************************************************************************************************************
  ****************************************************************************************************************************************
- */
-
-/** Procedure Name: valid_date
- * \param yr int representing the year
- * \param mo int reresenting a month of the year
- * \param day int representing a day of the month
- *   to be validated
- * \return int an integer that's 1 if the date is valid, 0 if not
- * Procedures Called: none
- * Globals Used: none
- * \details Description/Purpose: validates the date passed in, checking that the day is
- *   within the range allowed by the month. Accounts for leap years.
  */
 int valid_date(int yr, int mo, int day) 
 {
-  int leap = 0, valid = 1;
-  if (((yr % 4 == 0) && (yr % 100 != 0)) || (yr % 400 == 0)) leap = 1;  //determine if leap year
-  if ((mo == 1 || mo == 3 || mo == 5 || mo == 7 || mo == 8 || mo == 10 || mo == 12 || mo == 14) && (day >= 1 && day <= 31)) return valid; //check 31-day months
-  else if ((mo == 4 || mo == 6 || mo == 9 || mo == 11 || mo == 13) && (day >= 1 && day <= 30)) return valid; //check 30-day months
-  else if ((mo == 2 && leap && (day >= 1 && day <= 29)) || (mo == 2 && !leap && (day >= 1 && day <= 28))) return valid; //check February
-  else return !valid;
+	int leap = 0, valid = 1;
+  
+	if (((yr % 4 == 0) && (yr % 100 != 0)) || (yr % 400 == 0)) leap = 1;  // Check for Leap Year
+  
+	if ((mo == 1 || mo == 3 || mo == 5 || mo == 7 || mo == 8 || mo == 10 || mo == 12 || mo == 14) && (day >= 1 && day <= 31)) return valid; // Check 31 Days
+  
+	else if ((mo == 4 || mo == 6 || mo == 9 || mo == 11 || mo == 13) && (day >= 1 && day <= 30)) return valid; //check 30 Days
+  
+	else if ((mo == 2 && leap && (day >= 1 && day <= 29)) || (mo == 2 && !leap && (day >= 1 && day <= 28))) return valid; // Check February
+  
+	else return !valid;
 }
 
-/** Procedure Name: init_r1
- * \param none
- * \return err an integer error code (0 for now)
- * Procedures Called: _getdcwd
- * Globals Used: 
- * @var wd
- * \brief Description/Purpose: finds the working directory and writes it to the global
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- init_r1																							       **
+ **               Purpose -- The init_r1 function initializes the current working directory.										   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int																									   **
+ **     Procedures Called -- _getdcwd																								   **
+ **  Global Data Accessed -- char wd[]																								   **
+ **  Summary of Algorithm -- The init_r1 initializes the current working directory.													   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
  */
-int init_r1() {
-  _getdcwd(3,wd,sizeof(wd));
-  return 0;
+int init_r1() 
+{
+	_getdcwd(3,wd,sizeof(wd));
+  
+	return 0;
 }
 
-/** Procedure Name: init_r1
- * \param none
- * \return  an integer error code (0 for now)
- * Procedures Called: none
- * Globals Used: none
- * \brief Description/Purpose: none for now
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- cleanup_r1																							       **
+ **               Purpose -- The cleanup_r1 function does nothing.																	   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int																									   **
+ **     Procedures Called -- N/A																									   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The cleanup_r1 function does nothing.																	   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
  */
-int cleanup_r1() {
-  return 0;
+int cleanup_r1() 
+{
+	return 0;
 }
 
-/** Procedure Name: toLowerCase
- * \param[in] str character array called str that is to be lowered in case
- * \return none
- * Procedures Called: tolower
- * Globals Used: none
- * \brief Description/Purpose: converts the input string to all lowercase
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- toLowerCase																						       **
+ **               Purpose -- The toLowerCase function converts user input to lowercase.												   **
+ **            Parameters -- char [] - a buffer containing user input 																   **
+ **			 Return Value -- void																									   **
+ **     Procedures Called -- strlen, tolower																						   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The toLowerCase function converts user input to lowercase.												   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
  */
-void toLowerCase(char str[BIGBUFF]) {
-  int i = 0;
-  for(i;i<strlen(str);i++) str[i] = tolower(str[i]);
+void toLowerCase(char str[BIGBUFF]) 
+{
+	int i = 0;
+  
+	for (i; i < strlen(str); i++) str[i] = tolower(str[i]);
 }
 
-/** Procedure Name: err_hand
- * \param[in] err an integer err_code that corresponds to a textual error
- * \return none
- * Procedures Called: printf
- * Globals Used: none
- * \brief Description/Purpose: prints out an error message based on the error code passed in
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- err_hand																								   **
+ **               Purpose -- The err_hand function handles errors generated during JAROS execution.									   **
+ **            Parameters -- int - an error code																					   **
+ **			 Return Value -- void																									   **
+ **     Procedures Called -- printf																									   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The err_hand function handles errors generated during JAROS execution.									   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
  */
 void err_hand(int err_code) 
 {
-  if (err_code == ERR_INVCOM) printf("Invalid command. Type \"help\" for more info.");
-  else if (err_code == ERR_INVYR) printf("Invalid year parameter.  Please enter a year from 1-9999\n");
-  else if (err_code == ERR_INVMON) printf("Invalid month parameter.  Please enter a month from 1-12\n");
-  else if (err_code == ERR_INVDAY) printf("Invalid day parameter.  Please enter a day from 1-31 depending on the month.\n");
-  else if (err_code == ERR_SUP_INVDEV) printf("Invalid device ID.");
-  else if (err_code == ERR_SUP_INVOPC) printf("Invalid op code.");
-  else if (err_code == ERR_SUP_INVPOS) printf("Invalid character position.");
-  else if (err_code == ERR_SUP_RDFAIL) printf("Read failed.");
-  else if (err_code == ERR_SUP_WRFAIL) printf("Write failed.");
-  else if (err_code == ERR_SUP_INVMEM) printf("Invalid memory block pointer.");
-  else if (err_code == ERR_SUP_FRFAIL) printf("Free failed.");
-  else if (err_code == ERR_SUP_INVDAT) printf("Invalid date.");
-  else if (err_code == ERR_SUP_DATNCH) printf("Date not changed.");
-  else if (err_code == ERR_SUP_INVDIR) printf("Invalid directory name.");
-  else if (err_code == ERR_SUP_DIROPN) printf("Directory open error.");
-  else if (err_code == ERR_SUP_DIRNOP) printf("No directory is open.");
-  else if (err_code == ERR_SUP_NOENTR) printf("No more directory entries.");
-  else if (err_code == ERR_SUP_NAMLNG) printf("Name too long for buffer.");
-  else if (err_code == ERR_SUP_DIRCLS) printf("Directory close error.");
-  else if (err_code == ERR_SUP_LDFAIL) printf("Program load failed.");
-  else if (err_code == ERR_SUP_FILNFD) printf("File not found.");
-  else if (err_code == ERR_SUP_FILINV) printf("File invalid.");
-  else if (err_code == ERR_SUP_PROGSZ) printf("Program size error.");
-  else if (err_code == ERR_SUP_LDADDR) printf("Invalid load address.");
-  else if (err_code == ERR_SUP_NOMEM) printf("Memory allocation error.");
-  else if (err_code == ERR_SUP_MFREE) printf("Memory free error.");
-  else if (err_code == ERR_SUP_INVHAN) printf("Invalid handler address.");
-  else if (err_code == ERR_PCBNF) printf("PCB not found.");
-  else if (err_code == ERR_QUEEMP) printf("Queue is empty.");
-  else if (err_code == ERR_PRONTL) printf("Process name is too long.");
-  else if (err_code == ERR_NAMEAE) printf("Process name already in use.");
-  else if (err_code == ERR_INVCLS) printf("Invalid process class.");
-  else printf("Invalid error code %d", err_code);
-  err = 0;
+	if (err_code == ERR_INVCOM) printf("Invalid Command -- Type \'help\' for Additional Information");
+  
+	else if (err_code == ERR_INVYR) printf("Invalid Year Parameter -- Enter a Year in the Range of 1 to 9999\n");
+  
+	else if (err_code == ERR_INVMON) printf("Invalid Month Parameter --  Enter a Month in the Range of 1 to 12\n");
+  
+	else if (err_code == ERR_INVDAY) printf("Invalid Day Parameter -- Enter a Day in the Range of 1 to 31\n");
+  
+	else if (err_code == ERR_SUP_INVDEV) printf("Invalid Device ID");
+  
+	else if (err_code == ERR_SUP_INVOPC) printf("Invalid Op Code");
+  
+	else if (err_code == ERR_SUP_INVPOS) printf("Invalid Character Position");
+  
+	else if (err_code == ERR_SUP_RDFAIL) printf("Read Failed");
+  
+	else if (err_code == ERR_SUP_WRFAIL) printf("Write Failed");
+  
+	else if (err_code == ERR_SUP_INVMEM) printf("Invalid Memory Block Pointer");
+  
+	else if (err_code == ERR_SUP_FRFAIL) printf("Free Failed");
+  
+	else if (err_code == ERR_SUP_INVDAT) printf("Invalid Date");
+  
+	else if (err_code == ERR_SUP_DATNCH) printf("Date Not Changed");
+  
+	else if (err_code == ERR_SUP_INVDIR) printf("Invalid Directory Name");
+  
+	else if (err_code == ERR_SUP_DIROPN) printf("Directory Open Error");
+  
+	else if (err_code == ERR_SUP_DIRNOP) printf("No Directory Is Open");
+  
+	else if (err_code == ERR_SUP_NOENTR) printf("No More Directory Entries");
+  
+	else if (err_code == ERR_SUP_NAMLNG) printf("Name Too Long for Buffer");
+  
+	else if (err_code == ERR_SUP_DIRCLS) printf("Directory Close Error");
+  
+	else if (err_code == ERR_SUP_LDFAIL) printf("Program Load Failed");
+  
+	else if (err_code == ERR_SUP_FILNFD) printf("File Not Found");
+  
+	else if (err_code == ERR_SUP_FILINV) printf("File Invalid");
+  
+	else if (err_code == ERR_SUP_PROGSZ) printf("Program Size Error");
+  
+	else if (err_code == ERR_SUP_LDADDR) printf("Invalid Load Address");
+  
+	else if (err_code == ERR_SUP_NOMEM) printf("Memory Allocation Error");
+  
+	else if (err_code == ERR_SUP_MFREE) printf("Memory Free Error");
+  
+	else if (err_code == ERR_SUP_INVHAN) printf("Invalid Handler Address");
+  
+	else if (err_code == ERR_PCBNF) printf("PCB Not Found");
+  
+	else if (err_code == ERR_QUEEMP) printf("Queue Is Empty");
+  
+	else if (err_code == ERR_PRONTL) printf("Process Name Is Too Long");
+  
+	else if (err_code == ERR_NAMEAE) printf("Process Name Already in Use");
+  
+	else if (err_code == ERR_INVCLS) printf("Invalid Process Class");
+  
+	else printf("Invalid Error Code - %d", err_code);
+  
+	err = 0;
 }
