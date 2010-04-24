@@ -14,13 +14,14 @@
  ****************************************************************************************************************************************
  **																   CHANGE LOG														   **
  **																																	   **
- **		  01/25/2010  JC           Nonfunctional, outline of COMHAN.c																   **
- **       01/28/2010  JC, RW       Slight COMHAN function editing																	   **
- **       02/01/2010  JC, RW       Solved initial errors such that it compiles														   **
- **       02/02/2010  JC, RW       Added version and partial help functions; improved comhan										   **
- **       02/03/2010  JC           Completed dir, date, and err_hand functions and comhan; R1 operational minus help function		   **
- **       02/04/2010  JC, RW, AT   Completed help; finished commentation; R1 fully operational with many improvements to come		   **
- **       02/08/2010  JC           Edited dir function for operation on any computer and added some comments						   **
+ **		  01/25/2010  JC           nonfunctional, outline of COMHAN.c																   **
+ **       01/28/2010  JC, RW       slight function editing of COMHAN.c																   **
+ **       02/01/2010  JC, RW       initial errors resolved; successful compilation of COMHAN.c										   **
+ **       02/02/2010  JC, RW       version and help functionality added to COMHAN.c													   **
+ **       02/03/2010  JC           dir, date, and err_hand functionality added, functional R1 COMHAN.c								   **
+ **       02/04/2010  JC, RW, AT   help functionality added; documentation added; completed R1 COMHAN.c								   **
+ **       02/08/2010  JC           dir functionality improved; additional documentation added										   **
+ **		  04/23/2010  AT		   code review, additional documentation added														   **
  ****************************************************************************************************************************************
  ****************************************************************************************************************************************
  */
@@ -71,100 +72,142 @@
 #define LOADPROCS   18
 #define VERSION    2.0
 
-// Global Variables
-int err = 0;  //error code
-char * fcns[20] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0","dispat\0","ldprocs\0",NULL};  //functions list
-char wd[BIGBUFF*2] = {0};  //working directory
+/* Global Variables */
+int err            = 0;  // Stores Error Codes
+char * fcns[20]    = {"date\0", "help\0", "ver\0", "dir\0", "quit\0", "list\0", "cpcb\0", "dpcb\0", "block\0", "unblock\0", "suspend\0", 
+					  "resume\0", "setpri\0", "shpcb\0", "shall\0", "shready\0", "shblock\0", "dispat\0", "ldprocs\0", NULL}; // List of Functions
+char wd[BIGBUFF*2] = {0}; // Working Directory
 
-// Function Prototypes
-void err_hand(int err_code);
-int init_r1();
+/* Function Prototypes */
 int cleanup_r1();
-int disp_dir();
 int comhan();
-void terminate_mpx();
-int help(char *cmdName);
-void get_Version();
 int date();
+int disp_dir();
+int help(char *cmdName);
+int init_r1();
 int valid_date(int yr, int mo, int day);
+void err_hand(int err_code);
+void get_Version();
+void terminate_mpx();
 void toLowerCase(char str[BIGBUFF]);
 void trim(char ary[BIGBUFF]);
 
-
-/** Procedure Name: main
- * \param none
- * \return an integer that is 0 if successful (which it always is)
- * Procedures Called: sys_init, init_r1, comhan, cleanup_r1, terminate_mpx
- * Globals Used: 
- * @var err
- * \details Description/Purpose: Main simply initializes the system, calls comhan, and
- *   then cleans up and terminates (though it never actually reaches cleanup or
- *   terminate)
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- main																									   **
+ **               Purpose -- The main function is where the the program begins execution.											   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int																									   **
+ **     Procedures Called -- sys_init, init_r1, init_r2, init_r3, comhan, cleanup_r1, cleanup_r2, cleanup_r3, terminate_mpx			   **
+ **  Global Data Accessed -- int err																								   **
+ **  Summary of Algorithm -- The main function initializes the system, calls comhan, cleans up the OS, and terminates JAROS.  		   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
  */
-int main() {
-  sys_init(MODULE_R3);
-  err = init_r1();
-  err = init_r2();
-  err = init_r3();
-  err = comhan();
-  err = cleanup_r1();
-  err = cleanup_r2();
-  err = cleanup_r3();
-  terminate_mpx();
-  return 0;
+int main() 
+{
+	sys_init(MODULE_R3);
+	err = init_r1();
+	err = init_r2();
+	err = init_r3();
+	err = comhan();
+	err = cleanup_r1();
+	err = cleanup_r2();
+	err = cleanup_r3();
+	terminate_mpx();
+	return 0;
 }
 
-/** Procedure Name: comhan
- * \param none
- * \return an integer that is 0 if successful (which it always is)
- * Procedures Called: memset, sys_req, trim, strncmp, help, err_hand, date,
- *   disp_dir, terminate_mpx
- * Globals Used: 
- * @var err
-   @var fcns
- * \details Description/Purpose: comhan is the heart of the R1 module. It runs the
- *  central loop of the command handler.  It accepts commands entered by the
- *  user, analyzes them, and calls the proper functions.  It also receives all
- *  error codes returned by the functions, passing them to the error handler.
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- comhan																									   **
+ **               Purpose -- The comhan function is where JAROS begins execution.													   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int																									   **
+ **     Procedures Called -- printf, memset, sys_req, trim, toLowerCase, strncmp, strlen, terminate_mpx, get_Version, help, err_hand,  **
+ **							 date, disp_dir, create_PCB, delete_PCB, block, unblock, suspend, resume, set_Priority, show_PCB,		   **
+ **						     show_All, show_Ready, show_Blocked, load_test															   **
+ **  Global Data Accessed -- int err, char * fcns[] 																				   **
+ **  Summary of Algorithm -- The comhan function processes user-inputted commands and receives error codes returned by functions.	   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
  */
-int comhan() {
-  char cmd[BIGBUFF]={0};
-  int bufsize = BIGBUFF;
-  printf("\nWelcome to JAROS!\n");
-  
-  while (1) {
-    bufsize = BIGBUFF;
-    memset(cmd, '\0', BIGBUFF);                       //clear buffer
-    printf("\n>>");                                   //command prompt
-    err = sys_req(READ, TERMINAL, cmd, &bufsize);     //read in command
-    trim(cmd);
-    toLowerCase(cmd);
-    if (!strncmp(cmd,fcns[QUIT],strlen(fcns[QUIT])+1)) terminate_mpx();  //call corresponding function
-    else if (!strncmp(cmd,fcns[VER],strlen(fcns[VER]))) get_Version();
-    else if (!strncmp(cmd,fcns[HELP],strlen(fcns[HELP])+1)) {
-      err = help(NULL);
-      if(err < OK) err_hand(err);
+int comhan() 
+{
+	char cmd[BIGBUFF] = {0};
+	int bufsize		  = BIGBUFF;
+    printf("\nWelcome to JAROS!\n");
+	
+	while (1) 
+	{
+		bufsize = BIGBUFF;
+		memset(cmd, '\0', BIGBUFF);                       // Clear Input Buffer
+		printf("\n>>");                                   // Display Command Prompt
+		err = sys_req(READ, TERMINAL, cmd, &bufsize);     // Read User-Inputted Command
+		trim(cmd);										  // Trim Extraneous Whitespace from User Input
+		toLowerCase(cmd);								  // Convert User Input to Lowercase
+
+/**
+ ****************************************************************************************************************************************
+ *											    				    R1 Commands											     		    *
+ ****************************************************************************************************************************************
+ */
+		/* Quit */
+		if (!strncmp(cmd,fcns[QUIT],strlen(fcns[QUIT])+1)) terminate_mpx();
+		
+		/* Display Version */
+		else if (!strncmp(cmd,fcns[VER],strlen(fcns[VER]))) get_Version();
+		
+		/* Display Help Information */
+		else if (!strncmp(cmd,fcns[HELP],strlen(fcns[HELP])+1)) 
+		{
+			err = help(NULL);
+      
+			if (err < OK) err_hand(err);
+		}
+		
+		/* Display Date */
+		else if (!strncmp(cmd,fcns[DATE],strlen(fcns[DATE])+1)) 
+		{
+			err = date();
+      
+			if (err < OK) err_hand(err);
+		}
+		
+		/* Display Directory */
+		else if (!strncmp(cmd,fcns[DIR],strlen(fcns[DIR])+1)) 
+		{
+			err = disp_dir();
+			
+			if (err < OK) err_hand(err);
+		}
+/**
+ ****************************************************************************************************************************************
+ *											    				    R2 Commands											     		    *
+ ****************************************************************************************************************************************
+ */
+	/* Create PCB */	
+    else if (!strncmp(cmd,fcns[CREATEPCB],strlen(fcns[CREATEPCB])+1)) 
+	{
+		err = create_PCB();
+      
+		if (err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[DATE],strlen(fcns[DATE])+1)) {
-      err = date();
-      if(err < OK) err_hand(err);
+	
+	/* Delete PCB */
+    else if (!strncmp(cmd,fcns[DELPCB],strlen(fcns[DELPCB])+1)) 
+	{
+        err = delete_PCB();
+      
+		if (err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[DIR],strlen(fcns[DIR])+1)) {
-      err = disp_dir();
-      if(err < OK) err_hand(err);
-    }
-    //R2 commands
-    else if (!strncmp(cmd,fcns[CREATEPCB],strlen(fcns[CREATEPCB])+1)) {
-      err = create_PCB();
-      if(err < OK) err_hand(err);
-    }
-    else if (!strncmp(cmd,fcns[DELPCB],strlen(fcns[DELPCB])+1)) {
-      err = delete_PCB();
-      if(err < OK) err_hand(err);
-    }
-    else if (!strncmp(cmd,fcns[BLOCK],strlen(fcns[BLOCK])+1)) {
-      err = block();
-      if(err < OK) err_hand(err);
+	
+	/* Block */
+    else if (!strncmp(cmd,fcns[BLOCK],strlen(fcns[BLOCK])+1)) 
+	{
+		err = block();
+      
+		if (err < OK) err_hand(err);
     }
     else if (!strncmp(cmd,fcns[UNBLOCK],strlen(fcns[UNBLOCK])+1)) {
       err = unblock();
