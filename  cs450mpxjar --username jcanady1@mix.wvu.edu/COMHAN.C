@@ -1,72 +1,75 @@
-/**
- * File Name: comhan.c
- * \title JAROS
- * \author Jonroy Canady
- * \author Adam Trainer
- * \author Rob Wayland   
- * \date 2/04/2010
- * \version: 2.0
- *
- * Components: err_hand, init_r1, cleanup_r1, disp_dir, comhan, terminate_mpx,
- *             help, get_Version, date, valid_date, toLowerCase, trim
- *
- *******************************************************************************
- * Change Log:
- *
- *        1/25/2010  JC           Original version: outline, nonfunctional
- *        1/28/2010  JC, RW       Slight comhan fcn editing
- *        2/01/2010  JC, RW       Solved initial errors such that it compiles
- *        2/02/2010  JC, RW       Added version and partial help functions; improved comhan
- *        2/03/2010  JC           Completed dir, date, and err_hand functions and comhan; R1 operational minus help function
- *        2/04/2010  JC, RW, AT   Completed help; finished commentation; R1 fully operational with many improvements to come
- *        2/08/2010  JC           Edited dir function for operation on any computer and added some comments     
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **																FILE INFORMATION													   **
+ **																																	   **
+ **		FILENAME -- COMHAN.c																										   **	
+ **      AUTHORS -- Jonroy Canaday, Adam Trainer, Robert Wayland																	   **
+ **      VERSION -- 2.0,																											   **
+ ** LAST UPDATED -- April 24, 2010																									   **
+ **																																	   **
+ **   COMPONENTS -- cleanup_r1, comhan, date, disp_dir, err_hand, get_Version, help, init_r1, terminate_mpx, toLowerCase, trim,		   **
+ **				    valid_date																										   **
+ **																																	   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **																   CHANGE LOG														   **
+ **																																	   **
+ **		  01/25/2010  JC           Nonfunctional, outline of COMHAN.c																   **
+ **       01/28/2010  JC, RW       Slight COMHAN function editing																	   **
+ **       02/01/2010  JC, RW       Solved initial errors such that it compiles														   **
+ **       02/02/2010  JC, RW       Added version and partial help functions; improved comhan										   **
+ **       02/03/2010  JC           Completed dir, date, and err_hand functions and comhan; R1 operational minus help function		   **
+ **       02/04/2010  JC, RW, AT   Completed help; finished commentation; R1 fully operational with many improvements to come		   **
+ **       02/08/2010  JC           Edited dir function for operation on any computer and added some comments						   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
  */
 
-// Included ANSI C Files
+/* Included ANSI Files */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-// Included Support Files
+/* Included MPX Support Files */
 #include "mpx_supt.h"
 
-// Status and Error Codes
-#define ERR_INVCOM (-201) // Invalid command
-#define ERR_INVYR (-202)  // Invalid year
-#define ERR_INVMON (-203) // Invalid month
-#define ERR_INVDAY (-204) // Invalid day
-#define ERR_PCBNF  (-205)    //PCB Not Found
-#define ERR_QUEEMP (-206)    //Queue is Empty
-#define ERR_UCPCB  (-207)    //Unable to Create PCB
-#define ERR_PRONTL (-208)    //Process Name too Long
-#define ERR_NAMEAE (-209)    //Process Name Already Exists
-#define ERR_INVCLS (-210)    //Invalid Class
+/* Status & Error Codes */
+#define ERR_INVCOM (-201)		// Invalid Command
+#define ERR_INVYR  (-202)		// Invalid Year
+#define ERR_INVMON (-203)		// Invalid Month
+#define ERR_INVDAY (-204)		// Invalid Day
+#define ERR_PCBNF  (-205)		// PCB Not Found
+#define ERR_QUEEMP (-206)		// Queue Is Empty
+#define ERR_UCPCB  (-207)		// Unable to Create PCB
+#define ERR_PRONTL (-208)		// Process Name Too Long
+#define ERR_NAMEAE (-209)		// Process Name Already Exists
+#define ERR_INVCLS (-210)		// Invalid Class
 
-// Constants
-#define BIGBUFF 80
-#define SMALLBUFF 10
-#define TINYBUFF 2
-#define DATE 0
-#define HELP 1
-#define VER 2
-#define DIR 3
-#define QUIT 4
-#define LIST 5
-#define CREATEPCB 6
-#define DELPCB 7
-#define BLOCK 8
-#define UNBLOCK 9
-#define SUSPEND 10
-#define RES 11
-#define SETPRI 12
-#define SHOWPCB 13
-#define SHOWALL 14
-#define SHOWREADY 15
+/* Macros */
+#define BIGBUFF     80
+#define SMALLBUFF   10
+#define TINYBUFF     2
+#define DATE	     0
+#define HELP	     1
+#define VER		     2
+#define DIR		     3
+#define QUIT	     4
+#define LIST	     5
+#define CREATEPCB    6 
+#define DELPCB	     7
+#define BLOCK        8
+#define UNBLOCK      9
+#define SUSPEND     10
+#define RES         11
+#define SETPRI      12
+#define SHOWPCB     13
+#define SHOWALL     14
+#define SHOWREADY   15
 #define SHOWBLOCKED 16
-#define DISPATCH 17
-#define LOADPROCS 18
-#define VERSION 2.0
+#define DISPATCH    17
+#define LOADPROCS   18
+#define VERSION    2.0
 
 // Global Variables
 int err = 0;  //error code
