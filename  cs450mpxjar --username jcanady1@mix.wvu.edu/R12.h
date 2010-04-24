@@ -58,6 +58,7 @@
 #define SUSP 1
 #define STACK_SIZE 2048
 #define SYS_STACK_SIZE 200
+#define COMHAN_STACK_SIZE 4096
 
 //Structures
 typedef struct PCB {

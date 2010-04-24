@@ -130,7 +130,7 @@ int main() {
   np = allocate_PCB();
   if (np == NULL) err = ERR_UCPCB;
   else {
-    err = setup_PCB(np, "comhan",SYS,127);
+    err = setup_PCB(np, "comhan",SYSTEM,127);
     if (err < OK) return err;
    	sys_free_mem(np->stack_base);
 	np->stack_base = (unsigned char*)sys_alloc_mem(COMHAN_STACK_SIZE*sizeof(unsigned char));
@@ -144,7 +144,7 @@ int main() {
     err = insert(np,RUNNING);
   }
   
-  load_prog("IDLE\0", -128, SYS);
+  load_prog("IDLE\0", -128, SYSTEM);
   temppcb = findPCB(buff, temppcb);
   temppcb->suspended = NOTSUSP;
   
