@@ -10,7 +10,7 @@
 #define ERR_NAMEAE (-209)    //Process Name Already Exists
 #define ERR_INVCLS (-210)    //Invalid Class
 #define ERR_UTDSC  (-211)    //Unable to Delete System Class
-#define ERR_UNKN_REQUEST (-212)
+#define ERR_UNKN_REQUEST (-212)  //Unknown Request
 #define NO_DEV		0
 #define	TERMINAL	1
 #define	PRINTER		2
@@ -61,6 +61,68 @@
 #define SYS_STACK_SIZE 200
 #define COMHAN_STACK_SIZE 4096
 
+// Function Prototypes
+void err_hand(int err_code);
+int init_r1();
+int cleanup_r1();
+int disp_dir();
+int comhan();
+void terminate_mpx();
+int help(char *cmdName);
+void get_Version();
+int date();
+int valid_date(int yr, int mo, int day);
+void toLowerCase(char str[BIGBUFF]);
+void trim(char ary[BIGBUFF]);
+//
+int init_r2();
+int cleanup_r2();
+int block();
+int unblock();
+int suspend();
+int resume();
+int set_Priority();
+int show_PCB();
+int show_All();
+int show_Ready();
+int show_Blocked();
+struct PCB * allocate_PCB();
+int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority);
+int free_PCB(struct PCB *PCBptr);
+int create_PCB();
+int delete_PCB();
+int isEmpty(int q);
+int insert(struct PCB *newPCB,int q);
+struct PCB* findPCB(char *name, struct PCB *PCBptr);
+struct PCB* qRemove(char *name, struct PCB *set);
+void toLowerCasex(char str[BIGBUFF]);
+void trimx(char ary[BIGBUFF]);
+struct PCB* getRHead();
+//
+int init_r3();
+int cleanup_r3();
+void test1_R3();
+void test2_R3();
+void test3_R3();
+void test4_R3();
+void test5_R3();
+void interrupt sys_call();
+void interrupt dispatcher();
+int load_test();
+//
+int load_prog(char * fname, int pri, int procClass);
+int terminate();
+int load();
+//
+int init_f();
+int cleanup_f();
+int IOschedule();
+int process_com();
+int process_trm();
+int enqueue(struct *IOD nIOD, struct *IOCB queue);
+struct *IOD dequeue(struct *IOCB queue);
+struct *IOD createIOD();
+
 //Structures
 typedef struct PCB {
 	char name[PROCESS_NAME_LENGTH];         //Process Name
@@ -77,7 +139,7 @@ typedef struct PCB {
 	unsigned char* execution_address;		//Pointer to execution address
 	struct PCB *prev;				        //Pointer to previous PCB node
 	struct PCB *next;				       	//Pointer to next PCB node
-} ;
+};
 
 typedef struct params {
 	int      op_code;
@@ -90,4 +152,36 @@ typedef struct context {
 	unsigned int BP, DI, SI, DS, ES;
 	unsigned int DX, CX, BX, AX;
 	unsigned int IP, CS, FLAGS;
-} ;
+};
+
+typedef struct DCB {
+	int flagOpen;          //is COM open
+	int* eventFlagp;	   //
+	int status;		       //COM current status
+	char* in_buff;	       //
+	int *in_count;	       //
+	int in_done;	       //
+	char* out_buff;        //
+	int*out_count;	       //
+	int out_done;	       //
+	char ring_buffer[RING_SIZE];    //
+	int ring_buffer_in;    //
+	int ring_buffer_out;   //
+	int ring_buffer_count; //
+};
+
+struct IOD {
+	char name[NAME_LENGTH];
+	PCB *requestor;
+	int request;
+	char *tran_buff;
+	int *buff_count;
+	struct IOD *next;
+};
+
+struct IOCB {	
+    int event_flag;
+	int count;
+	struct IOD *head;
+	struct IOD *tail;
+};

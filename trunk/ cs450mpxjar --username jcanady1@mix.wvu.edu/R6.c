@@ -83,21 +83,22 @@ int main() {
   return 0;
 }
 
-
+/*
+ */
 int IOschedule() {
 	int retq = 0;
 	int device_id = param_p->device_id;
 	struct *newIOD = createIOD();
 
 	if(device_id = COM) {
-		retq = enqueue(newIOD,com_queue);
+		retq = enqueue(newIOD,comport);
 		if(retq == 1) {
 			switch(IOD->request) {
 			case READ: {
-					com_read((com_queue->head)->tran_buff, (com_queue->head)->buff_count);
+					com_read((comport->head)->tran_buff, (comport->head)->buff_count);
 					break;}
 			case WRITE: {
-					com_write((com_queue->head)->tran_buff, (com_queue->head)->buff_count);
+					com_write((comport->head)->tran_buff, (comport->head)->buff_count);
 					break;}
 			default: {
 					return ERR_UNKN_REQUEST;}
@@ -105,14 +106,14 @@ int IOschedule() {
 		}
 	}
 	else if(device_id = TERM) {
-	    retq = enqueue(newIOD,com_queue);
+	    retq = enqueue(newIOD,terminal);
 		if(retq == 1) {
 			switch(IOD->request) {
 			case READ: {
-					trm_read((com_queue->head)->tran_buff, (com_queue->head)->buff_count);
+					trm_read((terminal->head)->tran_buff, (terminal->head)->buff_count);
 					break;}
 			case WRITE: {
-					trm_write((com_queue->head)->tran_buff, (com_queue->head)->buff_count);
+					trm_write((terminal->head)->tran_buff, (terminal->head)->buff_count);
 					break;}
 			case CLEAR: {
 				    trm_clear();
@@ -132,7 +133,8 @@ int IOschedule() {
     return OK;
 }
 
-
+/*
+ */
 int enqueue(struct *IOD nIOD, struct *IOCB queue) {
 	int retv = 0;
 
@@ -149,24 +151,25 @@ int enqueue(struct *IOD nIOD, struct *IOCB queue) {
 	}
 	return retv;
 }
-struct *IOD dequeue(struct *IOCB queue) 
-{
+
+/*
+ */
+struct *IOD dequeue(struct *IOCB queue) {
 	struct IOB *tempIOB;
 	tempIOB = queue->head;
 
-	if(queue->count == 1)
-	{
+	if(queue->count == 1) {
 	 queue->head = NULL;
 	 queue->tail = NULL;
 	}
-	else
-	{
-	 queue->head = queue->head->next;
-	}
+	else queue->head = queue->head->next;
 	queue->count--;
 
 	return tempIOB;
 }
+
+/*
+ */
 struct *IOD createIOD() {
 	struct IOD *newIOD = NULL;
 	newIOD = sys_alloc_mem((sizeof(struct PCB)));
