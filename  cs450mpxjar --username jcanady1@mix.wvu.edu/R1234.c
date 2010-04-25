@@ -1401,7 +1401,7 @@ int load_test() {
 		}
 	}
 	else printf("\nProcess with name 'test5' already exists.");
-	if(err3<OK) printf("\nTest processes loaded successfully!");
+	if(err3==OK) printf("\nTest processes loaded successfully!");
 	return err3;
 }
 
@@ -1421,7 +1421,7 @@ int load_prog(char * fname, int pri, int procClass) {
     newNode = findPCB(fname, newNode);
     if(newNode != NULL) return ERR_NAMEAE;
 
-	err4 = sys_check_program("PROCS",fname,&progLength,&offset_p);
+	err4 = sys_check_program("MPXFILES",fname,&progLength,&offset_p);
 	if(err4 < OK) return err4;
 	if(NULL == (newNode = allocate_PCB())) return ERR_UCPCB;
 
