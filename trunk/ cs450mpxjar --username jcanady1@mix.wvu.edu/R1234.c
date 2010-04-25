@@ -106,8 +106,8 @@ int load_prog(char * fname, int pri, int procClass);
 int terminate();
 int load();
 //
-int init_f()
-int cleanup_f()
+int init_f();
+int cleanup_f();
 
 /** Procedure Name: main
  * \param none
