@@ -1442,7 +1442,7 @@ int load_prog(char * fname, int pri, int procClass) {
 	
 	err4 = sys_load_program(newNode->load_address, newNode->mem_size, "MPXFILES",fname);
 	if(err4>=OK) err4 = insert(newNode,RUNNING);
-	if(err4>=OK) printf("Program successfully loaded!");
+	if(strncmp(fname, "IDLE", 5)) if(err4>=OK) printf("Program successfully loaded!");
 	return err4;
 }
 
