@@ -16,6 +16,7 @@
  */
 
 #define COMHAN_STACK_SIZE 4096
+#define ERR_UNKN_REQUEST (-212)
 
 //Structures
 struct IOD {
@@ -35,8 +36,8 @@ struct IOCB {
 };
 
 //Globals
-struct IOCB com_queue;
-struct IOCB term_queue;
+struct IOCB *com_queue;
+struct IOCB *term_queue;
 
 
 int main() {
@@ -93,16 +94,10 @@ int IOschedule() {
 		if(retq == 1) {
 			switch(IOD->request) {
 			case READ: {
-					//com_read
+					com_read((com_queue->head)->tran_buff, (com_queue->head)->buff_count);
 					break;}
 			case WRITE: {
-					//com_write
-					break;}
-			case CLEAR: {
-				    //com_clear
-					break;}
-			case GOTOXY: {
-				    //com_cotoxy
+					com_write((com_queue->head)->tran_buff, (com_queue->head)->buff_count);
 					break;}
 			default: {
 					return ERR_UNKN_REQUEST;}
@@ -114,16 +109,16 @@ int IOschedule() {
 		if(retq == 1) {
 			switch(IOD->request) {
 			case READ: {
-					//trm_read
+					trm_read((com_queue->head)->tran_buff, (com_queue->head)->buff_count);
 					break;}
 			case WRITE: {
-					//trm_write
+					trm_write((com_queue->head)->tran_buff, (com_queue->head)->buff_count);
 					break;}
 			case CLEAR: {
-				    //trm_clear
-					break;	  }
+				    trm_clear();
+					break;}
 			case GOTOXY: {
-				    //trm_cotoxy
+				    trm_gotoxy();
 					break;}
 			default: {
 					return ERR_UNKN_REQUEST}
@@ -144,13 +139,13 @@ int enqueue(struct *IOD nIOD, struct *IOCB queue) {
 	if(queue->count = 0) {
 		queue->head = nIOD;
 		queue->tail = nIOD;
-		queue->count = queue->count++;
+		queue->count++;
 		retv = 1;
 	}
 	else {
 		queue->tail->next = nIOD;
 		queue->tail = nIOD;
-		queue->count = queue->count++;
+		queue->count++;
 	}
 	return retv;
 }
