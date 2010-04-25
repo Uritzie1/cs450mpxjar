@@ -1568,7 +1568,7 @@ int process_trm() {
 int enqueue(struct IOD* nIOD, struct IOCB* queue) {
 	int retv = 0;
 
-	if(queue->count = 0) {
+	if(queue->count == 0) {
 		queue->head = nIOD;
 		queue->tail = nIOD;
 		queue->count++;
@@ -1605,8 +1605,8 @@ struct IOD* createIOD() {
 	newIOD = sys_alloc_mem((sizeof(struct IOD)));
 	newIOD->name = cop->name;
 	newIOD->requestor = cop;
-	newIOD->tran_buff = param_p->buf_addr;
-	newIOD->count = param_p->count_addr;
+	newIOD->tran_buff = param_p->buf_p;
+	newIOD->buff_count = param_p->count_p;
 	newIOD->request = param_p->op_code;
 	return newIOD;
 }
