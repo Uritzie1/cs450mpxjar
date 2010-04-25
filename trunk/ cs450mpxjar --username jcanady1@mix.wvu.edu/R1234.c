@@ -1467,13 +1467,11 @@ int terminate() {
 int init_f() {
   terminal->event_flag = 1;
   terminal->count = 0;
-  terminal->active = NULL;
   terminal->head = NULL;
   terminal->tail = NULL;
 	
   comport->event_flag = 1;
   comport->count = 0;
-  comport->active = NULL;
   comport->head = NULL;
   comport->tail = NULL;
   
@@ -1510,13 +1508,13 @@ int cleanup_f() {
 int IOschedule() {
 	int retq = 0;
 	int device_id = param_p->device_id;
-	struct *newIOD = createIOD();
+	struct IOD * newIOD = createIOD();
 
-	if(device_id = COM) {
+	if(device_id == COM_PORT) {
 		retq = enqueue(newIOD,comport);
 		if(retq == 1) process_com();
 	}
-	else if(device_id = TERM) {
+	else if(device_id == TERMINAL) {
 	    retq = enqueue(newIOD,terminal);
 		if(retq == 1) process_trm();
     }
@@ -1530,7 +1528,7 @@ int IOschedule() {
 /*
  */
 int process_com() {
-  switch(IOD->request) {
+  switch((comport->head)->request) {
   case READ: {
 		com_read((comport->head)->tran_buff, (comport->head)->buff_count);
 		break;}
@@ -1540,12 +1538,13 @@ int process_com() {
   default: {
 		return ERR_UNKN_REQUEST;}
   }
+  return OK;
 }
 
 /*
  */
 int process_trm() {
-  switch(IOD->request) {
+  switch((terminal->head)->request) {
   case READ: {
 		trm_read((terminal->head)->tran_buff, (terminal->head)->buff_count);
 		break;}
@@ -1556,11 +1555,12 @@ int process_trm() {
         trm_clear();
 		break;}
   case GOTOXY: {
-        trm_gotoxy();
+        trm_gotoxy(0,0);
 		break;}
   default: {
-		return ERR_UNKN_REQUEST}
+		return ERR_UNKN_REQUEST;}
   }
+  return OK;
 }
 
 /*
