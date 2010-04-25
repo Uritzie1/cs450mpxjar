@@ -1,4 +1,16 @@
 // Status and Error Codes
+#define ERR_OPEN_NULL_EFLAGP -101
+#define ERR_OPEN_INV_BAUD_RATE -102
+#define ERR_OPEN_PORT_OPEN -103
+#define ERR_CLOSE_PORT_NOT_OPEN -104
+#define ERR_READ_PORT_NOT_OPEN -105
+#define ERR_READ_INV_BUFF_ADDR -106
+#define ERR_READ_INV_COUNT_VAR -107
+#define ERR_READ_DEVICE_BUSY -108
+#define ERR_WRITE_PORT_NOT_OPEN -109
+#define ERR_WRITE_INV_BUFF_ADDR -110
+#define ERR_WRITE_INV_COUNT_VAR -111
+#define ERR_WRITE_DEVICE_BUSY -112
 #define ERR_INVCOM (-201) // Invalid command
 #define ERR_INVYR (-202)  // Invalid year
 #define ERR_INVMON (-203) // Invalid month
@@ -60,6 +72,26 @@
 #define STACK_SIZE 2048
 #define SYS_STACK_SIZE 200
 #define COMHAN_STACK_SIZE 4096
+#define COM1_READ 0x04
+#define COM1_WRITE 0x02
+#define IDLE 0
+#define READING 1
+#define WRITING 2
+#define CLOSED 0
+#define OPEN 1
+#define RING_SIZE 128
+#define COM1_INT_ID 0x0c
+#define COM1_BASE 0x3f8
+#define COM1_INT_EN COM1_BASE+1
+#define COM1_BRD_LSB COM1_BASE
+#define COM1_BRD_MSB COM1_BASE+1
+#define COM1_INT_ID_REG COM1_BASE+2
+#define COM1_LC COM1_BASE+3
+#define COM1_MC COM1_BASE+4
+#define COM1_MS COM1_BASE+6
+#define PIC_MASK 0x21
+#define PIC_CMD 0x20
+#define EOI 0x20
 
 // Function Prototypes
 void err_hand(int err_code);
@@ -122,6 +154,15 @@ int process_trm();
 int enqueue(struct *IOD nIOD, struct *IOCB queue);
 struct *IOD dequeue(struct *IOCB queue);
 struct *IOD createIOD();
+//
+int com_open (int *eflag_p, int baud_rate);
+int com_close();
+int com_read(char* buf_p, int *count_p);
+int com_write(char* buf_p, int *count_p);
+void interrupt com_check();
+void readCom();
+void writeCom();
+void stop_com_request();
 
 //Structures
 typedef struct PCB {

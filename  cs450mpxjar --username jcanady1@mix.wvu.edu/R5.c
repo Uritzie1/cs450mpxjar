@@ -20,64 +20,7 @@
 // Included ANSI C Files
 #include <stdlib.h>
 #include <dos.h>
-
-// Status and Error Codes
-#define OK 0
-#define ERR_OPEN_NULL_EFLAGP -101
-#define ERR_OPEN_INV_BAUD_RATE -102
-#define ERR_OPEN_PORT_OPEN -103
-#define ERR_CLOSE_PORT_NOT_OPEN -104
-#define ERR_READ_PORT_NOT_OPEN -105
-#define ERR_READ_INV_BUFF_ADDR -106
-#define ERR_READ_INV_COUNT_VAR -107
-#define ERR_READ_DEVICE_BUSY -108
-#define ERR_WRITE_PORT_NOT_OPEN -109
-#define ERR_WRITE_INV_BUFF_ADDR -110
-#define ERR_WRITE_INV_COUNT_VAR -111
-#define ERR_WRITE_DEVICE_BUSY -112
-
-// Constants
-#define COM1_READ 0x04
-#define COM1_WRITE 0x02
-#define IDLE 0
-#define READING 1
-#define WRITING 2
-#define CLOSED 0
-#define OPEN 1
-#define RING_SIZE 128
-#define COM1_INT_ID 0x0c
-#define COM1_BASE 0x3f8
-#define COM1_INT_EN COM1_BASE+1
-#define COM1_BRD_LSB COM1_BASE
-#define COM1_BRD_MSB COM1_BASE+1
-#define COM1_INT_ID_REG COM1_BASE+2
-#define COM1_LC COM1_BASE+3
-#define COM1_MC COM1_BASE+4
-#define COM1_MS COM1_BASE+6
-#define PIC_MASK 0x21
-#define PIC_CMD 0x20
-#define EOI 0x20
-
-//Structures
-
-/** \struct DCB
-  */
-typedef struct DCB {
-	int flagOpen;          //is COM open
-	int* eventFlagp;	   //
-	int status;		       //COM current status
-	char* in_buff;	       //
-	int *in_count;	       //
-	int in_done;	       //
-	char* out_buff;        //
-	int*out_count;	       //
-	int out_done;	       //
-	char ring_buffer[RING_SIZE];    //
-	int ring_buffer_in;    //
-	int ring_buffer_out;   //
-	int ring_buffer_count; //
-} ;
-
+#include "R12.h"
 
 // Global Variables
 static struct DCB *com_port;
@@ -85,16 +28,6 @@ static void interrupt (*oldfunc) (void);
 static char iochar;
 static char mask;
 static int intType;
-
-// Function Prototypes
-int com_open (int *eflag_p, int baud_rate);
-int com_close();
-int com_read(char* buf_p, int *count_p);
-int com_write(char* buf_p, int *count_p);
-void interrupt com_check();
-void readCom();
-void writeCom();
-void stop_com_request();
 
 /**
  */
