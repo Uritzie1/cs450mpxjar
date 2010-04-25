@@ -67,7 +67,7 @@ int main() {
     err = insert(np,RUNNING);
   }
   
-  load_prog("IDLE\0", -128, SYSTEM);
+  load_prog("IDLE", -128, SYSTEM);
   temppcb = findPCB(buff, temppcb);
   temppcb->suspended = NOTSUSP;
   

@@ -147,7 +147,7 @@ int main() {
     err = insert(np,RUNNING);
   }
   
-  load_prog("IDLE\0", -128, SYSTEM);  
+  load_prog("IDLE", -128, SYSTEM);  
   dispatcher();
   
   //com_close();
@@ -1414,7 +1414,7 @@ int load_prog(char * fname, int pri, int procClass) {
 	struct context *cp;
 	err4 = 0;
 
-	if(pri < -127 || pri > 127) {
+	if(pri <= -128 || pri >= 127) {
 		pri = 0;
         printf("\nInvalid priority level.  Priority defaulted to 0.");
     }
@@ -1426,7 +1426,7 @@ int load_prog(char * fname, int pri, int procClass) {
 	if(NULL == (newNode = allocate_PCB())) return ERR_UCPCB;
 
 	setup_PCB(newNode,fname,procClass,pri);
-	if(!strncmp(fname, "IDLE\0", 5)) newNode->suspended = NOTSUSP;
+	if(!strncmp(fname, "IDLE", 5)) newNode->suspended = NOTSUSP;
 	else newNode->suspended = SUSP;
 
     newNode->mem_size = progLength;
