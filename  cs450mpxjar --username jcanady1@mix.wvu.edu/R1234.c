@@ -1238,9 +1238,8 @@ void interrupt sys_call() {
         tmpIOD = dequeue(comport);
         tempnode = qRemove((tmpIOD->requestor)->name, tempnode);
         tempnode->state = READY;
-	    insert(tempnode, READY+1);
-	    
-        //process nxt io req for this dev
+	    insert(tempnode, READY+1);	    
+        //process nxt IO req for this dev
         if(comport->count > 0) process_com();
 	}
 	//check for terminal request completion
@@ -1249,9 +1248,8 @@ void interrupt sys_call() {
 		tmpIOD = dequeue(terminal);
         tempnode = qRemove((tmpIOD->requestor)->name, tempnode);
         tempnode->state = READY;
-	    insert(tempnode, READY+1);
-	    
-        //process nxt io req for this dev
+	    insert(tempnode, READY+1);	    
+        //process nxt IO req for this dev
         if(terminal->count > 0) process_trm();
 	}
     
@@ -1489,26 +1487,20 @@ int init_f() {
 int cleanup_f() {
   trm_close();
   com_close();
-  //clear the com/trm queues, freeing the mem of the IODs inside them
-  //free the IOCBs
-  
-  tempIOD = comport->head;
-  while (tempIOD != NULL) {
+
+  //free IODs
+  tmpIOD = comport->head;
+  while (tmpIOD != NULL) {
     comport->head = (comport->head)->next;
-    free(tempIOD);
-    tempIOD = comport->head;   
-        
-        
-    tail1 = temppcb;
-      temppcb = tail1->next;
-      free_PCB(tail1);
-    }
-    temppcb = tail2;
-    while (temppcb != NULL) {
-      tail2 = temppcb;
-      temppcb = tail2->next;
-      free_PCB(tail2);
-    }
+    sys_free_mem(tmpIOD);
+    tmpIOD = comport->head;   
+  }
+  tmpIOD = terminal->head;
+  while (tmpIOD != NULL) {
+    terminal->head = (terminal->head)->next;
+    sys_free_mem(tmpIOD);
+    tmpIOD = terminal->head;
+  }
   
   return 0;
 }
@@ -1610,7 +1602,7 @@ struct *IOD dequeue(struct *IOCB queue) {
  */
 struct *IOD createIOD() {
 	struct IOD *newIOD = NULL;
-	newIOD = sys_alloc_mem((sizeof(struct PCB)));
+	newIOD = sys_alloc_mem((sizeof(struct IOD)));
 	newIOD->name = cop->name;
 	newIOD->requestor = cop;
 	newIOD->tran_buff = param_p->buf_addr;
