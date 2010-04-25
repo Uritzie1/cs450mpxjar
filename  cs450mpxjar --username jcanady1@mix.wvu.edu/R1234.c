@@ -1026,7 +1026,7 @@ int free_PCB(struct PCB *PCBptr) {
 * \brief Description: sets the contents of a PCB
 */
 int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
-    err = 0;
+    errx = 0;
 	strncpy((PCBptr->name), name,PROCESS_NAME_LENGTH);
 	(PCBptr->proc_class) = proc_class;
 	(PCBptr->priority) = priority;
@@ -1317,7 +1317,7 @@ int load_test() {
 		np = allocate_PCB();
 		if (np == NULL) err3 = ERR_UCPCB;
 		else {
-			err3 = setup_PCB(np, "test1",0,0);
+			err3 = setup_PCB(np, "test1",APP,0);
 			if (err3 < OK) return err3;
 			npc = (struct context*) np->stack_top;
 			npc->IP = FP_OFF(&test1_R3); //test1_R3 is a func name in procs-r3.c
@@ -1335,7 +1335,7 @@ int load_test() {
 		np = allocate_PCB();
 		if (np == NULL) err3 = ERR_UCPCB;
 		else {
-			err3 = setup_PCB(np, "test2",0,0);
+			err3 = setup_PCB(np, "test2",APP,0);
 			if (err3 < OK) return err3;
 			npc = (struct context*) np->stack_top;
 			npc->IP = FP_OFF(&test2_R3); //test1_R3 is a func name in procs-r3.c
@@ -1353,7 +1353,7 @@ int load_test() {
 		np = allocate_PCB();
 		if (np == NULL) err3 = ERR_UCPCB;
 		else {
-			err3 = setup_PCB(np, "test3",0,0);
+			err3 = setup_PCB(np, "test3",APP,0);
 			if (err3 < OK) return err3;
 			npc = (struct context*) np->stack_top;
 			npc->IP = FP_OFF(&test3_R3); //test1_R3 is a func name in procs-r3.c
@@ -1371,7 +1371,7 @@ int load_test() {
 		np = allocate_PCB();
 		if (np == NULL) err3 = ERR_UCPCB;
 		else {
-			err3 = setup_PCB(np, "test4",0,0);
+			err3 = setup_PCB(np, "test4",APP,0);
 			if (err3 < OK) return err3;
 			npc = (struct context*) np->stack_top;
 			npc->IP = FP_OFF(&test4_R3); //test1_R3 is a func name in procs-r3.c
@@ -1389,7 +1389,7 @@ int load_test() {
 		np = allocate_PCB();
 		if (np == NULL) err3 = ERR_UCPCB;
 		else {
-			err3 = setup_PCB(np, "test5",0,0);
+			err3 = setup_PCB(np, "test5",APP,0);
 			if (err3 < OK) return err3;
 			npc = (struct context*) np->stack_top;
 			npc->IP = FP_OFF(&test5_R3); //test1_R3 is a func name in procs-r3.c
