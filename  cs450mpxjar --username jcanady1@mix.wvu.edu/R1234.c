@@ -30,6 +30,7 @@
 
 // Included Support Files
 #include "mpx_supt.h"
+#include "trmdrive.h"
 #include "R12.h"
 #include <dos.h>
 
@@ -52,6 +53,9 @@ struct context *context_p;
 struct params *param_p;
 int err3=0;
 int err4 = 0;
+struct IOCB *comport;
+struct IOCB *terminal;
+struct IOD *tmpIOD;
 
 // Function Prototypes
 void err_hand(int err_code);
@@ -133,7 +137,7 @@ int main() {
   np = allocate_PCB();
   if (np == NULL) err = ERR_UCPCB;
   else {
-    err = setup_PCB(np, "comhan",SYSTEM,127);
+    err = setup_PCB(np, "COMHAN",SYSTEM,127);
     if (err < OK) return err;
    	sys_free_mem(np->stack_base);
 	np->stack_base = (unsigned char*)sys_alloc_mem(COMHAN_STACK_SIZE*sizeof(unsigned char));
@@ -665,7 +669,7 @@ int unblock() {
     if(temppcb->state == BLOCKED) {
 	  temppcb = qRemove(buff, temppcb);
       temppcb->state = READY;
-	  insert(temppcb, RUNNING);
+	  insert(temppcb, READY+1);
 	  if(temppcb!=NULL) printf("\nPCB successfully unblocked!");
     }
     return errx;
@@ -754,7 +758,7 @@ int set_Priority() {
       printf("\nInvalid priority level.  Priority defaulted to 0.");
     }
 	if (temppcb->state == BLOCKED) insert(temppcb, BLOCKED);
-	else insert(temppcb, RUNNING);
+	else insert(temppcb, READY+1);
 	printf("\nPriority for %s successfully set to %d",temppcb->name,temppcb->priority);
 	return errx;
 }
@@ -968,7 +972,7 @@ int create_PCB() { //temp fcn
     else {
 	  errx = setup_PCB(newPCBptr, name, proc_class, priority);
 	  if (errx < OK) return errx;
-	  errx = insert(newPCBptr,RUNNING);
+	  errx = insert(newPCBptr,READY+1);
 	  printf("\nPCB successfully created!");
 	}
 	return errx;
@@ -1067,7 +1071,7 @@ int isEmpty(int q) {
 int insert(struct PCB *newPCB,int q) {
     struct PCB *tmp = NULL;
     errx = 0;
-    if(q == 1) {  //For Ready Queue
+    if(q == READY+1) {  //For Ready Queue
       if(isEmpty(q)) {
         tail1 = newPCB;
         head1 = tail1;
@@ -1151,7 +1155,7 @@ struct PCB* findPCB(char *name,struct PCB *PCBptr) {
 /**  Procedure Name: qremove
 * \param name: string containing PCB name
 * \param set: a pointer to a PCB
-* \return an integer error code (o for now)
+* \return an integer error code (0 for now)
 * \return sets set to removed PCB
 * Procedures Called: findPCB
 * Globals Used: err
@@ -1283,25 +1287,46 @@ void interrupt sys_call() {
 	ss_save_temp = _SS;
 	sp_save_temp = _SP;
 	//param_p = (struct params *)((unsigned char *)MK_FP(ss_save_temp,sp_save_temp)+ sizeof(struct context));
+    
+    trm_getc();
+    //check for comport request completion
+	if(comport->event_flag == 1) {
+        comport->event_flag = 0;
+        tmpIOD = dequeue(comport);
+        tempnode = qRemove((tmpIOD->requestor)->name, tempnode);
+        tempnode->state = READY;
+	    insert(tempnode, READY+1);
+        //process nxt io req for this dev
+	}
+	//check for terminal request completion
+	if(terminal->event_flag == 1) {
+		terminal->event_flag = 0;
+		tmpIOD = dequeue(terminal);
+        tempnode = qRemove((tmpIOD->requestor)->name, tempnode);
+        tempnode->state = READY;
+	    insert(tempnode, READY+1);
+        //process nxt io req for this dev
+	}
+    
     cop->stack_top = (unsigned char *)MK_FP(ss_save_temp, sp_save_temp);
     /*new_ss = FP_SEG(sys_stack);
 	new_sp = FP_OFF(sys_stack)+SYS_STACK_SIZE;
     _SS = new_ss;
 	_SP = new_sp;*/
 	param_p = (params *)(cop -> stack_top + sizeof(struct context));
-	if(param_p->op_code == IDLE)
-	{
+	if(param_p->op_code == IDLE) {
         cop->state = READY;
 		insert(cop,1);
 		cop = NULL;
 	}
-	else if(param_p->op_code == EXIT)
-	{
+	else if(param_p->op_code == EXIT) {
 		free_pcb(cop);
 		cop = NULL;
 	}
-	else
-		context_p->AX = param_p->op_code;
+	else if(param_p->op_code == READ || param_p->op_code == WRITE || param_p->op_code == CLEAR || param_p->op_code == GOTOXY) {
+      IOschedule();
+    } 
+	else context_p->AX = param_p->op_code;
 
 	dispatcher();
 }
@@ -1325,7 +1350,7 @@ int load_test() {
 			npc->FLAGS = 0x200;
 			npc->DS = _DS;
 			npc->ES = _ES;
-			err3 = insert(np,RUNNING);
+			err3 = insert(np,READY+1);
 		}
 	}
 	else printf("\nProcess with name 'test1' already exists.");
@@ -1343,7 +1368,7 @@ int load_test() {
 			npc->FLAGS = 0x200;
 			npc->DS = _DS;
 			npc->ES = _ES;
-			err3 = insert(np,RUNNING);
+			err3 = insert(np,READY+1);
 		}
 	}
 	else printf("\nProcess with name 'test2' already exists.");
@@ -1361,7 +1386,7 @@ int load_test() {
 			npc->FLAGS = 0x200;
 			npc->DS = _DS;
 			npc->ES = _ES;
-			err3 = insert(np,RUNNING);
+			err3 = insert(np,READY+1);
 		}
 	}
 	else printf("\nProcess with name 'test3' already exists.");
@@ -1379,7 +1404,7 @@ int load_test() {
 			npc->FLAGS = 0x200;
 			npc->DS = _DS;
 			npc->ES = _ES;
-			err3 = insert(np,RUNNING);
+			err3 = insert(np,READY+1);
 		}
 	}
     else printf("\nProcess with name 'test4' already exists.");
@@ -1397,7 +1422,7 @@ int load_test() {
 			npc->FLAGS = 0x200;
 			npc->DS = _DS;
 			npc->ES = _ES;
-			err3 = insert(np,RUNNING);
+			err3 = insert(np,READY+1);
 		}
 	}
 	else printf("\nProcess with name 'test5' already exists.");
@@ -1441,7 +1466,7 @@ int load_prog(char * fname, int pri, int procClass) {
 	cp->FLAGS = 0x200;
 	
 	err4 = sys_load_program(newNode->load_address, newNode->mem_size, "MPXFILES",fname);
-	if(err4>=OK) err4 = insert(newNode,RUNNING);
+	if(err4>=OK) err4 = insert(newNode,READY+1);
 	if(strncmp(fname, "IDLE", 5)) if(err4>=OK) printf("Program successfully loaded!");
 	return err4;
 }
@@ -1495,6 +1520,19 @@ int terminate() {
 /**
  */
 int init_f() {
+  terminal->event_flag = 1;
+  terminal->count = 0;
+  terminal->active = NULL;
+  terminal->head = NULL;
+  terminal->tail = NULL;
+  trm_open(&terminal.event_flag);
+	
+  comport->event_flag = 1;
+  comport->count = 0;
+  comport->active = NULL;
+  comport->head = NULL;
+  comport->tail = NULL;
+  com_open(&comport.event_flag, 1200);
   return 0;
 }
 
