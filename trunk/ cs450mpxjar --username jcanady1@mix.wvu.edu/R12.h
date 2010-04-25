@@ -151,7 +151,7 @@ int cleanup_f();
 int IOschedule();
 int process_com();
 int process_trm();
-int enqueue(struct IOD* nIOD, struct *IOCB queue);
+int enqueue(struct IOD* nIOD, struct IOCB* queue);
 struct IOD * dequeue(struct IOCB* queue);
 struct IOD * createIOD();
 //
@@ -213,7 +213,7 @@ typedef struct DCB {
 
 struct IOD {
 	char name[PROCESS_NAME_LENGTH];
-	PCB *requestor;
+	struct PCB *requestor;
 	int request;
 	char *tran_buff;
 	int *buff_count;
