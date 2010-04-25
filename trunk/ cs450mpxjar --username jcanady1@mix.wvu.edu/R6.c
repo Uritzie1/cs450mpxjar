@@ -172,7 +172,7 @@ struct *IOD dequeue(struct *IOCB queue) {
  */
 struct *IOD createIOD() {
 	struct IOD *newIOD = NULL;
-	newIOD = sys_alloc_mem((sizeof(struct PCB)));
+	newIOD = sys_alloc_mem((sizeof(struct IOD)));
 	newIOD->name = cop->name;
 	newIOD->requestor = cop;
 	newIOD->tran_buff = param_p->buf_addr;
