@@ -105,6 +105,9 @@ int load_test();
 int load_prog(char * fname, int pri, int procClass);
 int terminate();
 int load();
+//
+int init_f()
+int cleanup_f()
 
 /** Procedure Name: main
  * \param none
@@ -125,7 +128,7 @@ int main() {
   err = init_r2();
   err = init_r3();
   err = init_f();
-  com_open();
+  //com_open();
   
   np = allocate_PCB();
   if (np == NULL) err = ERR_UCPCB;
@@ -147,7 +150,7 @@ int main() {
   load_prog("IDLE\0", -128, SYSTEM);  
   dispatcher();
   
-  com_close();
+  //com_close();
   err = cleanup_r1();
   err = cleanup_r2();
   err = cleanup_r3();
@@ -1487,4 +1490,16 @@ int terminate() {
 		else return ERR_UTDSC;
 	}
 	return err4;
+}
+
+/**
+ */
+int init_f() {
+  return 0;
+}
+
+/**
+ */
+int cleanup_f() {
+  return 0;
 }
