@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <dos.h>
 #include "R12.h"
+#include "mpx_supt.h"
 
 // Global Variables
 static struct DCB *com_port;
