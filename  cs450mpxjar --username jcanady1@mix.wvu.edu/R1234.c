@@ -57,61 +57,6 @@ struct IOCB *comport;
 struct IOCB *terminal;
 struct IOD *tmpIOD;
 
-// Function Prototypes
-void err_hand(int err_code);
-int init_r1();
-int cleanup_r1();
-int disp_dir();
-int comhan();
-void terminate_mpx();
-int help(char *cmdName);
-void get_Version();
-int date();
-int valid_date(int yr, int mo, int day);
-void toLowerCase(char str[BIGBUFF]);
-void trim(char ary[BIGBUFF]);
-//
-int init_r2();
-int cleanup_r2();
-int block();
-int unblock();
-int suspend();
-int resume();
-int set_Priority();
-int show_PCB();
-int show_All();
-int show_Ready();
-int show_Blocked();
-struct PCB * allocate_PCB();
-int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority);
-int free_PCB(struct PCB *PCBptr);
-int create_PCB();
-int delete_PCB();
-int isEmpty(int q);
-int insert(struct PCB *newPCB,int q);
-struct PCB* findPCB(char *name, struct PCB *PCBptr);
-struct PCB* qRemove(char *name, struct PCB *set);
-void toLowerCasex(char str[BIGBUFF]);
-void trimx(char ary[BIGBUFF]);
-struct PCB* getRHead();
-//
-int init_r3();
-int cleanup_r3();
-void test1_R3();
-void test2_R3();
-void test3_R3();
-void test4_R3();
-void test5_R3();
-void interrupt sys_call();
-void interrupt dispatcher();
-int load_test();
-//
-int load_prog(char * fname, int pri, int procClass);
-int terminate();
-int load();
-//
-int init_f();
-int cleanup_f();
 
 /** Procedure Name: main
  * \param none
@@ -1294,7 +1239,9 @@ void interrupt sys_call() {
         tempnode = qRemove((tmpIOD->requestor)->name, tempnode);
         tempnode->state = READY;
 	    insert(tempnode, READY+1);
+	    
         //process nxt io req for this dev
+        if(comport->count > 0) process_com();
 	}
 	//check for terminal request completion
 	if(terminal->event_flag == 1) {
@@ -1303,7 +1250,9 @@ void interrupt sys_call() {
         tempnode = qRemove((tmpIOD->requestor)->name, tempnode);
         tempnode->state = READY;
 	    insert(tempnode, READY+1);
+	    
         //process nxt io req for this dev
+        if(terminal->count > 0) process_trm();
 	}
     
     cop->stack_top = (unsigned char *)MK_FP(ss_save_temp, sp_save_temp);
@@ -1542,5 +1491,130 @@ int cleanup_f() {
   com_close();
   //clear the com/trm queues, freeing the mem of the IODs inside them
   //free the IOCBs
+  
+  tempIOD = comport->head;
+  while (tempIOD != NULL) {
+    comport->head = (comport->head)->next;
+    free(tempIOD);
+    tempIOD = comport->head;   
+        
+        
+    tail1 = temppcb;
+      temppcb = tail1->next;
+      free_PCB(tail1);
+    }
+    temppcb = tail2;
+    while (temppcb != NULL) {
+      tail2 = temppcb;
+      temppcb = tail2->next;
+      free_PCB(tail2);
+    }
+  
   return 0;
+}
+
+/*
+ */
+int IOschedule() {
+	int retq = 0;
+	int device_id = param_p->device_id;
+	struct *newIOD = createIOD();
+
+	if(device_id = COM) {
+		retq = enqueue(newIOD,comport);
+		if(retq == 1) process_com();
+	}
+	else if(device_id = TERM) {
+	    retq = enqueue(newIOD,terminal);
+		if(retq == 1) process_trm();
+    }
+    else return ERR_UNKN_DEVICE;
+
+    cop->state = BLOCKED;
+    insert(cop, BLOCKED);
+    return OK;
+}
+
+/*
+ */
+int process_com() {
+  switch(IOD->request) {
+  case READ: {
+		com_read((comport->head)->tran_buff, (comport->head)->buff_count);
+		break;}
+  case WRITE: {
+		com_write((comport->head)->tran_buff, (comport->head)->buff_count);
+		break;}
+  default: {
+		return ERR_UNKN_REQUEST;}
+  }
+}
+
+/*
+ */
+int process_trm() {
+  switch(IOD->request) {
+  case READ: {
+		trm_read((terminal->head)->tran_buff, (terminal->head)->buff_count);
+		break;}
+  case WRITE: {
+		trm_write((terminal->head)->tran_buff, (terminal->head)->buff_count);
+		break;}
+  case CLEAR: {
+        trm_clear();
+		break;}
+  case GOTOXY: {
+        trm_gotoxy();
+		break;}
+  default: {
+		return ERR_UNKN_REQUEST}
+  }
+}
+
+/*
+ */
+int enqueue(struct *IOD nIOD, struct *IOCB queue) {
+	int retv = 0;
+
+	if(queue->count = 0) {
+		queue->head = nIOD;
+		queue->tail = nIOD;
+		queue->count++;
+		retv = 1;
+	}
+	else {
+		queue->tail->next = nIOD;
+		queue->tail = nIOD;
+		queue->count++;
+	}
+	return retv;
+}
+
+/*
+ */
+struct *IOD dequeue(struct *IOCB queue) {
+	struct IOB *tempIOB;
+	tempIOB = queue->head;
+
+	if(queue->count == 1) {
+	 queue->head = NULL;
+	 queue->tail = NULL;
+	}
+	else queue->head = queue->head->next;
+	queue->count--;
+
+	return tempIOB;
+}
+
+/*
+ */
+struct *IOD createIOD() {
+	struct IOD *newIOD = NULL;
+	newIOD = sys_alloc_mem((sizeof(struct PCB)));
+	newIOD->name = cop->name;
+	newIOD->requestor = cop;
+	newIOD->tran_buff = param_p->buf_addr;
+	newIOD->count = param_p->count_addr;
+	newIOD->request = param_p->op_code;
+	return newIOD;
 }
