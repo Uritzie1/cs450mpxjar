@@ -1565,7 +1565,7 @@ int process_trm() {
 
 /*
  */
-int enqueue(struct *IOD nIOD, struct *IOCB queue) {
+int enqueue(struct IOD* nIOD, struct *IOCB queue) {
 	int retv = 0;
 
 	if(queue->count = 0) {
@@ -1584,7 +1584,7 @@ int enqueue(struct *IOD nIOD, struct *IOCB queue) {
 
 /*
  */
-struct *IOD dequeue(struct *IOCB queue) {
+struct IOD* dequeue(struct IOCB* queue) {
 	struct IOB *tempIOB;
 	tempIOB = queue->head;
 
@@ -1600,7 +1600,7 @@ struct *IOD dequeue(struct *IOCB queue) {
 
 /*
  */
-struct *IOD createIOD() {
+struct IOD* createIOD() {
 	struct IOD *newIOD = NULL;
 	newIOD = sys_alloc_mem((sizeof(struct IOD)));
 	newIOD->name = cop->name;
