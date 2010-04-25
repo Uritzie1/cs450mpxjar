@@ -127,12 +127,11 @@ int main() {
   struct PCB *np;
   struct context *npc;
   
-  sys_init(MODULE_R4);
+  sys_init(MODULE_F);
   err = init_r1();
   err = init_r2();
   err = init_r3();
   err = init_f();
-  //com_open();
   
   np = allocate_PCB();
   if (np == NULL) err = ERR_UCPCB;
@@ -154,7 +153,6 @@ int main() {
   load_prog("IDLE", -128, SYSTEM);  
   dispatcher();
   
-  //com_close();
   err = cleanup_r1();
   err = cleanup_r2();
   err = cleanup_r3();
@@ -1525,19 +1523,24 @@ int init_f() {
   terminal->active = NULL;
   terminal->head = NULL;
   terminal->tail = NULL;
-  trm_open(&terminal.event_flag);
 	
   comport->event_flag = 1;
   comport->count = 0;
   comport->active = NULL;
   comport->head = NULL;
   comport->tail = NULL;
-  com_open(&comport.event_flag, 1200);
+  
+  trm_open(&terminal->event_flag);
+  com_open(&comport->event_flag, 1200);
   return 0;
 }
 
 /**
  */
 int cleanup_f() {
+  trm_close();
+  com_close();
+  //clear the com/trm queues, freeing the mem of the IODs inside them
+  //free the IOCBs
   return 0;
 }
