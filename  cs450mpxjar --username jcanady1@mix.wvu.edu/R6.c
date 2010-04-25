@@ -149,8 +149,24 @@ int enqueue(struct *IOD nIOD, struct *IOCB queue) {
 	}
 	return retv;
 }
+struct *IOD dequeue(struct *IOCB queue) 
+{
+	struct IOB *tempIOB;
+	tempIOB = queue->head;
 
+	if(queue->count == 1)
+	{
+	 queue->head = NULL;
+	 queue->tail = NULL;
+	}
+	else
+	{
+	 queue->head = queue->head->next;
+	}
+	queue->count--;
 
+	return tempIOB;
+}
 struct *IOD createIOD() {
 	struct IOD *newIOD = NULL;
 	newIOD = sys_alloc_mem((sizeof(struct PCB)));
