@@ -1603,7 +1603,8 @@ struct IOD* dequeue(struct IOCB* queue) {
 struct IOD* createIOD() {
 	struct IOD *newIOD = NULL;
 	newIOD = sys_alloc_mem((sizeof(struct IOD)));
-	newIOD->name = cop->name;
+	//newIOD->name = cop->name;
+	strncpy(newIOD->name, cop->name, PROCESS_NAME_LENGTH);
 	newIOD->requestor = cop;
 	newIOD->tran_buff = param_p->buf_p;
 	newIOD->buff_count = param_p->count_p;
