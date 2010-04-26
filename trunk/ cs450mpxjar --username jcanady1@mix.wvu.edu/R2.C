@@ -371,7 +371,7 @@ int set_Priority()
 	
 	if (errx < OK) return errx;
 	
-	printf("Please Enter the New Priority Level Where 127 is the Highest(-128 to 127): ");
+	printf("Please Enter the New Priority Level Where 127 is the Highest (-128 to 127): ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
 	
 	if (errx < OK) return errx;
@@ -396,218 +396,471 @@ int set_Priority()
 	return errx;
 }
 
-/**  Procedure Name: show_PCB
-* \param none
-* \return an integer error code
-* Procedures Called: sys_req, trim, toLowerCase, findPCB
-* Globals Used: err
-* \brief Description: prints a specific PCB 
-*/
-int show_PCB() {
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- show_PCB																								   **
+ **               Purpose -- The show_PCB function displays all information contained in a single PCB for a process specified by	   **
+ **							 name.																									   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- memset, printf, sys_req, trimx, toLowerCasex, findPCB													   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The show function displays all information contained in a single PCB for a process specified by name      **
+ **							 in a table.																							   **				
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int show_PCB() 
+{
 	char buff[BIGBUFF];
-	int buffsize = BIGBUFF;
+	int buffsize        = BIGBUFF;
 	struct PCB *temppcb = NULL;
 	memset(buff, '\0', BIGBUFF);
 
     errx = 0;
-	printf("Please enter a process name: ");
+	printf("Please Enter a Process Name: ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
+	
 	if (errx < OK) return errx;
+	
 	trimx(buff);
 	toLowerCasex(buff);
-	temppcb = findPCB(buff,temppcb);
+	temppcb = findPCB(buff, temppcb);
+	
 	if (errx < OK) return errx;
-	printf("\nPROCESS PROPERTIES\n------------------------");
-	printf("\nName: %s", temppcb->name);
-	if(temppcb->proc_class == SYSTEM) printf("\nClass: System");
-	else printf("\nClass: Application");
-	printf("\nPriority: %d", temppcb->priority);
-	if(temppcb->state == READY) printf("\nState: Ready");
-	else if(temppcb->state == RUNNING) printf("\nState: Running"); 
-	else printf("\nState: Blocked");
-	if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
-	else printf("\nSuspended?: No");
+	
+	printf("\n     NAME       CLASS PRIORITY   STATE SUSPENDED\n");
+	printf("--------------------------------------------------");
+	
+	printf ("\n%9s", stemppcb->name);
+	
+	if (temppcb->proc_class == SYSTEM)
+	{
+		char tempclass[12] = "System";
+		printf("%12s", tempclass);
+	}
+	
+	else 
+	{
+		char tempclass[12] = "Application";
+		printf("%12s", tempclass);
+	}
+	
+	printf("%9d", temppcb->priority);
+	
+	if (temppcb->state == READY)
+	{
+		char tempstate[8] = "Ready";
+		printf("%8s", tempstate);
+	}
+	
+	else if (temppcb->state == RUNNING)
+	{
+		char tempstate[8] = "Running";
+		printf("%8s", tempstate);
+	}
+	
+	else 
+	{
+		char tempstate[8] = "Blocked";
+		printf("%8s", tempstate);
+	}
+		
+	if (temppcb->suspended == SUSP)
+	{
+		char temp[10] = "Yes";
+		printf("%10s", temp);
+	}
+	
+	else 
+	{
+		char temp[10] = "No";
+		printf("%10s", temp);
+	}
+		
 	return errx;
 }
 
-/**  Procedure Name: show_all
-* \param none
-* \return an integer error code
-* Procedures Called: sys_req
-* Globals Used: err
-* \brief Description: prints all PCB
-*/
-int show_All() {
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- show_All																								   **
+ **               Purpose -- The show_All function displays all information about all PCBs which are currently in use.				   **
+ **							 name.																									   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- printf, sys_req																						   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The show function displays all information about all PCBs which are currently in use.					   **				
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int show_All() 
+{
     struct PCB *temppcb = NULL;
-    int bufsize = BIGBUFF;
+    int bufsize         = BIGBUFF;
     int i = 2, x = 0;
     char buffer[BIGBUFF] = {0};
-	temppcb = head1;	
-	errx = 0;
-	printf("\nPROCESS PROPERTIES------------------------");
-	if(cop != NULL) printf("\nCOP: %-8s\n",cop->name);
-	else printf("\nNo COP\n");
-	for (x;x<=1;x++) {
-	  while(temppcb != NULL) {
-    printf("\nName: %-8s", temppcb->name);
-	printf("    Priority: %-3d",temppcb->priority);
-	    if(temppcb->state == READY) printf("    State: %-7s","Ready");
-	    else if(temppcb->state == RUNNING) printf("    State: %-7s","Running");
-		else printf("    State: %-7s","Blocked");
-		if(temppcb->suspended == SUSP) printf("    Suspended?: Yes");
-		else printf("    Suspended?: No\n");
-		temppcb = temppcb->prev;
-		i=i++;
-		if(i > 23) {        //paging
-	      printf("Press any key to continue");
-	      errx = sys_req(READ, TERMINAL, buffer, &bufsize);
-	      i = 0;
-	    }
-      }
-      temppcb = tail2;
-	}
-	return errx;
-}
-
-/**  Procedure Name: show_Ready
-* \param none
-* \return an integer error code
-* Procedures Called: sys_req
-* Globals Used: err
-* \brief Description: prints all PCB in ready queue
-*/
-int show_Ready() {
-	struct PCB *temppcb = NULL;
-    int bufsize = BIGBUFF;
-    int i = 2;
-    char buffer[BIGBUFF] = {0};
-	temppcb = tail1;
+	temppcb              = head1;	
+	errx                 = 0;
 	
-	errx = 0;
-	printf("\nPROCESS PROPERTIES------------------------");
-	  while(temppcb != NULL) {
-        printf("\n\nName: %s", temppcb->name);
-	    printf("\nPriority: %d",temppcb->priority);
-		if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
-		else printf("\nSuspended?: No\n");
-		temppcb = temppcb->next;
-		i=i+4;
-		if(i > 20) {        //paging
-	      printf("Press any key to continue");
-	      errx = sys_req(READ, TERMINAL, buffer, &bufsize);
-	      i = 0;
-	    }
-      }
+	printf("\n     NAME       CLASS PRIORITY   STATE SUSPENDED\n");
+	printf("--------------------------------------------------");
+	
+	for (x; x <= 1; x++) 
+	{
+		while (temppcb != NULL) 
+		{
+			printf ("\n%9s", temppcb->name);
+			
+			if (temppcb->proc_class == SYSTEM)
+			{
+				char tempclass[12] = "System";
+				printf("%12s", tempclass);
+			}
+			
+			else 
+			{
+				char tempclass[12] = "Application";
+				printf("%12s", tempclass);
+			}
+			
+			printf("%9d", temppcb->priority);
+			
+			if (temppcb->state == READY)
+			{
+				char tempstate[8] = "Ready";
+				printf("%8s", tempstate);
+			}
+			
+			else if (temppcb->state == RUNNING)
+			{
+				char tempstate[8] = "Running";
+				printf("%8s", tempstate);
+			}
+			
+			else 
+			{
+				char tempstate[8] = "Blocked";
+				printf("%8s", tempstate);
+			}
+			
+			if (temppcb->suspended == SUSP)
+			{
+				char temp[10] = "Yes";
+				printf("%10s", temp);
+			}
+			
+			else 
+			{
+				char temp[10] = "No";
+				printf("%10s", temp);
+			}
+			
+			temppcb = temppcb->prev;
+			i       = i++;
+		
+			if (i > 23) 
+			{
+				printf("Press Any Key to Continue");
+				errx = sys_req(READ, TERMINAL, buffer, &bufsize);
+				i = 0;
+			}
+		}
+		
+		temppcb = tail2;
+	}
+	
 	return errx;
 }
 
-/**  Procedure Name: delete
-* \param none
-* \return an integer error code
-* Procedures Called: sys_req, trim, remove, free_PCB
-* Globals Used: err
-* \brief Description: moves a PCB from ready to blocked queue 
-*/
-int delete_PCB() { //temp function	
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- show_Ready																								   **
+ **               Purpose -- The show_All function displays information about all processes which are currently in the READY or the	   **
+ **							  SUSPENDED-READY state.																				   **
+ **							 name.																									   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- printf, sys_req																						   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The show_All function displays information about all processes which are currently in the READY or the	   **
+ **							 SUSPENDED-READY state. 																				   **				
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int show_Ready() 
+{
+	struct PCB *temppcb  = NULL;
+    int bufsize		     = BIGBUFF;
+    int i				 = 2;
+    char buffer[BIGBUFF] = {0};
+	temppcb				 = tail1;
+	errx = 0;
+	
+	printf("\n     NAME       CLASS PRIORITY   STATE SUSPENDED\n");
+	printf("--------------------------------------------------");
+	
+	while (temppcb != NULL) 
+	{
+		printf ("\n%9s", stemppcb->name);
+		
+		if (temppcb->proc_class == SYSTEM)
+		{
+			char tempclass[12] = "System";
+			printf("%12s", tempclass);
+		}
+		
+		else 
+		{
+			char tempclass[12] = "Application";
+			printf("%12s", tempclass);
+		}
+		
+		printf("%9d", temppcb->priority);
+		
+		if (temppcb->state == READY)
+		{
+			char tempstate[8] = "Ready";
+			printf("%8s", tempstate);
+		}
+		
+		else if (temppcb->state == RUNNING)
+		{
+			char tempstate[8] = "Running";
+			printf("%8s", tempstate);
+		}
+		
+		else 
+		{
+			char tempstate[8] = "Blocked";
+			printf("%8s", tempstate);
+		}
+		
+		if (temppcb->suspended == SUSP)
+		{
+			char temp[10] = "Yes";
+			printf("%10s", temp);
+		}
+		
+		else 
+		{
+			char temp[10] = "No";
+			printf("%10s", temp);
+		}
+		
+		temppcb = temppcb->next;
+		i		= i + 4;
+		
+		if (i > 20) 
+		{
+			printf("Press Any Key to Continue");
+			errx = sys_req(READ, TERMINAL, buffer, &bufsize);
+			i = 0;
+		}
+	}
+	
+	return errx;
+}
+
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- show_Blocked																							   **
+ **               Purpose -- The show_Blocked function displays information about all processes which are currently in the READY or	   **
+ **						     the BLOCKED state.																						   **
+ **							 name.																									   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- printf, sys_req																						   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The show_Blocked function displays information about all processes which are currently in the READY or	   **
+ **						     the BLOCKED state.																						   **				
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int show_Blocked() 
+{
+	struct PCB *temppcb  = NULL;
+    int bufsize			 = BIGBUFF;
+    int i				 = 2;
+    char buffer[BIGBUFF] = {0};
+	temppcb				 = tail2;
+	errx = 0;
+	
+	printf("\n     NAME       CLASS PRIORITY   STATE SUSPENDED\n");
+	printf("--------------------------------------------------");
+	
+	while (temppcb != NULL) 
+	{
+        printf ("\n%9s", stemppcb->name);
+		
+		if (temppcb->proc_class == SYSTEM)
+		{
+			char tempclass[12] = "System";
+			printf("%12s", tempclass);
+		}
+		
+		else 
+		{
+			char tempclass[12] = "Application";
+			printf("%12s", tempclass);
+		}
+		
+		printf("%9d", temppcb->priority);
+		
+		if (temppcb->state == READY)
+		{
+			char tempstate[8] = "Ready";
+			printf("%8s", tempstate);
+		}
+		
+		else if (temppcb->state == RUNNING)
+		{
+			char tempstate[8] = "Running";
+			printf("%8s", tempstate);
+		}
+		
+		else 
+		{
+			char tempstate[8] = "Blocked";
+			printf("%8s", tempstate);
+		}
+		
+		if (temppcb->suspended == SUSP)
+		{
+			char temp[10] = "Yes";
+			printf("%10s", temp);
+		}
+		
+		else 
+		{
+			char temp[10] = "No";
+			printf("%10s", temp);
+		}
+		
+		temppcb = temppcb->next;
+		i		= i + 4;
+
+		if (i > 20) 
+		{       
+			printf("Press Any Key to Continue");
+			errx = sys_req(READ, TERMINAL, buffer, &bufsize);
+			i    = 0;
+	    }
+	}
+	
+	return errx;
+}
+
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- delete_PCB																								   **
+ **               Purpose -- The delete_PCB function deallocates an existing PCB.													   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- memset, printf, sys_req																				   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The delete_PCB function removes a PCB from the queue and deallocates it.								   **				
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int delete_PCB() 
+{
 	char buff[BIGBUFF];
 	struct PCB *tmp = NULL;
-	int buffsize = BIGBUFF;
+	int buffsize    = BIGBUFF;
 	memset(buff, '\0', BIGBUFF);
-
     errx = 0;
-	printf("Please enter the name of the Process to delete: ");
+	
+	printf("Please Enter the Name of the Process to Delete: ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);	
-	if(errx >= OK) {
-	//	if(tmp->proc_class != SYSTEM){
+	
+	if (errx >= OK) 
+	{
+	    //if(tmp->proc_class != SYSTEM){
 		trimx(buff);
 		tmp = qRemove(buff,tmp);
 		free_PCB(tmp);
-	//	}
+		//}
 		//else
 		//	return ERR_UTDSC;
 	}
-	return errx;
-}
-
-/**  Procedure Name: show_Blocked
-* \param none
-* \return an integer error code (o for now)
-* Procedures Called: sys_req, trim, toLowerCase, findPCB
-* Globals Used: err
-* \brief Description: moves a PCB from ready to blocked queue 
-*/
-int show_Blocked() {
-	struct PCB *temppcb = NULL;
-    int bufsize = BIGBUFF;
-    int i = 2;
-    char buffer[BIGBUFF] = {0};
-	temppcb = tail2;
 	
-	errx = 0;
-	printf("\nPROCESS PROPERTIES------------------------");
-	  while(temppcb != NULL) {
-        printf("\n\nName: %s", temppcb->name);
-		if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
-		else printf("\nSuspended?: No\n");
-		temppcb = temppcb->next;
-		i=i+4;
-		if(i > 20) {        //paging
-	      printf("Press any key to continue");
-	      errx = sys_req(READ, TERMINAL, buffer, &bufsize);
-	      i = 0;
-	    }
-      }
 	return errx;
 }
 
-/** Procedure Name: create_PCB
-* \param none
-* \return an integer error code
-* Procedures Called: sys_req, trim, toLowerCase, setup_PCB, allocate_PCB
-* Globals Used: err
-* \brief Description: moves a PCB from ready to blocked queue 
-*/   
-int create_PCB() { //temp fcn
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- create_PCB																								   **
+ **               Purpose -- The create_PCB function allocates and setups a new PCB.  By default the process is initially in the READY **
+ **							 (not SUSPENDED) state.																					   **
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- printf, sys_req, findPCB, strncpy, trimx, atoi, allocate_PCB, insert									   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The create_PCB function prompts the user for the process name, the process class, and the process		   **
+ **							 priority.  create_PCB processes the user input, allocates a new PCB and inserts it into the RUNNING	   **
+ **							 queue.																									   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */ 
+int create_PCB() 
+{
     char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	char name[PROCESS_NAME_LENGTH];
 	int proc_class, priority;
-	struct PCB *temppcb = NULL;
+	struct PCB *temppcb   = NULL;
 	struct PCB *newPCBptr = NULL;
 	memset(buff, '\0', BIGBUFF);
-
     errx = 0;
-    printf("Please enter the name of the process to be created (9 character limit): ");
-	errx = sys_req(READ, TERMINAL, buff, &buffsize);
-	if (errx < OK) return errx;
-	trimx(buff);
-    if (strlen(buff)>9) return ERR_PRONTL;
-    temppcb = findPCB(buff,temppcb);
-	if (temppcb != NULL) return ERR_NAMEAE;
-    strncpy(name,buff,PROCESS_NAME_LENGTH);
     
-    printf("Please enter the class of the process to be created\n('0' = Application, '1' = System): ");
+	printf("Please Enter the Name of the Process to be Created (9 Character Limit): ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
+	
 	if (errx < OK) return errx;
+	
 	trimx(buff);
-    if (strncmp(buff,"0\0",2) && strncmp(buff,"1\0",2)) return ERR_INVCLS;
+    
+	if (strlen(buff) > 9) return ERR_PRONTL;
+    
+	temppcb = findPCB(buff, temppcb);
+	
+	if (temppcb != NULL) return ERR_NAMEAE;
+    
+	strncpy(name, buff, PROCESS_NAME_LENGTH);
+    
+    printf("\nPlease Enter the Class of the Process to be Created ('0' = Application, '1' = System): ");
+	errx = sys_req(READ, TERMINAL, buff, &buffsize);
+	
+	if (errx < OK) return errx;
+	
+	trimx(buff);
+    
+	if (strncmp(buff, "0\0", 2) && strncmp(buff, "1\0", 2)) return ERR_INVCLS;
     proc_class = atoi(buff);
     
-    printf("Please enter the priority of the process to be created where 127 is high\n(-128 to 127): ");
+    printf("\nPlease Enter the Priority of the Process to be Created Where 127 is the highest (-128 to 127): ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
+	
 	if (errx < OK) return errx;
+	
 	trimx(buff);
-    priority = atoi(buff);
+    priority  = atoi(buff);
 	newPCBptr = allocate_PCB();
+	
 	if (newPCBptr == NULL) errx = ERR_UCPCB;
-    else {
-	  errx = setup_PCB(newPCBptr, name, proc_class, priority);
-	  if (errx < OK) return errx;
-	  errx = insert(newPCBptr,RUNNING);
+    
+	else 
+	{
+		errx = setup_PCB(newPCBptr, name, proc_class, priority);
+	  
+		if (errx < OK) return errx;
+	  
+		errx = insert(newPCBptr, RUNNING);
 	}
+	
 	return errx;
 	
-    	
 	//if(temp<=127 && temp>=-128) temppcb->priority = temp;
 	//else {
     //  temppcb->priority = 0;
@@ -616,56 +869,76 @@ int create_PCB() { //temp fcn
 	//printf("\nPriority for %s successfully set to %d",temppcb->name,temppcb->priority);
 }
 
-/**  Procedure Name: allocate_PCB 
-* \param none
-* \return ptr to the new PCB
-* Procedures Called: sys_alloc_mem
-* Globals Used: err
-* \brief Description: allocates memory for a PCB 
-*/
-struct PCB * allocate_PCB() {
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- allocate_PCB																							   **
+ **               Purpose -- The allocate_PCB function allocates an available PCB, marks it as in use, and returns a PCB			   **
+ **							 pointer or identifier.																					   **		
+ **            Parameters -- N/A																									   **
+ **			 Return Value -- PCB - a new PCB pointer																				   **
+ **     Procedures Called -- sys_alloc_mem, sizeof, malloc																			   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The allocate_PCB function allocates an available PCB, marks it as in use, and returns a			       **
+ **							 PCB pointer or identifier.																				   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */ 
+struct PCB * allocate_PCB() 
+{
 	struct PCB *newPCBptr = NULL;
-	newPCBptr = sys_alloc_mem((sizeof(struct PCB)));
+	newPCBptr			  = sys_alloc_mem((sizeof(struct PCB)));
 	newPCBptr->stack_base = (unsigned char *)sys_alloc_mem(STACK_SIZE * sizeof(unsigned char));
-	newPCBptr->stack_top = newPCBptr->stack_base + STACK_SIZE-sizeof(struct context);
+	newPCBptr->stack_top  = newPCBptr->stack_base + STACK_SIZE-sizeof(struct context);
 	//newPCBptr = malloc(sizeof(struct PCB));
+	
 	return newPCBptr;
 }
 
-/**  Procedure Name: free_PCB
-* \param *PCBptr pointer to a PCB struct
-* \return an integer error code (o for now)
-* Procedures Called: sys_free_mem
-* Globals Used: err
-* \brief Description: frees PCB from memory
-*/
-int free_PCB(struct PCB *PCBptr) {
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- free_PCB																								   **
+ **               Purpose -- The free_PCB function releases an allocated PCB.														   **
+ **            Parameters -- struct PCB *PCBptr																						   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- sys_free_mem																							   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The free_PCB function releases an allocated PCB.														   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */ 
+int free_PCB(struct PCB *PCBptr) 
+{
     errx = 0;
-	errx=sys_free_mem(PCBptr -> stack_base);
-	errx=sys_free_mem(PCBptr -> load_address);
-	errx=sys_free_mem(PCBptr -> execution_address);
-	errx=sys_free_mem(PCBptr);
+	errx = sys_free_mem(PCBptr->stack_base);
+	errx = sys_free_mem(PCBptr->load_address);
+	errx = sys_free_mem(PCBptr->execution_address);
+	errx = sys_free_mem(PCBptr);
 	//free(PCBptr);
+	
 	return errx;
 }
 
-/**  Procedure Name: setup_PCB
-* \param *PCBptr pointer to PCB
-* \param name : char array with PCB name
-* \param proc_class : class of the PCB
-* \param priority : int that set priority
-* \return an integer error code (o for now)
-* Procedures Called: sys_req, trim, toLowerCase, findPCB
-* Globals Used: err
-* \brief Description: sets the contents of a PCB
-*/
-int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) {
-    errx = 0;
-	strncpy((PCBptr->name), name,PROCESS_NAME_LENGTH);
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- setup_PCB																								   **
+ **               Purpose -- The setup_PCB function initializes the content of a PCB, which is assumed to be newly allocated		   **
+ **							 using allocate_PCB.																					   **
+ **            Parameters -- struct PCB *, char [], int, int																		   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- strncpy																								   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The setup_PCB function initializes the content of a PCB.												   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class, int priority) 
+{
+	errx = 0;
+	strncpy((PCBptr->name), name, PROCESS_NAME_LENGTH);
 	(PCBptr->proc_class) = proc_class;
-	(PCBptr->priority) = priority;
-	(PCBptr->state) = READY;
-	PCBptr->suspended = NOTSUSP;
+	(PCBptr->priority)   = priority;
+	(PCBptr->state)      = READY;
+	PCBptr->suspended    = NOTSUSP;
 	//(PCBptr->stack_base) = (PCBptr->stack)[STACK_SIZE] ;
 	//(PCBptr->stack_top) = (PCBptr->stack)[STACK_SIZE + 1];
 	//(PCBptr->mem_size) = ;
@@ -673,112 +946,170 @@ int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class
 	//(PCBptr->execution_address) = ;
 	(PCBptr->prev) = NULL;
 	(PCBptr->next) = NULL;
+	
 	return errx;
 }
 
-/**  Procedure Name: isEmpty
-* \param q :int representing the queue
-* \return an integer error code (o for now)
-* Procedures Called: none
-* Globals Used: err
-* \brief Description: checks if a queue is empty 
-*/
-int isEmpty(int q) {
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- isEmpty																								   **
+ **               Purpose -- The isEmpty checks to see if the queue is empty.														   **
+ **            Parameters -- int - represents the queue																				   **
+ **			 Return Value -- int - boolean																							   **
+ **     Procedures Called -- strncpy																								   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The isEmpty checks to see if the queue is empty.  It returns '1' if it is empty.						   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int isEmpty(int q) 
+{
     int ret = 0;
-    if(q == 1) {if(head1 == NULL && tail1 == NULL) ret = 1;}
-    else if(head2 == NULL && tail2 == NULL) ret = 1;
-    return ret;
+    if (q == 1) 
+	{
+		if (head1 == NULL && tail1 == NULL) ret = 1;
+	}
+    
+	else if (head2 == NULL && tail2 == NULL) ret = 1;
+	
+	return ret;
 }
 
-/**  Procedure Name: insert
-* \param newPCB: pointer to a PCB
-* \param q : int the specifies a queue
-* \return an integer error code (o for now)
-* Procedures Called: isEmpty
-* Globals Used: err
-* \brief Description: inserts a PCB into the queue 
-*/
-int insert(struct PCB *newPCB,int q) {
-    struct PCB *tmp = NULL;
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- insert																									   **
+ **               Purpose -- The insert function inserts a PCB into a specified queue. The queue is specified by an identifier which   **
+ **							 could for example, be the address of its descriptor.													   **
+ **            Parameters -- struct PCB *, int																						   **
+ **			 Return Value -- int - an error code																					   **
+ **     Procedures Called -- isEmpty																								   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The insert function checks to see if the queue is empty and inserts a PCB into a specified queue.		   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+int insert(struct PCB *newPCB, int q) 
+{
+	struct PCB *tmp = NULL;
     errx = 0;
-    if(q == 1) {  //For Ready Queue
-      if(isEmpty(q)) {
-        tail1 = newPCB;
-        head1 = tail1;
-      }
-      else {
-  	    tmp = tail1;
-	    while((newPCB->priority) > (tmp->priority)) {
-          if (tmp == head1) {
-		    (tmp->next) = newPCB;
-		    (newPCB->prev) = tmp;
-		    head1 = newPCB;
-	      }
-		  else tmp = (tmp->next);
-        }
-        if(tmp==tail1){ //if inserted at tail
-          tail1->prev = newPCB;
-          newPCB->next = tail1;
-          tail1 = newPCB;
-        }
-        else if(head1 != newPCB) {
-          ((tmp->prev)->next) = newPCB;
-          (newPCB->prev) = (tmp->prev);
-		  (tmp->prev) = newPCB;
-		  (newPCB->next)= tmp;
-        }
-      }
+    
+	if (q == 1)
+	{
+		if (isEmpty(q)) 
+		{
+			tail1 = newPCB;
+			head1 = tail1;
+		}
+		
+		else 
+		{
+			tmp = tail1;
+	    
+			while ((newPCB->priority) > (tmp->priority)) 
+			{
+				if (tmp == head1) 
+				{
+					(tmp->next)    = newPCB;
+					(newPCB->prev) = tmp;
+					head1          = newPCB;
+				}
+		  
+				else tmp = (tmp->next);
+			}
+        
+			if (tmp == tail1) // If Inserted At Tail
+			{
+				tail1->prev  = newPCB;
+				newPCB->next = tail1;
+				tail1		 = newPCB;
+			}
+        
+			else if (head1 != newPCB) 
+			{
+				((tmp->prev)->next) = newPCB;
+				(newPCB->prev)      = (tmp->prev);
+				(tmp->prev)         = newPCB;
+				(newPCB->next)      = tmp;
+			}
+		}
     }
-    else {  //For Blocked Queue
-      if(isEmpty(q)) {
-        tail2 = newPCB;
-        head2 = tail2;
-      }
-      else {
-        tmp = tail2;
-        while((newPCB->priority) > (tmp->priority)) {
-          if (tmp == head2) {
-		    (tmp->next) = newPCB;
-		    (newPCB->prev) = tmp;
-		    head2 = newPCB;
-		  }
-		  else tmp = (tmp->next);
-        }
-        if(tmp==tail2){ //if inserted at tail
-          tail2->prev = newPCB;
-          newPCB->next = tail2;
-          tail2 = newPCB;
-        }
-        else if(head2 != newPCB) {
-	      ((tmp->prev)->next) = newPCB;
-		  (newPCB->prev) = (tmp->prev);
-		  (tmp->prev) = newPCB;
-		  (newPCB->next)= tmp;
-        }
-      }
-    }
+	
+    else // Blocked Queue 
+	{ 
+		if (isEmpty(q)) 
+		{
+			tail2 = newPCB;
+			head2 = tail2;
+		}
+      
+		else 
+		{
+			tmp = tail2;
+        
+			while ((newPCB->priority) > (tmp->priority)) 
+			{
+				if (tmp == head2) 
+				{
+					(tmp->next)    = newPCB;
+					(newPCB->prev) = tmp;
+					head2		   = newPCB;
+				}
+		  
+				else tmp = (tmp->next);
+			}
+			
+			if (tmp==tail2) // If Inserted At Tail
+			{ 
+				tail2->prev  = newPCB;
+				newPCB->next = tail2;
+				tail2		 = newPCB;
+			}
+				
+			else if (head2 != newPCB) 
+			{
+				((tmp->prev)->next) = newPCB;
+				(newPCB->prev)		= (tmp->prev);
+				(tmp->prev)			= newPCB;
+				(newPCB->next)		= tmp;
+			}
+		}
+	}
+	
     return errx;
 }
 
-/**  Procedure Name: findPCB
-* \param name : string containing name
-* \param PCBptr: a pointer to a PCB struct
-* \return an integer error code
-* Procedures Called: none
-* Globals Used: err
-* \brief Description: find a PCB pointer given a name
-*/
-struct PCB* findPCB(char *name,struct PCB *PCBptr) {
-    struct PCB *tmp = tail1;
-    errx = 0;
-    while((tmp != NULL) && strncmp((tmp->name),name,PROCESS_NAME_LENGTH)) tmp = (tmp->next);
-    PCBptr = tmp;
-    if (PCBptr == NULL) { //if not found yet, search queue2
-      tmp = tail2;
-      while((tmp != NULL) && strncmp((tmp->name),name,PROCESS_NAME_LENGTH)) tmp = (tmp->next);
-      if(tmp == NULL) errx = ERR_PCBNF; //PCB not found
-      else if(tmp != NULL) PCBptr = tmp;
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- findPCB																								   **
+ **               Purpose -- The findPCB function searches the PCBs for a process having a specified name.							   **
+ **            Parameters -- char *, struct PCB *																					   **
+ **			 Return Value -- PCB - a PCB																							   **
+ **     Procedures Called -- strncmp																								   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The findPCB function searches the PCBs for a process having a specified name.							   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+struct PCB* findPCB(char *name, struct PCB *PCBptr) 
+{
+	struct PCB *tmp = tail1;
+    errx			= 0;
+	
+    while ((tmp != NULL) && strncmp((tmp->name),name,PROCESS_NAME_LENGTH)) tmp = (tmp->next);
+    
+	PCBptr = tmp;
+    
+	if (PCBptr == NULL) //If Not Found Yet, Search Queue 2
+	{
+		tmp = tail2;
+      
+		while ((tmp != NULL) && strncmp((tmp->name),name,PROCESS_NAME_LENGTH)) tmp = (tmp->next);
+      
+		if (tmp == NULL) errx = ERR_PCBNF; //PCB Not Found
+      
+		else if (tmp != NULL) PCBptr = tmp;
     }
+	
     return PCBptr;
 }
 
