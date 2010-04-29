@@ -72,7 +72,7 @@ int main() {
   struct PCB *np;
   struct context *npc;
   
-  sys_init(MODULE_F);
+  sys_init(MODULE_R4);
   err = init_r1();
   err = init_r2();
   err = init_r3();
