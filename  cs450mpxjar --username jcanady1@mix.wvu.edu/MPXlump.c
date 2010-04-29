@@ -57,7 +57,6 @@ int err4 = 0;
 static iocb comport;
 static iocb terminal;
 static iod* swap_iod;
-static params* param_p;
 
 /** Procedure Name: main
  * \param none
@@ -1604,8 +1603,8 @@ iod* setupIOD()
 	//save current processes parameters
 	temp_iod -> process = cop;
 	temp_iod -> request_type = param_p -> op_code;
-	temp_iod -> buf_p = param_p -> buf_addr;
-	temp_iod -> count_p = param_p -> count_addr;
+	temp_iod -> buf_p = param_p -> buf_p;
+	temp_iod -> count_p = param_p -> count_p;
 	temp_iod -> next = NULL;
 	return temp_iod;
 }
