@@ -212,18 +212,19 @@ typedef struct DCB {
 	int ring_buffer_count; //
 };
 
-struct IOD {
-	char name[PROCESS_NAME_LENGTH];
-	struct PCB * requestor;
-	int request;
-	char * tran_buff;
-	int * buff_count;
-	struct IOD * next;
-};
-
-struct IOCB {	
-    int event_flag;
-	int count;
-	struct IOD * head;
-	struct IOD * tail;
-};
+typedef struct iod
+{
+	pcb_node *process;	/**<Pointer to process control block. */
+	int request_type;	/**<Type of input/output request (i.e. IDLE, READ, WRITE, CLEAR). */
+	char *buf_p;		/**<Transfer buffer. */
+	int *count_p;		/**<Count of buffer. */
+	struct iod *next;	/**<Next IOD in queue. */
+} iod;
+typedef struct iocb
+{
+	int event_flag;	/**<Device's event flag (the address of this will be passed to com_open for initialization!). */
+	int count;		/**<Number of requests in this devices wait queue. */
+	iod* active;	/**<Active request. */
+	iod* head;		/**<Pointer to first iod in waiting queue. */
+	iod* tail;		/**<Pointer to last iod in waiting queue. */
+} iocb;
