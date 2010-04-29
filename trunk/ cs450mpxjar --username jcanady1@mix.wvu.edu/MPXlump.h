@@ -149,12 +149,16 @@ int load();
 //
 int init_f();
 int cleanup_f();
-int IOschedule();
-int process_com();
-int process_trm();
-int enqueue(struct IOD * nIOD, struct IOCB * queue);
-struct IOD * dequeue(struct IOCB * queue);
-struct IOD * createIOD();
+void comport_Enqueue(iod* temp_iod);
+iod* comport_Dequeue();
+void terminal_Enqueue(iod* temp_iod);
+iod* terminal_Dequeue();
+void removeRequests(pcb_node* tempnode);
+iod* setupIOD();
+void IOScheduler();
+void process_comport();
+void process_terminal();
+void freeRequestQueues();
 //
 int com_open (int * eflag_p, int baud_rate);
 int com_close();
