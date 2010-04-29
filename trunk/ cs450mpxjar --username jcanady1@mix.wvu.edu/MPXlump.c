@@ -94,8 +94,9 @@ int main() {
     npc->ES = _ES;
     err = insert(np,RUNNING);
   }
-  
-  load_prog("IDLE", -128, SYSTEM);  
+  err_hand(err);
+  err = load_prog("IDLE", -128, SYSTEM);
+  err_hand(err);  
   dispatcher();
   
   terminate_mpx();
