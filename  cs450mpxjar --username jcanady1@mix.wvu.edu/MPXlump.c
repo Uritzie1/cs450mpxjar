@@ -53,9 +53,6 @@ struct context *context_p;
 struct params *param_p;
 int err3=0;
 int err4 = 0;
-struct IOCB *comport;
-struct IOCB *terminal;
-struct IOD *tmpIOD;
 
 static iocb comport;
 static iocb terminal;
@@ -75,7 +72,7 @@ int main() {
   struct PCB *np;
   struct context *npc;
   
-  sys_init(MODULE_R4);
+  sys_init(MODULE_F);
   err = init_r1();
   err = init_r2();
   err = init_r3();
