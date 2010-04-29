@@ -1461,18 +1461,19 @@ int terminate() {
 /**
  */
 int init_f() {
-  terminal->event_flag = 1;
-  terminal->count = 0;
-  terminal->head = NULL;
-  terminal->tail = NULL;
+	terminal.event_flag = 1;
+	terminal.count = 0;
+	terminal.active = NULL;
+	terminal.head = NULL;
+	terminal.tail = NULL;
+	trm_open(&terminal.event_flag);
 	
-  comport->event_flag = 1;
-  comport->count = 0;
-  comport->head = NULL;
-  comport->tail = NULL;
-  
-  trm_open(&terminal->event_flag);
-  com_open(&comport->event_flag, 1200);
+	comport.event_flag = 1;
+	comport.count = 0;
+	comport.active = NULL;
+	comport.head = NULL;
+	comport.tail = NULL;
+	com_open(&comport.event_flag, 1200);
   return 0;
 }
 
