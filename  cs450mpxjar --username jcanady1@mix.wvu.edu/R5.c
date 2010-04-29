@@ -20,7 +20,7 @@
 // Included ANSI C Files
 #include <stdlib.h>
 #include <dos.h>
-#include "R12.h"
+#include "MPXlump.h"
 #include "mpx_supt.h"
 
 // Global Variables
