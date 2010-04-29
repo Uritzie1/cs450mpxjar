@@ -17,10 +17,9 @@
  **																																	   **
  **		  02/12/2010  JC           template of R2.c created																			   **
  **       02/15/2010  JC           block, unblock, suspend, resume, set_Priority, show_PCB, show_All, show_Ready, show_Blocked		   **
- **								  functions have been added to R2.c																	   **
- **       02/16/2010  AT		  create_PCB, free_PCB, allocate_PCB functions have been added to R2.c								   **
- **       02/18/2010  RW,JC, AT   all functions are complete; documentation	added													   **
- **		  04/24/2010  AT		  code review; additional documentation added 													       **
+ **								   functions have been added to R2.c																   **
+ **       02/16/2010  AT		   create_PCB, free_PCB, allocate_PCB functions have been added to R2.c								   **
+ **       02/18/2010  RW,JC, AT    all functions are complete; documentation added													   **
  ****************************************************************************************************************************************
  ****************************************************************************************************************************************
  */
@@ -52,7 +51,7 @@
 #define	COM_PORT	3
 #define NUM_DEVS	3
 
-// Status & Error Codes
+/* Status & Error Codes */ 
 #define ERR_INVCOM (-201)    // Invalid Command
 #define ERR_INVYR  (-202)    // Invalid Year
 #define ERR_INVMON (-203)    // Invalid Month
