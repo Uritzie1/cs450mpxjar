@@ -1707,10 +1707,10 @@ void process_terminal()
 	switch(terminal.active -> request_type)
 	{
 		case READ:
-			trm_read(terminal.active -> buf_p, terminal.active -> count_p)
+			trm_read(terminal.active -> buf_p, terminal.active -> count_p);
 			break;
 		case WRITE:
-			trm_write(terminal.active -> buf_p, terminal.active -> count_p)
+			trm_write(terminal.active -> buf_p, terminal.active -> count_p);
 			break;
 		case CLEAR:
 			trm_clear();
