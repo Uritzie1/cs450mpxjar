@@ -37,7 +37,7 @@
 #define TINYBUFF 2
 #define OK 0
 
-/* Service Operation Code */
+/* Service Operation Codes */
 #define IDLE	0
 #define	READ	1
 #define	WRITE	2
@@ -1113,6 +1113,18 @@ struct PCB* findPCB(char *name, struct PCB *PCBptr)
     return PCBptr;
 }
 
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- qRemove																								   **
+ **               Purpose -- The qRemove function removes a PCB from the queue.														   **
+ **            Parameters -- char *, struct PCB *																					   **
+ **			 Return Value -- PCB * - a PCB																							   **
+ **     Procedures Called -- strncmp																								   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The findPCB function searches the PCBs for a process having a specified name.							   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
 /**  Procedure Name: qremove
 * \param name: string containing PCB name
 * \param set: a pointer to a PCB
@@ -1122,67 +1134,117 @@ struct PCB* findPCB(char *name, struct PCB *PCBptr)
 * Globals Used: err
 * \brief Description: removes a PCB from queue
 */
-struct PCB* qRemove(char *name,struct PCB *set) {
+struct PCB* qRemove(char *name, struct PCB *set) 
+{
 	struct PCB *del = NULL;
-    del = findPCB(name,del);
-    if(del->next == NULL && del->prev == NULL) { //if last one left
-      if(del==tail1) tail1 = head1 = NULL;
+    del             = findPCB(name,del);
+    
+	if (del->next == NULL && del->prev == NULL) //if last one left
+	{ 
+      if (del==tail1) tail1 = head1 = NULL;
       else tail2 = head2 = NULL;
     }
-    else if(del->next == NULL && del->prev != NULL) { //if head
-      if(del == head1) {
-        head1 = del->prev;
+	
+    else if (del->next == NULL && del->prev != NULL) //if head
+	{ 
+      if (del == head1) 
+	  {
+        head1       = del->prev;
         head1->next = NULL;
-        del->prev = NULL;
+        del->prev   = NULL;
       }
-      else {
-        head2 = del->prev;
+		
+      else 
+	  {
+        head2       = del->prev;
         head2->next = NULL;
-        del->prev = NULL;
+        del->prev  = NULL;
       }
     }
-    else if(del->next != NULL && del->prev == NULL) { //if tail
-      if(del == tail1) {
-        tail1 = del->next;
+	
+    else if (del->next != NULL && del->prev == NULL) //if tail 
+	{ 
+      if (del == tail1) 
+	  {
+        tail1       = del->next;
         tail1->prev = NULL;
-        del->next = NULL;
+        del->next   = NULL;
       }
-      else {
-        tail2 = del->next;
+		
+      else 
+	  {
+        tail2       = del->next;
         tail2->prev = NULL;
-        del->next = NULL;
+        del->next   = NULL;
       }
     }
-	else if(del != NULL) {
+	
+	else if (del != NULL) 
+	{
       ((del->prev)->next) = (del->next);
       ((del->next)->prev) = (del->prev);
-      (del->next) = NULL;
-	  (del->prev) = NULL;
+      (del->next)         = NULL;
+	  (del->prev)         = NULL;
 	  //set = del;
     }
+	
 	return del;
 }
 
-void toLowerCasex(char str[BIGBUFF]) {
-  int i = 0;
-  for(i;i<strlen(str);i++) str[i] = tolower(str[i]);
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- toLowerCasex																						       **
+ **               Purpose -- The toLowerCasex function converts user input to lowercase.											   **
+ **            Parameters -- char [] - a buffer containing user input 																   **
+ **			 Return Value -- void																									   **
+ **     Procedures Called -- strlen, tolower																						   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The toLowerCasex function converts user input to lowercase.											   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+void toLowerCasex(char str[BIGBUFF]) 
+{
+	int i = 0;
+	
+	for (i; i < strlen(str); i++) str[i] = tolower(str[i]);
 }
 
- void trimx(char ary[BIGBUFF]) {
-   char temp[BIGBUFF] = {0};
-   int i,j = 0;
-   for(i = 0;i<BIGBUFF;i++) {
-	 if(!isspace(ary[i])) {
-	   if(ary[i] == 12) j++;  //trims newlines
-	   else {
-	     temp[j] = ary[i];
-	     j++;
-	   }
-	 }
-   }
-   for(i = 0;i < BIGBUFF;i++) ary[i] = temp[i];
+/****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ **        Procedure Name -- trimx																									   **
+ **               Purpose -- The trimx function removes extraneous whitespace and newlines from user input.							   **
+ **            Parameters -- char [] - a buffer containing user input																   **
+ **			 Return Value -- void																									   **
+ **     Procedures Called -- isspace																								   **
+ **  Global Data Accessed -- N/A																									   **
+ **  Summary of Algorithm -- The trimx function loops through a buffer, removing whitespace and newlines from the user input.		   **
+ ****************************************************************************************************************************************
+ ****************************************************************************************************************************************
+ */
+void trimx(char ary[BIGBUFF]) 
+{
+	char temp[BIGBUFF] = {0};
+	int i,j = 0;
+	
+	for (i = 0;i < BIGBUFF; i++) 
+	{
+		if (!isspace(ary[i])) 
+		{
+			if(ary[i] == 12) j++; 
+		}
+	   
+		else 
+		{
+			temp[j] = ary[i];
+			j++;
+		}
+	}
+	
+	for (i = 0;i < BIGBUFF; i++) ary[i] = temp[i];
 }
 
-struct PCB* getRHead() {
+struct PCB* getRHead() 
+{
        return head1;
 }
