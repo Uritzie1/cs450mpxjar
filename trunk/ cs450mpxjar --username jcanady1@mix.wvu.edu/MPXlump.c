@@ -72,7 +72,7 @@ int main() {
   struct PCB *np;
   struct context *npc;
   
-  sys_init(MODULE_R4);
+  sys_init(MODULE_F);
   err = init_r1();
   err = init_r2();
   err = init_r3();
@@ -124,7 +124,7 @@ int comhan() {
     bufsize = BIGBUFF;
     memset(cmd, '\0', BIGBUFF);                       //clear buffer
     printf("\n>>");                                   //command prompt
-    err = sys_req(READ, COM_PORT, cmd, &bufsize);     //read in command
+    err = sys_req(READ, TERMINAL, cmd, &bufsize);     //read in command
     trim(cmd);
     toLowerCase(cmd);
     if (!strncmp(cmd,fcns[QUIT],strlen(fcns[QUIT])+1)) terminate_mpx();  //call corresponding function
