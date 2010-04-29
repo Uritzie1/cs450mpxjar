@@ -94,8 +94,8 @@ int main() {
     npc->ES = _ES;
     err = insert(np,RUNNING);
   }
-aa
-  err = load_prog("proc1", -128, SYSTEM); 
+
+  err = load_prog("idle", -128, SYSTEM); 
   dispatcher();
   
   terminate_mpx();
@@ -1393,7 +1393,7 @@ int load_prog(char * fname, int pri, int procClass) {
 	if(NULL == (newNode = allocate_PCB())) return ERR_UCPCB;
 
 	setup_PCB(newNode,fname,procClass,pri);
-	if(!strncmp(fname, "IDLE", 5)) newNode->suspended = NOTSUSP;
+	if(!strncmp(fname, "idle", 5)) newNode->suspended = NOTSUSP;
 	else newNode->suspended = SUSP;
 
     newNode->mem_size = progLength;
@@ -1409,7 +1409,7 @@ int load_prog(char * fname, int pri, int procClass) {
 	
 	err4 = sys_load_program(newNode->load_address, newNode->mem_size, "MPXFILES",fname);
 	if(err4>=OK) err4 = insert(newNode,READY+1);
-	if(strncmp(fname, "IDLE", 5)) {if(err4>=OK) printf("Program successfully loaded!");}
+	if(strncmp(fname, "idle", 5)) {if(err4>=OK) printf("Program successfully loaded!");}
 	return err4;
 }
 
