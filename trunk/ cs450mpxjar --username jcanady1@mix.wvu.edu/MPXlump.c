@@ -1483,19 +1483,7 @@ int cleanup_f() {
   trm_close();
   com_close();
 
-  //free IODs
-  tmpIOD = comport->head;
-  while (tmpIOD != NULL) {
-    comport->head = (comport->head)->next;
-    sys_free_mem(tmpIOD);
-    tmpIOD = comport->head;   
-  }
-  tmpIOD = terminal->head;
-  while (tmpIOD != NULL) {
-    terminal->head = (terminal->head)->next;
-    sys_free_mem(tmpIOD);
-    tmpIOD = terminal->head;
-  }
+  freeRequestQueues();
   
   return 0;
 }
@@ -1729,5 +1717,24 @@ void process_terminal()
 			break;
 		case GOTOXY:
 			break;
+	}
+}
+
+void freeRequestQueues()
+{
+	iod *temp_next;
+	//free active requests
+	sys_free_mem(comport.active);
+	comport.active = NULL;
+	sys_free_mem(terminal.active);
+	terminal.active = NULL;
+	//free ready queue
+	while(comport.head != NULL)
+	{
+		sys_free_mem(comport_Dequeue());
+	}
+	while(terminal.head != NULL)
+	{
+		sys_free_mem(terminal_Dequeue());
 	}
 }
