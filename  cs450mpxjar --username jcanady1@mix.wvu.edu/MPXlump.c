@@ -1228,6 +1228,14 @@ void interrupt sys_call() {
 	sp_save_temp = _SP;
 	//param_p = (struct params *)((unsigned char *)MK_FP(ss_save_temp,sp_save_temp)+ sizeof(struct context));
     
+    cop->stack_top = (unsigned char *)MK_FP(ss_save_temp, sp_save_temp);
+    /*new_ss = FP_SEG(sys_stack);
+	new_sp = FP_OFF(sys_stack)+SYS_STACK_SIZE;
+    _SS = new_ss;
+	_SP = new_sp;*/
+	param_p = (params *)(cop -> stack_top + sizeof(struct context));
+	
+	
     trm_getc();
     //check for comport request completion
 	if(comport->event_flag == 1) {
@@ -1235,7 +1243,8 @@ void interrupt sys_call() {
         tmpIOD = dequeue(comport);
         tempnode = qRemove((tmpIOD->requestor)->name, tempnode);
         tempnode->state = READY;
-	    insert(tempnode, READY+1);	    
+	    insert(tempnode, READY+1);
+        sys_free_mem(tmpIOD);	    
         //process nxt IO req for this dev
         if(comport->count > 0) process_com();
 	}
@@ -1245,17 +1254,13 @@ void interrupt sys_call() {
 		tmpIOD = dequeue(terminal);
         tempnode = qRemove((tmpIOD->requestor)->name, tempnode);
         tempnode->state = READY;
-	    insert(tempnode, READY+1);	    
+	    insert(tempnode, READY+1);
+        sys_free_mem(tmpIOD);	    
         //process nxt IO req for this dev
         if(terminal->count > 0) process_trm();
 	}
-    
-    cop->stack_top = (unsigned char *)MK_FP(ss_save_temp, sp_save_temp);
-    /*new_ss = FP_SEG(sys_stack);
-	new_sp = FP_OFF(sys_stack)+SYS_STACK_SIZE;
-    _SS = new_ss;
-	_SP = new_sp;*/
-	param_p = (params *)(cop -> stack_top + sizeof(struct context));
+	
+	
 	if(param_p->op_code == IDLE) {
         cop->state = READY;
 		insert(cop,READY+1);
@@ -1275,7 +1280,7 @@ void interrupt sys_call() {
 
 /**
  */
-int load_test() {	
+/*int load_test() {	
 	struct PCB *np;
 	struct context *npc;
 
@@ -1370,7 +1375,7 @@ int load_test() {
 	else printf("\nProcess with name 'test5' already exists.");
 	if(err3==OK) printf("\nTest processes loaded successfully!");
 	return err3;
-}
+}*/
 
 /*
  */
