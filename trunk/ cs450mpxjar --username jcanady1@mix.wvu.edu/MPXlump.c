@@ -57,6 +57,7 @@ int err4 = 0;
 static iocb comport;
 static iocb terminal;
 static iod* swap_iod;
+static params* param_p;
 
 /** Procedure Name: main
  * \param none
