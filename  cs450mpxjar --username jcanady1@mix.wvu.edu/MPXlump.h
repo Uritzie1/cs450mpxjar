@@ -124,7 +124,7 @@ typedef struct context {
 	unsigned int BP, DI, SI, DS, ES;
 	unsigned int DX, CX, BX, AX;
 	unsigned int IP, CS, FLAGS;
-};
+}context;
 
 typedef struct DCB {
 	int flagOpen;          //is COM open
