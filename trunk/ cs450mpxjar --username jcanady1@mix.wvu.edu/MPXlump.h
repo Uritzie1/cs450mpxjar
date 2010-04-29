@@ -214,7 +214,7 @@ typedef struct DCB {
 
 typedef struct iod
 {
-	pcb_node *process;	/**<Pointer to process control block. */
+	struct PCB *process;	/**<Pointer to process control block. */
 	int request_type;	/**<Type of input/output request (i.e. IDLE, READ, WRITE, CLEAR). */
 	char *buf_p;		/**<Transfer buffer. */
 	int *count_p;		/**<Count of buffer. */
