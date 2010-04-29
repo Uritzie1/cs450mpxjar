@@ -1257,7 +1257,7 @@ void interrupt sys_call() {
 	{
 		tempnode = qRemove(terminal.active -> process -> name, tempnode);
 		terminal.active -> process -> state = READY;
-		insertPCB(tempnode, READY+1);
+		insert(tempnode, READY+1);
 		sys_free_mem(terminal.active);
 		terminal.active = NULL;
 	}
