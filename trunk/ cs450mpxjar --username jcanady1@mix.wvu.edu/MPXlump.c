@@ -83,9 +83,9 @@ int main() {
   else {
     err = setup_PCB(np, "COMHAN",SYSTEM,127);
     if (err < OK) return err;
-   	sys_free_mem(np->stack_base);
-	np->stack_base = (unsigned char*)sys_alloc_mem(COMHAN_STACK_SIZE*sizeof(unsigned char));
-	np->stack_top = np->stack_base + COMHAN_STACK_SIZE - sizeof(struct context);
+   	//sys_free_mem(np->stack_base);
+	//np->stack_base = (unsigned char*)sys_alloc_mem(COMHAN_STACK_SIZE*sizeof(unsigned char));
+	//np->stack_top = np->stack_base + COMHAN_STACK_SIZE - sizeof(struct context);
     npc = (struct context*) np->stack_top;
     npc->IP = FP_OFF(&comhan); 
     npc->CS = FP_SEG(&comhan);
