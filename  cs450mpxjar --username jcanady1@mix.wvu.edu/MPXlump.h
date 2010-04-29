@@ -70,7 +70,7 @@
 #define BLOCKED 2
 #define NOTSUSP 0
 #define SUSP 1
-#define STACK_SIZE 2048
+#define STACK_SIZE 4048
 #define SYS_STACK_SIZE 200
 #define COMHAN_STACK_SIZE 8192
 #define COM1_READ 0x04
