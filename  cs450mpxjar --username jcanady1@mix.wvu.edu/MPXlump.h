@@ -70,8 +70,8 @@
 #define BLOCKED 2
 #define NOTSUSP 0
 #define SUSP 1
-#define STACK_SIZE 4048
-#define SYS_STACK_SIZE 400
+#define STACK_SIZE 2048
+#define SYS_STACK_SIZE 200
 #define COMHAN_STACK_SIZE 8192
 #define COM1_READ 0x04
 #define COM1_WRITE 0x02
@@ -93,72 +93,6 @@
 #define PIC_MASK 0x21
 #define PIC_CMD 0x20
 #define EOI 0x20
-
-
-//Structures
-typedef struct PCB {
-	char name[PROCESS_NAME_LENGTH];         //Process Name
-	int id;                                 //Process ID#
-	int proc_class;						    //Process Class
-	int priority;					        //Priority Value (-128 to 127)
-	int state;						        //Process State Flag (Running, Ready, Blocked)
-	int suspended;					        //Process Suspended Flag
-	unsigned char stack[STACK_SIZE];        //PCB Stack
-	unsigned char * stack_base;				//Pointer to base of stack
-	unsigned char * stack_top;				//Pointer to top of stack
-	int mem_size;							//Memory size
-	unsigned char * load_address;			//Pointer to loading address
-	unsigned char * execution_address;		//Pointer to execution address
-	struct PCB * prev;				        //Pointer to previous PCB node
-	struct PCB * next;				       	//Pointer to next PCB node
-};
-
-typedef struct params {
-	int op_code;
-	int device_id;
-	char * buf_p;
-	int * count_p;
-} params;
-
-typedef struct context {
-	unsigned int BP, DI, SI, DS, ES;
-	unsigned int DX, CX, BX, AX;
-	unsigned int IP, CS, FLAGS;
-}context;
-
-typedef struct DCB {
-	int flagOpen;          //is COM open
-	int * eventFlagp;	   //
-	int status;		       //COM current status
-	char * in_buff;	       //
-	int * in_count;	       //
-	int in_done;	       //
-	char * out_buff;        //
-	int * out_count;	       //
-	int out_done;	       //
-	char ring_buffer[RING_SIZE];    //
-	int ring_buffer_in;    //
-	int ring_buffer_out;   //
-	int ring_buffer_count; //
-};
-
-typedef struct iod
-{
-	struct PCB *process;	/**<Pointer to process control block. */
-	int request_type;	/**<Type of input/output request (i.e. IDLE, READ, WRITE, CLEAR). */
-	char *buf_p;		/**<Transfer buffer. */
-	int *count_p;		/**<Count of buffer. */
-	struct iod *next;	/**<Next IOD in queue. */
-} iod;
-typedef struct iocb
-{
-	int event_flag;	/**<Device's event flag (the address of this will be passed to com_open for initialization!). */
-	int count;		/**<Number of requests in this devices wait queue. */
-	iod* active;	/**<Active request. */
-	iod* head;		/**<Pointer to first iod in waiting queue. */
-	iod* tail;		/**<Pointer to last iod in waiting queue. */
-} iocb;
-
 
 // Function Prototypes
 void err_hand(int err_code);
@@ -215,16 +149,12 @@ int load();
 //
 int init_f();
 int cleanup_f();
-void comport_Enqueue(iod* temp_iod);
-iod* comport_Dequeue();
-void terminal_Enqueue(iod* temp_iod);
-iod* terminal_Dequeue();
-void removeRequests(struct PCB * tempnode);
-iod* setupIOD();
-void IOScheduler();
-void process_comport();
-void process_terminal();
-void freeRequestQueues();
+int IOschedule();
+int process_com();
+int process_trm();
+int enqueue(struct IOD * nIOD, struct IOCB * queue);
+struct IOD * dequeue(struct IOCB * queue);
+struct IOD * createIOD();
 //
 int com_open (int * eflag_p, int baud_rate);
 int com_close();
@@ -235,4 +165,65 @@ void readCom();
 void writeCom();
 void stop_com_request();
 
+//Structures
+typedef struct PCB {
+	char name[PROCESS_NAME_LENGTH];         //Process Name
+	int id;                                 //Process ID#
+	int proc_class;						    //Process Class
+	int priority;					        //Priority Value (-128 to 127)
+	int state;						        //Process State Flag (Running, Ready, Blocked)
+	int suspended;					        //Process Suspended Flag
+	unsigned char stack[STACK_SIZE];        //PCB Stack
+	unsigned char * stack_base;				//Pointer to base of stack
+	unsigned char * stack_top;				//Pointer to top of stack
+	int mem_size;							//Memory size
+	unsigned char * load_address;			//Pointer to loading address
+	unsigned char * execution_address;		//Pointer to execution address
+	struct PCB * prev;				        //Pointer to previous PCB node
+	struct PCB * next;				       	//Pointer to next PCB node
+};
 
+typedef struct params {
+	int op_code;
+	int device_id;
+	char * buf_p;
+	int * count_p;
+} params;
+
+typedef struct context {
+	unsigned int BP, DI, SI, DS, ES;
+	unsigned int DX, CX, BX, AX;
+	unsigned int IP, CS, FLAGS;
+};
+
+typedef struct DCB {
+	int flagOpen;          //is COM open
+	int * eventFlagp;	   //
+	int status;		       //COM current status
+	char * in_buff;	       //
+	int * in_count;	       //
+	int in_done;	       //
+	char * out_buff;        //
+	int * out_count;	       //
+	int out_done;	       //
+	char ring_buffer[RING_SIZE];    //
+	int ring_buffer_in;    //
+	int ring_buffer_out;   //
+	int ring_buffer_count; //
+};
+
+struct IOD {
+	char name[PROCESS_NAME_LENGTH];
+	struct PCB * requestor;
+	int request;
+	char * tran_buff;
+	int * buff_count;
+	struct IOD * next;
+};
+
+struct IOCB {	
+    int event_flag;
+	int count;
+	struct IOD * head;
+	struct IOD * tail;
+};
