@@ -98,7 +98,7 @@ int main() {
   err = load_prog("idle", -128, SYSTEM); 
   dispatcher();
   
-  terminate_mpx();
+  sys_exit();
   return 0;
 }
 
@@ -267,7 +267,7 @@ void terminate_mpx() {
     err = cleanup_r3();
     err = cleanup_f();
     if (err < OK) err_hand(err);
-    sys_exit();
+    sys_exit();  //change to removal of comhand and idle processes
   }
   else printf("Termination cancelled.");
 }
@@ -1280,7 +1280,7 @@ void interrupt sys_call() {
 
 /**
  */
-/*int load_test() {	
+int load_test() {	
 	struct PCB *np;
 	struct context *npc;
 
@@ -1375,7 +1375,7 @@ void interrupt sys_call() {
 	else printf("\nProcess with name 'test5' already exists.");
 	if(err3==OK) printf("\nTest processes loaded successfully!");
 	return err3;
-}*/
+}
 
 /*
  */

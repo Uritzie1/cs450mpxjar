@@ -72,7 +72,7 @@
 #define SUSP 1
 #define STACK_SIZE 2048
 #define SYS_STACK_SIZE 200
-#define COMHAN_STACK_SIZE 4096
+#define COMHAN_STACK_SIZE 8192
 #define COM1_READ 0x04
 #define COM1_WRITE 0x02
 #define IDLE 0
