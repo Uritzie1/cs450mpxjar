@@ -158,6 +158,13 @@ typedef struct iocb
 	iod* head;		/**<Pointer to first iod in waiting queue. */
 	iod* tail;		/**<Pointer to last iod in waiting queue. */
 } iocb;
+typedef struct params
+{
+	int      op_code;	/**<Operation Code*/
+	int      device_id; /**<Device ID*/
+	char     *buf_addr; /**<Address of buffer (if any)*/
+	int      *count_addr; /**<Address of buffer size variable (if any)*/
+} params;
 
 
 // Function Prototypes
