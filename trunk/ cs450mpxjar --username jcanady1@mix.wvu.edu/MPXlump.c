@@ -98,10 +98,6 @@ int main() {
   load_prog("IDLE", -128, SYSTEM);  
   dispatcher();
   
-  err = cleanup_r1();
-  err = cleanup_r2();
-  err = cleanup_r3();
-  err = cleanup_f();
   terminate_mpx();
   return 0;
 }
@@ -269,6 +265,7 @@ void terminate_mpx() {
     err = cleanup_r1();
     err = cleanup_r2();
     err = cleanup_r3();
+    err = cleanup_f();
     if (err < OK) err_hand(err);
     sys_exit();
   }
@@ -1261,7 +1258,7 @@ void interrupt sys_call() {
 	param_p = (params *)(cop -> stack_top + sizeof(struct context));
 	if(param_p->op_code == IDLE) {
         cop->state = READY;
-		insert(cop,1);
+		insert(cop,READY+1);
 		cop = NULL;
 	}
 	else if(param_p->op_code == EXIT) {
@@ -1510,6 +1507,9 @@ int IOschedule() {
 	int device_id = param_p->device_id;
 	struct IOD * newIOD = createIOD();
 
+    cop->state = BLOCKED;
+    insert(cop, BLOCKED-1);
+
 	if(device_id == COM_PORT) {
 		retq = enqueue(newIOD,comport);
 		if(retq == 1) process_com();
@@ -1520,14 +1520,13 @@ int IOschedule() {
     }
     else return ERR_UNKN_DEVICE;
 
-    cop->state = BLOCKED;
-    insert(cop, BLOCKED);
     return OK;
 }
 
 /*
  */
 int process_com() {
+  comport->event_flag = 0;
   switch((comport->head)->request) {
   case READ: {
 		com_read((comport->head)->tran_buff, (comport->head)->buff_count);
@@ -1544,6 +1543,7 @@ int process_com() {
 /*
  */
 int process_trm() {
+  terminal->event_flag = 0;
   switch((terminal->head)->request) {
   case READ: {
 		trm_read((terminal->head)->tran_buff, (terminal->head)->buff_count);
@@ -1555,7 +1555,7 @@ int process_trm() {
         trm_clear();
 		break;}
   case GOTOXY: {
-        trm_gotoxy(0,0);
+        trm_gotoxy(0,0);  //NOT DONE!
 		break;}
   default: {
 		return ERR_UNKN_REQUEST;}
@@ -1565,29 +1565,29 @@ int process_trm() {
 
 /*
  */
-int enqueue(struct IOD* nIOD, struct IOCB* queue) {
+int enqueue(struct IOD * nIOD, struct IOCB * queue) {
 	int retv = 0;
 
 	if(queue->count == 0) {
 		queue->head = nIOD;
 		queue->tail = nIOD;
-		queue->count++;
 		retv = 1;
 	}
 	else {
-		queue->tail->next = nIOD;
+		(queue->tail)->next = nIOD;
 		queue->tail = nIOD;
-		queue->count++;
 	}
+	queue->count++;
 	return retv;
 }
 
 /*
  */
-struct IOD* dequeue(struct IOCB* queue) {
-	struct IOD *tempIOD;
+struct IOD * dequeue(struct IOCB * queue) {
+	struct IOD * tempIOD;
 	tempIOD = queue->head;
 
+    if(queue->count == 0) return NULL;
 	if(queue->count == 1) {
 	 queue->head = NULL;
 	 queue->tail = NULL;
@@ -1600,14 +1600,15 @@ struct IOD* dequeue(struct IOCB* queue) {
 
 /*
  */
-struct IOD* createIOD() {
+struct IOD * createIOD() {
 	struct IOD *newIOD = NULL;
-	newIOD = sys_alloc_mem((sizeof(struct IOD)));
+	newIOD = (struct IOD *)sys_alloc_mem((sizeof(struct IOD)));
 	//newIOD->name = cop->name;
 	strncpy(newIOD->name, cop->name, PROCESS_NAME_LENGTH);
 	newIOD->requestor = cop;
 	newIOD->tran_buff = param_p->buf_p;
 	newIOD->buff_count = param_p->count_p;
 	newIOD->request = param_p->op_code;
+	newIOD->next = NULL;
 	return newIOD;
 }
