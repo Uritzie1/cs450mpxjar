@@ -37,7 +37,8 @@
 // Global Variables
 int err = 0;  //error code
 char * fcns[NUMFCNS] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0","dispat\0","ldprocs\0","load\0","term\0","chgprom\0","rstprom\0","alias\0","rsalias\0","rdhist\0","clrhist\0",NULL};  //functions list
-char * alfcns[NUMFCNS] = {0};
+char * alfcns[NUMFCNS] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0","dispat\0","ldprocs\0","load\0","term\0","chgprom\0","rstprom\0","alias\0","rsalias\0","rdhist\0","clrhist\0",NULL};  //functions list
+//char * alfcns[NUMFCNS] = {0};
 char prompt[10] = ">>\0";
 char alPrompt[10];
 FILE * tmpfp;
@@ -431,7 +432,7 @@ int help() {
   for(i = 0; i < BIGBUFF * 2; i++)
   wdc[i] = wd[i];
 
-  printf("Help: enter command (or list for command list): ");
+  printf("Help: enter original command (or 'list' for command list): ");
   if ((err = sys_req(READ, TERMINAL, buffer, &bufsize)) < OK) return err;
   trim(buffer);
   toLowerCase(buffer);
@@ -561,7 +562,7 @@ int valid_date(int yr, int mo, int day) {
  */
 int init_r1() {
   _getdcwd(3,wd,sizeof(wd));
-  resetAlias();
+  //resetAlias();
   resetPrompt();
   openTmp();
   return 0;
