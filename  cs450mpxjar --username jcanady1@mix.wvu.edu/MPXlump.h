@@ -212,7 +212,7 @@ typedef struct DCB {
 	int ring_buffer_count; //
 };
 
-struct IOD {
+typedef struct IOD {
 	char name[PROCESS_NAME_LENGTH];
 	struct PCB * requestor;
 	int request;
@@ -221,9 +221,10 @@ struct IOD {
 	struct IOD * next;
 };
 
-struct IOCB {	
+typedef struct IOCB {	
     int event_flag;
 	int count;
 	struct IOD * head;
 	struct IOD * tail;
+	struct IOD * active;
 };

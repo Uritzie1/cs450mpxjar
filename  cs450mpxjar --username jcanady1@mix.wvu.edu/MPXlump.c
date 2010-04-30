@@ -53,8 +53,8 @@ struct context *context_p;
 struct params *param_p;
 int err3=0;
 int err4 = 0;
-struct IOCB *comport;
-struct IOCB *terminal;
+struct IOCB comport;
+struct IOCB terminal;
 struct IOD *tmpIOD;
 
 
@@ -82,7 +82,7 @@ int main() {
   if (np == NULL) err = ERR_UCPCB;
   else {
     err = setup_PCB(np, "COMHAN",SYSTEM,127);
-    if (err < OK) return err;
+    if (err < OK) err_hand(err);
    	//sys_free_mem(np->stack_base);
 	//np->stack_base = (unsigned char*)sys_alloc_mem(COMHAN_STACK_SIZE*sizeof(unsigned char));
 	//np->stack_top = np->stack_base + COMHAN_STACK_SIZE - sizeof(struct context);
@@ -1226,7 +1226,6 @@ void interrupt dispatcher() {
 void interrupt sys_call() {	
 	ss_save_temp = _SS;
 	sp_save_temp = _SP;
-	//param_p = (struct params *)((unsigned char *)MK_FP(ss_save_temp,sp_save_temp)+ sizeof(struct context));
     
     cop->stack_top = (unsigned char *)MK_FP(ss_save_temp, sp_save_temp);
     /*new_ss = FP_SEG(sys_stack);
@@ -1238,43 +1237,34 @@ void interrupt sys_call() {
 	
     trm_getc();
     //check for comport request completion
-	if(comport->event_flag == 1) {
-        comport->event_flag = 0;
-        tmpIOD = dequeue(comport);
-        tempnode = qRemove((tmpIOD->requestor)->name, tempnode);
+	if(comport->event_flag == 1 && comport->active != NULL) {
+        //comport->event_flag = 0;
+        tempnode = qRemove((comport->active)->requestor->name, tempnode);
         tempnode->state = READY;
-	    insert(tempnode, READY+1);
-        sys_free_mem(tmpIOD);	    
-        //process nxt IO req for this dev
-        if(comport->count > 0) process_com();
+        insert(tempnode, READY+1);
+        tmpIOD = dequeue(0);
+		sys_free_mem(comport->active);
+		comport->active = NULL;
 	}
-	//check for terminal request completion
-	if(terminal->event_flag == 1) {
-		terminal->event_flag = 0;
-		tmpIOD = dequeue(terminal);
-        tempnode = qRemove((tmpIOD->requestor)->name, tempnode);
-        tempnode->state = READY;
-	    insert(tempnode, READY+1);
-        sys_free_mem(tmpIOD);	    
-        //process nxt IO req for this dev
-        if(terminal->count > 0) process_trm();
+	//if comport is free and there are pending requests, start next request
+	if(comport->count > 0 && comport->event_flag == 1 && comport->active == NULL) {
+		comport->active = com_Dequeue();
+		process_com();
 	}
-	
-	
-	if(param_p->op_code == IDLE) {
-        cop->state = READY;
-		insert(cop,READY+1);
-		cop = NULL;
+	//check if terminal request is complete; if so, remove current process
+	if(terminal->event_flag == 1 && terminal->active != NULL) {
+		tempnode = qRemove(terminal->active -> requestor -> name, tempnode);
+		terminal->active -> requestor -> state = READY;
+		insert(terminal->active -> requestor);
+		sys_free_mem(terminal->active);
+		terminal->active = NULL;
 	}
-	else if(param_p->op_code == EXIT) {
-		free_pcb(cop);
-		cop = NULL;
+	//if terminal is free and there are pending requests, start next request
+	if(terminal.count > 0 && terminal.event_flag == 1 && terminal.active == NULL) {
+		terminal->active = term_Dequeue();
+		process_trm();
 	}
-	else if(param_p->op_code == READ || param_p->op_code == WRITE || param_p->op_code == CLEAR || param_p->op_code == GOTOXY) {
-      IOschedule();
-    } 
-	else context_p->AX = param_p->op_code;
-
+	IOScheduler();
 	dispatcher();
 }
 
@@ -1467,6 +1457,7 @@ int terminate() {
 /**
  */
 int init_f() {
+  tmpIOD=NULL;  
   terminal->event_flag = 1;
   terminal->count = 0;
   terminal->head = NULL;
@@ -1509,39 +1500,59 @@ int cleanup_f() {
  */
 int IOschedule() {
 	int retq = 0;
-	int device_id = param_p->device_id;
-	struct IOD * newIOD = createIOD();
+	//int dev_id = param_p->device_id;
+	//struct IOD * newIOD = createIOD();
 
-    cop->state = BLOCKED;
-    insert(cop, BLOCKED-1);
-
-	if(device_id == COM_PORT) {
-		retq = enqueue(newIOD,comport);
-		if(retq == 1) process_com();
-	}
-	else if(device_id == TERMINAL) {
-	    retq = enqueue(newIOD,terminal);
-		if(retq == 1) process_trm();
-    }
-    else return ERR_UNKN_DEVICE;
-
-    return OK;
+    switch(param_p -> op_code) {
+		case IDLE:
+			cop -> state = READY;
+			insert(cop, READY+1);
+			((context*) (cop -> stack_top)) -> AX = OK;
+			break;
+		case EXIT:
+			free_PCB(cop);
+			cop = NULL;
+			break;
+		case READ:
+		case WRITE:
+		case CLEAR:
+		case GOTOXY:
+			if(param_p -> device_id == COM_PORT) //com port handling
+			{
+				com_Enqueue(createIOD()); //create and enqueue new iod
+				cop -> state = BLOCKED; //block process
+				insert(cop, BLOCKED-1);	//insert into blocked queue
+				if(comport->event_flag == 1 && comport->active == NULL && comport->count > 0) //if comport free, execute next request
+				{
+					comport->active = com_Dequeue();
+					process_com();
+				}
+			}
+			else if(param_p -> device_id == TERMINAL) //terminal handling
+			{
+				term_Enqueue(createIOD()); //create and enqueue new iod
+				cop -> state = BLOCKED; //block process
+				insert(cop, BLOCKED-1); //insert into blocked queue
+				if(terminal->event_flag == 1 && terminal->active == NULL && terminal->count > 0) //if terminal free, execute next request
+				{
+					terminal->active = term_Dequeue();
+					process_trm();
+				}
+			}
+	}  
 }
 
 /*
  */
 int process_com() {
   comport->event_flag = 0;
-  switch((comport->head)->request) {
+  switch((comport->active)->request) {
   case READ: {
 		com_read((comport->head)->tran_buff, (comport->head)->buff_count);
 		break;}
   case WRITE: {
 		com_write((comport->head)->tran_buff, (comport->head)->buff_count);
 		break;}
-  default: {
-		return ERR_UNKN_REQUEST;}
-  }
   return OK;
 }
 
@@ -1549,12 +1560,12 @@ int process_com() {
  */
 int process_trm() {
   terminal->event_flag = 0;
-  switch((terminal->head)->request) {
+  switch((terminal->active)->request) {
   case READ: {
-		trm_read((terminal->head)->tran_buff, (terminal->head)->buff_count);
+		trm_read((terminal->active)->tran_buff, (terminal->active)->buff_count);
 		break;}
   case WRITE: {
-		trm_write((terminal->head)->tran_buff, (terminal->head)->buff_count);
+		trm_write((terminal->active)->tran_buff, (terminal->active)->buff_count);
 		break;}
   case CLEAR: {
         trm_clear();
@@ -1562,51 +1573,80 @@ int process_trm() {
   case GOTOXY: {
         trm_gotoxy(0,0);  //NOT DONE!
 		break;}
-  default: {
-		return ERR_UNKN_REQUEST;}
-  }
   return OK;
 }
 
-/*
- */
-int enqueue(struct IOD * nIOD, struct IOCB * queue) {
-	int retv = 0;
-
-	if(queue->count == 0) {
-		queue->head = nIOD;
-		queue->tail = nIOD;
-		retv = 1;
+void com_Enqueue(struct IOD * tempIOD){
+	if(tempIOD == NULL) return;
+	if(comport->count == 0) //empty queue!
+	{
+		comport->head = tempIOD;
+		comport->tail = tempIOD;
 	}
-	else {
-		(queue->tail)->next = nIOD;
-		queue->tail = nIOD;
+	else
+	{	//add to end
+		comport->tail -> next = tempIOD;
+		comport->tail = tempIOD;
 	}
-	queue->count++;
-	return retv;
+	tempIOD -> next = NULL;
+	comport->count++;
 }
 
-/*
- */
-struct IOD * dequeue(struct IOCB * queue) {
-	struct IOD * tempIOD;
-	tempIOD = queue->head;
-
-    if(queue->count == 0) return NULL;
-	if(queue->count == 1) {
-	 queue->head = NULL;
-	 queue->tail = NULL;
+struct IOD * com_Dequeue() {
+	if(comport->count == 0)
+		return NULL;
+	tmpIOD = comport->head;
+	if(comport->count == 1) //empty queue!
+	{
+		comport->head = NULL;
+		comport->tail = NULL;
 	}
-	else queue->head = (queue->head)->next;
-	queue->count--;
+	else //remove iod at front
+	{
+		comport->head = comport->head -> next;		
+	}
+	comport->count--;
+	return tmpIOD;
+}
 
-	return tempIOD;
+void term_Enqueue(struct IOD * tempIOD) {
+	if(tempIOD == NULL)
+		return;
+	if(terminal->count == 0) //empty queue!
+	{
+		terminal->head = tempIOD;
+		terminal->tail = tempIOD;
+	}
+	else
+	{	//add to end
+		terminal->tail -> next = tempIOD;
+		terminal->tail = tempIOD;
+	}
+	tempIOD -> next = NULL;
+	terminal->count++;
+}
+
+struct IOD * term_Dequeue(){
+	if(terminal->count == 0) //empty queue!
+		return NULL;
+	tmpIOD = terminal->head;
+	if(terminal->count == 1)
+	{
+		terminal->head = NULL;
+		terminal->tail = NULL;
+	}
+	else //remove iod at front
+	{
+		terminal->head = terminal->head -> next;		
+	}
+	terminal->count--;
+	return tmpIOD;
 }
 
 /*
  */
 struct IOD * createIOD() {
-	struct IOD *newIOD = NULL;
+	struct IOD *newIOD;
 	newIOD = (struct IOD *)sys_alloc_mem((sizeof(struct IOD)));
 	//newIOD->name = cop->name;
 	strncpy(newIOD->name, cop->name, PROCESS_NAME_LENGTH);
