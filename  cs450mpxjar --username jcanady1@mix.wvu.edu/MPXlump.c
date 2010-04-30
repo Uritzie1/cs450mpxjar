@@ -235,10 +235,10 @@ int comhan() {
 
 int changePrompt() {
 	int bufsize = 10;
-	char cmd[10] = {0};
+	char cmd[10];
 	printf("\nEnter new prompt symbol (max 10 characters): ");
 	if ((err = sys_req(READ, TERMINAL, cmd, &bufsize)) < OK) return err;
-	alPrompt = cmd;
+	strncpy(alPrompt, cmd,10);
 }
 void resetPrompt() {
 	alPrompt = prompt;
@@ -253,7 +253,7 @@ int alias() {
 	printf("\nEnter the command to be aliased:  ");
 	if ((err = sys_req(READ, TERMINAL, cmd, &bufsize)) < OK) return err;
 	for(i;i<NUMFCNS;i++) {
-		if(strncmp(cmd,alfcns[i],strlen(alfcns[i]+1))) {
+		if(!strncmp(cmd,alfcns[i],strlen(alfcns[i]+1))) {
 			printf("\nEnter the command's new name:  ");
 			if ((err = sys_req(READ, TERMINAL, ncmd, &bufsize)) < OK) return err;
 			alfcns[i] = ncmd;
