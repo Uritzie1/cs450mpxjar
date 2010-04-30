@@ -39,7 +39,7 @@ int err = 0;  //error code
 char * fcns[NUMFCNS] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0","dispat\0","ldprocs\0","load\0","term\0","chgprom\0","rstprom\0","alias\0","rsalias\0","rdhist\0","clrhist\0",NULL};  //functions list
 char * alfcns[NUMFCNS] = {0};
 char * prompt = ">>\0";
-char * alPrompt = prompt;
+char * alPrompt;
 FILE * tmpfp;
 char wd[BIGBUFF*2] = {0};  //working directory
 struct PCB *tail1=NULL, *tail2=NULL, *head1=NULL, *head2=NULL;
@@ -157,8 +157,7 @@ int comhan() {
       if(err < OK) err_hand(err);
     }
     else if (!strncmp(cmd,alfcns[RSTALIAS],strlen(alfcns[RSTALIAS])+1)) {
-      err = resetAlias();
-      if(err < OK) err_hand(err);
+      resetAlias();
     }
     else if (!strncmp(cmd,alfcns[RDHIST],strlen(alfcns[RDHIST])+1)) {
       err = readHistory();
@@ -238,7 +237,7 @@ int changePrompt() {
 	int bufsize = 10;
 	char cmd[10] = {0};
 	printf("\nEnter new prompt symbol (max 10 characters): ");
-	if (err = sys_req(READ, TERMINAL, cmd, &bufsize) < OK) return err);
+	if ((err = sys_req(READ, TERMINAL, cmd, &bufsize)) < OK) return err;
 	alPrompt = cmd;
 }
 void resetPrompt() {
@@ -252,9 +251,9 @@ int alias() {
 	char ncmd[BIGBUFF] = {0};
 
 	printf("\nEnter the command to be aliased:  ");
-	if (err = sys_req(READ, TERMINAL, cmd, &bufsize) < OK) return err);
+	if ((err = sys_req(READ, TERMINAL, cmd, &bufsize)) < OK) return err;
 	for(i;i<NUMFCNS;i++) {
-		if(strncmp(cmd,alfcns[i],length(alfcns[i]+1) {
+		if(strncmp(cmd,alfcns[i],length(alfcns[i]+1))) {
 			printf("\nEnter the command's new name:  ")
 			if (err = sys_req(READ, TERMINAL, ncmd, &bufsize) < OK) return err);
 			alfcns[i] = ncmd;
@@ -553,6 +552,7 @@ int valid_date(int yr, int mo, int day) {
 int init_r1() {
   _getdcwd(3,wd,sizeof(wd));
   resetAlias();
+  resetPrompt();
   openTmp();
   return 0;
 }
