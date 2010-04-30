@@ -24,6 +24,7 @@
 #define ERR_UTDSC  (-211)    //Unable to Delete System Class
 #define ERR_UNKN_REQUEST (-212)  //Unknown Request
 #define ERR_UNKN_DEVICE  (-213)  //Unknown Device
+#define ERR_CNESP (-214)
 #define NO_DEV		0
 #define	TERMINAL	1
 #define	PRINTER		2
