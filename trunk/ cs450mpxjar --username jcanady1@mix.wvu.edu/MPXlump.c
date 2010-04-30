@@ -1563,6 +1563,7 @@ int terminate() {
 	printf("Please enter the name of the process to delete: ");
 	err4 = sys_req(READ, TERMINAL, buff, &buffsize);	
 	if(err4 >= OK) {
+        tmp = findPCB(buff,tmp);
 		if(tmp->proc_class != SYSTEM) {
 		  trimx(buff);
 		  tmp = qRemove(buff,tmp);
