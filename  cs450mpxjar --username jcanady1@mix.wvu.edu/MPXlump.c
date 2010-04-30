@@ -448,7 +448,7 @@ int help() {
 	    printf("%s",buffer);
 	    i++;
 	    if(i == 24) {        //paging
-	      printf("Press any key to continue");
+	      printf("Press enter to continue");
 	      err = sys_req(READ, TERMINAL, buffer, &bufsize);
 	      i = 0;
 	    }
