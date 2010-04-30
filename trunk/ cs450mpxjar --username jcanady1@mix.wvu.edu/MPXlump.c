@@ -1515,11 +1515,11 @@ void IOschedule() {
     cop->state = BLOCKED;
     insert(cop, BLOCKED);
 
-	if(device_id == COM_PORT) {
+	if(dev_id == COM_PORT) {
 		retq = enqueue(newIOD,comport);
 		if(retq == 1) process_com();
 	}
-	else if(device_id == TERMINAL) {
+	else if(dev_id == TERMINAL) {
 	    retq = enqueue(newIOD,terminal);
 		if(retq == 1) process_trm();
     }
