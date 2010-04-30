@@ -149,7 +149,7 @@ int load();
 //
 int init_f();
 int cleanup_f();
-int IOschedule();
+void IOschedule();
 int process_com();
 int process_trm();
 int enqueue(struct IOD * nIOD, struct IOCB * queue);
