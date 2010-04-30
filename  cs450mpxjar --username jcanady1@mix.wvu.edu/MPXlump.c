@@ -239,14 +239,14 @@ int changePrompt() {
 	char cmd[10];
 	printf("\nEnter new prompt symbol (max 10 characters): ");
 	if ((err = sys_req(READ, TERMINAL, cmd, &bufsize)) < OK) return err;
-	strncpy(alPrompt, cmd,10);
+	alPrompt = cmd;
 	while(i<=10) {
-	  if(!strncmp(alPrompt+i,'\n',1)) *(alPrompt+i) = '\0';
+	  if(!strncmp(alPrompt+i,"\n",1)) *(alPrompt+i) = '\0';
 	  i++;
    }
 }
 void resetPrompt() {
-	strncpy(alPrompt, prompt, 10);
+  alPrompt = prompt;
 }
 
 int alias() {
