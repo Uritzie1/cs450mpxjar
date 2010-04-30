@@ -152,8 +152,10 @@ int cleanup_f();
 int IOschedule();
 int process_com();
 int process_trm();
-int enqueue(struct IOD * nIOD, struct IOCB * queue);
-struct IOD * dequeue(struct IOCB * queue);
+void com_Enqueue(struct IOD * tempIOD);
+struct IOD * com_Dequeue();
+void term_Enqueue(struct IOD * tempIOD);
+struct IOD * term_Dequeue();
 struct IOD * createIOD();
 //
 int com_open (int * eflag_p, int baud_rate);
