@@ -633,6 +633,7 @@ void err_hand(int err_code) {
   else if(err_code == ERR_NAMEAE) printf("Process name already in use.");
   else if(err_code == ERR_UTDSC) printf("Unable to delete system class.");
   else if(err_code == ERR_INVCLS) printf("Invalid process class.");
+  else if(err_code == ERR_CNESP) printf("Cannot edit system process.");
   else printf("Invalid error code %d", err_code);
   err = 0; errx=0; err3=0;
 }
@@ -744,6 +745,7 @@ int suspend() {
     toLowerCasex(buff);
     temppcb = findPCB(buff, temppcb);
     if (errx < OK) return errx;
+    if(temppcb->proc_class == SYSTEM) return ERR_CNESP;
     if(temppcb->state != SUSP) temppcb->suspended = SUSP;
     if(temppcb!=NULL) printf("\nPCB successfully suspended!");
     return errx;
@@ -769,6 +771,8 @@ int resume() {
 	trimx(buff);
 	toLowerCasex(buff);
 	temppcb = findPCB(buff, temppcb);
+	if (errx < OK) return errx;
+	if(temppcb->proc_class == SYSTEM) return ERR_CNESP;
 	temppcb->suspended = NOTSUSP;
 	if(temppcb!=NULL) printf("\nPCB successfully resumed!");
 	return errx;
@@ -795,6 +799,7 @@ int set_Priority() {
 	toLowerCasex(buff);
 	temppcb = findPCB(buff, temppcb);
 	if (errx < OK) return errx;
+	if(temppcb->proc_class == SYSTEM) return ERR_CNESP;
 	printf("Please enter the new priority level where 127 is the highest(-128 to 127): ");
 	errx = sys_req(READ, TERMINAL, buff, &buffsize);
 	if (errx < OK) return errx;
