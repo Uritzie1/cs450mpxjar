@@ -404,7 +404,7 @@ int set_Priority()
  **			 Return Value -- int - an error code																					   **
  **     Procedures Called -- memset, printf, sys_req, trimx, toLowerCasex, findPCB													   **
  **  Global Data Accessed -- N/A																									   **
- **  Summary of Algorithm -- The show function displays all information contained in a single PCB for a process specified by name      **
+ **  Summary of Algorithm -- The show_PCB function displays all information contained in a single PCB for a process specified by name      **
  **							 in a table.																							   **				
  ****************************************************************************************************************************************
  ****************************************************************************************************************************************
@@ -575,14 +575,14 @@ int show_All()
 /****************************************************************************************************************************************
  ****************************************************************************************************************************************
  **        Procedure Name -- show_Ready																								   **
- **               Purpose -- The show_All function displays information about all processes which are currently in the READY or the	   **
+ **               Purpose -- The show_Ready function displays information about all processes which are currently in the READY or the	   **
  **							  SUSPENDED-READY state.																				   **
  **							 name.																									   **
  **            Parameters -- N/A																									   **
  **			 Return Value -- int - an error code																					   **
  **     Procedures Called -- printf, sys_req																						   **
  **  Global Data Accessed -- N/A																									   **
- **  Summary of Algorithm -- The show_All function displays information about all processes which are currently in the READY or the	   **
+ **  Summary of Algorithm -- The show_Ready function displays information about all processes which are currently in the READY or the	   **
  **							 SUSPENDED-READY state. 																				   **				
  ****************************************************************************************************************************************
  ****************************************************************************************************************************************
@@ -952,12 +952,12 @@ int setup_PCB(struct PCB *PCBptr, char name[PROCESS_NAME_LENGTH], int proc_class
 /****************************************************************************************************************************************
  ****************************************************************************************************************************************
  **        Procedure Name -- isEmpty																								   **
- **               Purpose -- The isEmpty checks to see if the queue is empty.														   **
+ **               Purpose -- The isEmpty function checks to see if the queue is empty.												   **
  **            Parameters -- int - represents the queue																				   **
  **			 Return Value -- int - boolean																							   **
  **     Procedures Called -- strncpy																								   **
  **  Global Data Accessed -- N/A																									   **
- **  Summary of Algorithm -- The isEmpty checks to see if the queue is empty.  It returns '1' if it is empty.						   **
+ **  Summary of Algorithm -- The isEmpty function checks to see if the queue is empty.  It returns '1' if it is empty.				   **
  ****************************************************************************************************************************************
  ****************************************************************************************************************************************
  */
@@ -1115,24 +1115,17 @@ struct PCB* findPCB(char *name, struct PCB *PCBptr)
 /****************************************************************************************************************************************
  ****************************************************************************************************************************************
  **        Procedure Name -- qRemove																								   **
- **               Purpose -- The qRemove function removes a PCB from the queue.														   **
+ **               Purpose -- The qRemove function searches the PCBs for a process having a specified name and removes it from the	   **
+ **							 queue.																									   **
  **            Parameters -- char *, struct PCB *																					   **
  **			 Return Value -- PCB * - a PCB																							   **
- **     Procedures Called -- strncmp																								   **
+ **     Procedures Called -- findPCB																								   **
  **  Global Data Accessed -- N/A																									   **
- **  Summary of Algorithm -- The findPCB function searches the PCBs for a process having a specified name.							   **
+ **  Summary of Algorithm -- The qRemove function searches the PCBs for a process having a specified name and removes it from the	   **
+ **							 queue.																									   **
  ****************************************************************************************************************************************
  ****************************************************************************************************************************************
  */
-/**  Procedure Name: qremove
-* \param name: string containing PCB name
-* \param set: a pointer to a PCB
-* \return an integer error code (o for now)
-* \return sets set to removed PCB
-* Procedures Called: findPCB
-* Globals Used: err
-* \brief Description: removes a PCB from queue
-*/
 struct PCB* qRemove(char *name, struct PCB *set) 
 {
 	struct PCB *del = NULL;

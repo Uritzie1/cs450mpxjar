@@ -95,7 +95,7 @@ void trim(char ary[BIGBUFF]);
 /****************************************************************************************************************************************
  ****************************************************************************************************************************************
  **        Procedure Name -- main																									   **
- **               Purpose -- The main function is where the the program begins execution.											   **
+ **               Purpose -- The main function is where the program begins execution.											   **
  **            Parameters -- N/A																									   **
  **			 Return Value -- int - an error code																					   **
  **     Procedures Called -- sys_init, init_r1, init_r2, init_r3, comhan, cleanup_r1, cleanup_r2, cleanup_r3, terminate_mpx			   **
@@ -353,7 +353,7 @@ int disp_dir()
  **               Purpose -- The terminate_mpx function stops execution of JAROS and returns to the host operating system.			   **
  **            Parameters -- N/A																									   **
  **			 Return Value -- void																									   **
- **     Procedures Called -- memset, printf, sys_req, err_hand, trim, toLowerCase, cleanup_r1, cleanup_r2, cleanup_r3. sys_exit		   **
+ **     Procedures Called -- memset, printf, sys_req, err_hand, trim, toLowerCase, cleanup_r1, cleanup_r2, cleanup_r3, sys_exit		   **
  **  Global Data Accessed -- int err																								   **
  **  Summary of Algorithm -- The terminate_mpx function prompts the user for confirmation.  If "Y", JAROS terminates execution. 	   **
  ****************************************************************************************************************************************
@@ -517,13 +517,13 @@ int help()
 /****************************************************************************************************************************************
  ****************************************************************************************************************************************
  **        Procedure Name -- date																									   **
- **               Purpose -- The help function displays the current date and prompts the user as to whether or not he wants to		   **
+ **               Purpose -- The date function displays the current date and prompts the user as to whether or not he wants to		   **
  **							 change the system date.																				   **
  **            Parameters -- N/A																									   **
  **			 Return Value -- int - an error code																					   **
  **     Procedures Called -- sys_get_date, printf, sys_req, trim, toLowerCase, atoi, err_hand										   **
  **  Global Data Accessed -- int err																								   **
- **  Summary of Algorithm -- The help function processes user input, and displays help information for a specific command.			   **
+ **  Summary of Algorithm -- The date function processes user input, and displays help information for a specific command.			   **
  ****************************************************************************************************************************************
  ****************************************************************************************************************************************
  */
@@ -668,12 +668,12 @@ int init_r1()
 /****************************************************************************************************************************************
  ****************************************************************************************************************************************
  **        Procedure Name -- cleanup_r1																							       **
- **               Purpose -- The cleanup_r1 function does nothing.																	   **
+ **               Purpose -- The cleanup_r1 function frees memory.																	   **
  **            Parameters -- N/A																									   **
  **			 Return Value -- int																									   **
  **     Procedures Called -- N/A																									   **
  **  Global Data Accessed -- N/A																									   **
- **  Summary of Algorithm -- The cleanup_r1 function does nothing.																	   **
+ **  Summary of Algorithm -- The cleanup_r1 function frees memory.																	   **
  ****************************************************************************************************************************************
  ****************************************************************************************************************************************
  */

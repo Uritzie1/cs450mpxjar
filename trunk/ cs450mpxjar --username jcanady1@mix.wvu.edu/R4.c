@@ -14,7 +14,7 @@
  **																   CHANGE LOG														   **
  **																																	   **
  **		  03/08/2010  JC          template of R4.c created																			   **
- **       03/10/2010  JC, RW      load_prog, terminate, load completed																	   **
+ **       03/10/2010  JC, RW      load_prog, terminate, load completed																   **
  ****************************************************************************************************************************************
  ****************************************************************************************************************************************
  */
@@ -103,7 +103,8 @@ int load_prog(char fname[], int pri)
 
 /**
  */
-int load() {
+int load() 
+{
     char buff[BIGBUFF];
 	int buffsize = BIGBUFF;
 	char name[PROCESS_NAME_LENGTH];
@@ -113,14 +114,22 @@ int load() {
 	err4 = 0;
     printf("\nPlease enter the name of the process to be created (9 char limit; no extension): ");
 	err4 = sys_req(READ, TERMINAL, buff, &buffsize);
+	
 	if (err4 < OK) return err4;
+	
 	trimx(buff);
-    if (strlen(buff)>9) return ERR_PRONTL;
-    temppcb = findPCB(buff,temppcb);
+    
+	if (strlen(buff)>9) return ERR_PRONTL;
+    
+	temppcb = findPCB(buff,temppcb);
+	
 	if (temppcb != NULL) return ERR_NAMEAE;
-    strncpy(name,buff,PROCESS_NAME_LENGTH);
-    load_prog(name,0);
-    return err4;
+    
+	strncpy(name,buff,PROCESS_NAME_LENGTH);
+    
+	load_prog(name,0);
+    
+	return err4;
 }
 
 /****************************************************************************************************************************************
