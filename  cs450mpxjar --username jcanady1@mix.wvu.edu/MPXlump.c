@@ -261,11 +261,11 @@ int alias() {
     toLowerCase(cmd);
 	for(i;i<NUMFCNS-2;i++) {
 		if(!strncmp(cmd,alfcns[i],strlen(alfcns[i]+1))) {
-			printf("\nEnter the command's new name:  ");
+			printf("\nEnter the command's new name (limit 8 characters):  ");
 			if ((err = sys_req(READ, TERMINAL, ncmd, &bufsize)) < OK) return err;
 			trim(ncmd);
             toLowerCase(ncmd);
-			alfcns[i] = ncmd;
+			strncpy(alfcns[i], ncmd, 8);
 		}
 	}
 	if(i = NUMFCNS) return ERR_INVCOM;
@@ -275,7 +275,7 @@ int alias() {
 }
 void resetAlias() {
 	int i = 0;
-	for(i;i < NUMFCNS;i++) alfcns[i] = fcns[i];
+	for(i;i < NUMFCNS;i++) strncpy(alfcns[i], fcns[i], 8);
 }
 //need global FILE *tmpFP
 int openTmp() {
