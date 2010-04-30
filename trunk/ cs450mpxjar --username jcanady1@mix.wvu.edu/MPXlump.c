@@ -1255,12 +1255,12 @@ void interrupt sys_call() {
 	if(terminal->event_flag == 1 && terminal->active != NULL) {
 		tempnode = qRemove(terminal->active -> requestor -> name, tempnode);
 		terminal->active -> requestor -> state = READY;
-		insert(terminal->active -> requestor);
+		insert(terminal->active -> requestor, READY+1);
 		sys_free_mem(terminal->active);
 		terminal->active = NULL;
 	}
 	//if terminal is free and there are pending requests, start next request
-	if(terminal.count > 0 && terminal.event_flag == 1 && terminal.active == NULL) {
+	if(terminal->count > 0 && terminal->event_flag == 1 && terminal->active == NULL) {
 		terminal->active = term_Dequeue();
 		process_trm();
 	}
@@ -1507,7 +1507,7 @@ int IOschedule() {
 		case IDLE:
 			cop -> state = READY;
 			insert(cop, READY+1);
-			((context*) (cop -> stack_top)) -> AX = OK;
+			((struct context*)(cop -> stack_top)) -> AX = OK;
 			break;
 		case EXIT:
 			free_PCB(cop);
