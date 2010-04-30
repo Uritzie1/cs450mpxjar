@@ -149,7 +149,6 @@ void trimx(char ary[BIGBUFF]);
 struct PCB * getRHead();
 //R3
 int init_r3();
-int cleanup_r3();
 void test1_R3();
 void test2_R3();
 void test3_R3();
