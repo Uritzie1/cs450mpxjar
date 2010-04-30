@@ -36,7 +36,10 @@
 
 // Global Variables
 int err = 0;  //error code
-char * fcns[22] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0","dispat\0","ldprocs\0","load\0","term\0",NULL};  //functions list
+char * fcns[NUMFCNS] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0","dispat\0","ldprocs\0","load\0","term\0","chgprom\0","rstprom\0","alias\0","rsalias\0","rdhist\0","clrhist\0",NULL};  //functions list
+char * alfcns[NUMFCNS] = 0;
+char prompt = ">>";
+char * alPrompt = prompt;
 char wd[BIGBUFF*2] = {0};  //working directory
 struct PCB *tail1=NULL, *tail2=NULL, *head1=NULL, *head2=NULL;
 int errx = 0;
@@ -72,7 +75,7 @@ int main() {
   struct PCB *np;
   struct context *npc;
   
-  sys_init(MODULE_F);
+  sys_init(MODULE_R4);
   err = init_r1();
   err = init_r2();
   err = init_r3();
@@ -97,9 +100,8 @@ int main() {
 
   err = load_prog("idle", -128, SYSTEM); 
   dispatcher();
-  
   sys_exit();
-  return 0;
+  return OK;
 }
 
 /** Procedure Name: comhan
@@ -123,81 +125,106 @@ int comhan() {
   while (1) {
     bufsize = BIGBUFF;
     memset(cmd, '\0', BIGBUFF);                       //clear buffer
-    printf("\n>>");                                   //command prompt
+    printf("\n%s",alPrompt);                          //command prompt
     err = sys_req(READ, TERMINAL, cmd, &bufsize);     //read in command
     trim(cmd);
     toLowerCase(cmd);
-    if (!strncmp(cmd,fcns[QUIT],strlen(fcns[QUIT])+1)) terminate_mpx();  //call corresponding function
-    else if (!strncmp(cmd,fcns[VER],strlen(fcns[VER]))) get_Version();
-    else if (!strncmp(cmd,fcns[HELP],strlen(fcns[HELP])+1)) {
+    writeHistory(cmd);
+    if (!strncmp(cmd,alfcns[QUIT],strlen(alfcns[QUIT])+1)) terminate_mpx();  //call corresponding function
+    else if (!strncmp(cmd,alfcns[VER],strlen(alfcns[VER]))) get_Version();
+    else if (!strncmp(cmd,alfcns[HELP],strlen(alfcns[HELP])+1)) {
       err = help(NULL);
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[DATE],strlen(fcns[DATE])+1)) {
+    else if (!strncmp(cmd,alfcns[DATE],strlen(alfcns[DATE])+1)) {
       err = date();
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[DIR],strlen(fcns[DIR])+1)) {
+    else if (!strncmp(cmd,alfcns[DIR],strlen(alfcns[DIR])+1)) {
       err = disp_dir();
       if(err < OK) err_hand(err);
     }
+    else if (!strncmp(cmd,alfcns[CHGPROMPT],strlen(alfcns[CHGPROMPT])+1)) {
+      err = changePrompt();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,alfcns[RSTPROMPT],strlen(alfcns[RSTPROMPT])+1)) {
+      err = resetPrompt();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,alfcns[ALIAS],strlen(alfcns[ALIAS])+1)) {
+      err = alias();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,alfcns[RSTALIAS],strlen(alfcns[RSTALIAS])+1)) {
+      err = resetAlias();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,alfcns[RDHIST],strlen(alfcns[RDHIST])+1)) {
+      err = readHistory();
+      if(err < OK) err_hand(err);
+    }
+    else if (!strncmp(cmd,alfcns[CLRHIST],strlen(alfcns[CLRHIST])+1)) {
+      err = clearHistory();
+      if(err < OK) err_hand(err);
+    }
     //R2 commands
-    else if (!strncmp(cmd,fcns[CREATEPCB],strlen(fcns[CREATEPCB])+1)) {
+    else if (!strncmp(cmd,alfcns[CREATEPCB],strlen(alfcns[CREATEPCB])+1)) {
       err = create_PCB();
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[DELPCB],strlen(fcns[DELPCB])+1)) {
+    else if (!strncmp(cmd,alfcns[DELPCB],strlen(alfcns[DELPCB])+1)) {
       err = delete_PCB();
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[BLOCK],strlen(fcns[BLOCK])+1)) {
+    else if (!strncmp(cmd,alfcns[BLOCK],strlen(alfcns[BLOCK])+1)) {
       err = block();
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[UNBLOCK],strlen(fcns[UNBLOCK])+1)) {
+    else if (!strncmp(cmd,alfcns[UNBLOCK],strlen(alfcns[UNBLOCK])+1)) {
       err = unblock();
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[SUSPEND],strlen(fcns[SUSPEND])+1)) {
+    else if (!strncmp(cmd,alfcns[SUSPEND],strlen(alfcns[SUSPEND])+1)) {
       err = suspend();
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[RES],strlen(fcns[RES])+1)) {
+    else if (!strncmp(cmd,alfcns[RES],strlen(alfcns[RES])+1)) {
       err = resume();
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[SETPRI],strlen(fcns[SETPRI])+1)) {
+    else if (!strncmp(cmd,alfcns[SETPRI],strlen(alfcns[SETPRI])+1)) {
       err = set_Priority();
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[SHOWPCB],strlen(fcns[SHOWPCB])+1)) {
+    else if (!strncmp(cmd,alfcns[SHOWPCB],strlen(alfcns[SHOWPCB])+1)) {
       err = show_PCB();
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[SHOWALL],strlen(fcns[SHOWALL])+1)) {
+    else if (!strncmp(cmd,alfcns[SHOWALL],strlen(alfcns[SHOWALL])+1)) {
       err = show_All();
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[SHOWREADY],strlen(fcns[SHOWREADY])+1)) {
+    else if (!strncmp(cmd,alfcns[SHOWREADY],strlen(alfcns[SHOWREADY])+1)) {
       err = show_Ready();
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[SHOWBLOCKED],strlen(fcns[SHOWBLOCKED])+1)) {
+    else if (!strncmp(cmd,alfcns[SHOWBLOCKED],strlen(alfcns[SHOWBLOCKED])+1)) {
       err = show_Blocked();
       if(err < OK) err_hand(err);
     }
     //R3 commands
-    else if (!strncmp(cmd,fcns[DISPATCH],strlen(fcns[DISPATCH])+1)) dispatcher();
-    else if (!strncmp(cmd,fcns[LOADPROCS],strlen(fcns[LOADPROCS])+1)) {
+    else if (!strncmp(cmd,alfcns[DISPATCH],strlen(alfcns[DISPATCH])+1)) dispatcher();
+    else if (!strncmp(cmd,alfcns[LOADPROCS],strlen(alfcns[LOADPROCS])+1)) {
       err = load_test();
       if(err < OK) err_hand(err);
     }
     //R4 commands
-    else if (!strncmp(cmd,fcns[LOAD],strlen(fcns[LOAD])+1)) {
+    else if (!strncmp(cmd,alfcns[LOAD],strlen(alfcns[LOAD])+1)) {
       err = load();
       if(err < OK) err_hand(err);
     }
-    else if (!strncmp(cmd,fcns[TERMINATE],strlen(fcns[TERMINATE])+1)) {
+    else if (!strncmp(cmd,alfcns[TERMINATE],strlen(alfcns[TERMINATE])+1)) {
       err = terminate();
       if(err < OK) err_hand(err);
     }
@@ -205,8 +232,82 @@ int comhan() {
     else if (!strncmp(cmd,"\n",1)) ;
     else err_hand(ERR_INVCOM);
   }
-  //terminate_mpx();
-  //return 0;
+}
+
+int changePrompt() {
+	int bufsize = 10;
+	char cmd[10] = {0};
+	printf("Enter new prompt symbol (max 10 characters): ")
+	if (err = sys_req(READ, TERMINAL, cmd, &bufsize) < OK) return err);
+	alprompt = cmd;
+}
+void resetPrompt() {
+	alprompt = prompt;
+}
+
+int alias() {
+	int bufsize = BIGBUFF;
+	int i = 0;
+	char cmd[BIGBUFF] = {0};
+	char ncmd[BIGBUFF] = {0};
+
+	printf("Enter the command to be aliased:  ")
+	if (err = sys_req(READ, TERMINAL, cmd, &bufsize) < OK) return err);
+	for(i<NUMFCNS;i++) {
+		if(strncmp(cmd,alfcns[i],length(alfcns[i]+1) {
+			printf("Enter the command's new name:  ")
+			if (err = sys_req(READ, TERMINAL, ncmd, &bufsize) < OK) return err);
+			alfcns[i] = ncmd;
+		}
+	}
+	if(i = NUMFCNS) return ERR_INVCOM;
+	printf("Change successful\n"):
+	return OK;
+
+}
+void resetAlias() {
+	int i = 0;
+	for(i < NUMFCNS;i++) alfcns[i] = fcns[i];
+}
+//need global FILE *tmpFP
+int openTmp() {
+ char tmpname[L_tmpnam];
+ char *filename = NULL;
+
+ filename = tmpnam(tmpname);
+
+ printf("Temp file: %s\n", filename);
+
+ tmpfp = tmpfile();
+ if(tmpfp)
+  printf("Opened a temp file: OK\n");
+ else
+  perror("tmpfile");
+ return OK;
+}
+int closeTMP() {
+	close(tmpfp);
+	return OK;
+}
+int writeHistory(char *command) {
+	fprintf(tmpfp,command);
+}
+int readHistory() {
+	char buffer[BIGBUFF] = {0};
+	while (fgets(buffer, BIGBUFF, tmpfp)) {
+		printf("%s",buffer);
+		i++;		
+		if (i == 24) {// Paging Functionality 
+			printf("Press Any Key to Continue");
+			err = sys_req(READ, TERMINAL, buffer, &bufsize);
+			i = 0;
+		}
+	}
+}
+int clearHistory() {
+	closeTMP();
+	tmpfp = NULL;
+	openTMP();
 }
 
 /** Procedure Name: disp_dir
@@ -267,7 +368,7 @@ void terminate_mpx() {
     err = cleanup_r3();
     err = cleanup_f();
     if (err < OK) err_hand(err);
-    sys_exit();  //change to removal of comhand and idle processes
+    sys_req(EXIT, NO_DEV, NULL, 0);
   }
   else printf("Termination cancelled.");
 }
@@ -458,6 +559,7 @@ int valid_date(int yr, int mo, int day) {
  */
 int init_r1() {
   _getdcwd(3,wd,sizeof(wd));
+  resetAlias();
   return 0;
 }
 
@@ -469,6 +571,7 @@ int init_r1() {
  * \brief Description/Purpose: none for now
  */
 int cleanup_r1() {
+  closeTMP();
   return 0;
 }
 
