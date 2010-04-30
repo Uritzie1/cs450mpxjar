@@ -115,6 +115,7 @@ int valid_date(int yr, int mo, int day);
 void toLowerCase(char str[BIGBUFF]);
 void trim(char ary[BIGBUFF]);
 int changePrompt();
+void resetPrompt();
 int alias();
 void resetAlias();
 int openTmp();

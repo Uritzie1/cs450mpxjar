@@ -255,7 +255,7 @@ int alias() {
 	for(i;i<NUMFCNS;i++) {
 		if(strncmp(cmd,alfcns[i],length(alfcns[i]+1))) {
 			printf("\nEnter the command's new name:  ");
-			if (err = sys_req(READ, TERMINAL, ncmd, &bufsize) < OK) return err);
+			if ((err = sys_req(READ, TERMINAL, ncmd, &bufsize)) < OK) return err;
 			alfcns[i] = ncmd;
 		}
 	}
