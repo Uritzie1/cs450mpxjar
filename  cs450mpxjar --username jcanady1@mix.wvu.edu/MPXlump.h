@@ -37,6 +37,7 @@
 #define EXIT	5
 
 // Constants
+#define NUMFCNS	28
 #define BIGBUFF 80
 #define SMALLBUFF 10
 #define TINYBUFF 2
@@ -61,6 +62,12 @@
 #define LOADPROCS 18
 #define LOAD 19
 #define TERMINATE 20
+#define CHGPROMPT 21
+#define RSTPROMPT 22
+#define ALIAS 23
+#define RSTALIAS 24
+#define RDHIST 25
+#define CLRHIST 26
 #define VERSION 4.0
 #define PROCESS_NAME_LENGTH 10
 #define SYSTEM 1
