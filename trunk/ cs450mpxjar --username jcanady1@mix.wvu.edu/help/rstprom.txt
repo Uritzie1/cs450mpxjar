@@ -1,0 +1,10 @@
+JAROS General Commands Manual
+
+NAME
+ Reset Prompt
+Uasage: rstprom
+
+
+SYNOPSIS:    *none*
+DESCRIPTION
+: reset to defult prompt 
