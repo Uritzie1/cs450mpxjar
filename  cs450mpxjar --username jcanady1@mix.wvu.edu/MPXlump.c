@@ -37,9 +37,10 @@
 // Global Variables
 int err = 0;  //error code
 char * fcns[NUMFCNS] = {"date\0","help\0","ver\0","dir\0","quit\0","list\0","cpcb\0","dpcb\0","block\0","unblock\0","suspend\0","resume\0","setpri\0","shpcb\0","shall\0","shready\0","shblock\0","dispat\0","ldprocs\0","load\0","term\0","chgprom\0","rstprom\0","alias\0","rsalias\0","rdhist\0","clrhist\0",NULL};  //functions list
-char * alfcns[NUMFCNS] = 0;
-char prompt = ">>";
+char * alfcns[NUMFCNS] = {0};
+char * prompt = ">>\0";
 char * alPrompt = prompt;
+FILE * tmpfp;
 char wd[BIGBUFF*2] = {0};  //working directory
 struct PCB *tail1=NULL, *tail2=NULL, *head1=NULL, *head2=NULL;
 int errx = 0;
@@ -149,8 +150,7 @@ int comhan() {
       if(err < OK) err_hand(err);
     }
     else if (!strncmp(cmd,alfcns[RSTPROMPT],strlen(alfcns[RSTPROMPT])+1)) {
-      err = resetPrompt();
-      if(err < OK) err_hand(err);
+      resetPrompt();
     }
     else if (!strncmp(cmd,alfcns[ALIAS],strlen(alfcns[ALIAS])+1)) {
       err = alias();
@@ -237,12 +237,12 @@ int comhan() {
 int changePrompt() {
 	int bufsize = 10;
 	char cmd[10] = {0};
-	printf("Enter new prompt symbol (max 10 characters): ")
+	printf("\nEnter new prompt symbol (max 10 characters): ");
 	if (err = sys_req(READ, TERMINAL, cmd, &bufsize) < OK) return err);
-	alprompt = cmd;
+	alPrompt = cmd;
 }
 void resetPrompt() {
-	alprompt = prompt;
+	alPrompt = prompt;
 }
 
 int alias() {
@@ -251,41 +251,32 @@ int alias() {
 	char cmd[BIGBUFF] = {0};
 	char ncmd[BIGBUFF] = {0};
 
-	printf("Enter the command to be aliased:  ")
+	printf("\nEnter the command to be aliased:  ");
 	if (err = sys_req(READ, TERMINAL, cmd, &bufsize) < OK) return err);
-	for(i<NUMFCNS;i++) {
+	for(i;i<NUMFCNS;i++) {
 		if(strncmp(cmd,alfcns[i],length(alfcns[i]+1) {
-			printf("Enter the command's new name:  ")
+			printf("\nEnter the command's new name:  ")
 			if (err = sys_req(READ, TERMINAL, ncmd, &bufsize) < OK) return err);
 			alfcns[i] = ncmd;
 		}
 	}
 	if(i = NUMFCNS) return ERR_INVCOM;
-	printf("Change successful\n"):
+	printf("\nChange successful!");
 	return OK;
 
 }
 void resetAlias() {
 	int i = 0;
-	for(i < NUMFCNS;i++) alfcns[i] = fcns[i];
+	for(i;i < NUMFCNS;i++) alfcns[i] = fcns[i];
 }
 //need global FILE *tmpFP
 int openTmp() {
  char tmpname[L_tmpnam];
  char *filename = NULL;
-
  filename = tmpnam(tmpname);
-
- printf("Temp file: %s\n", filename);
-
  tmpfp = tmpfile();
- if(tmpfp)
-  printf("Opened a temp file: OK\n");
- else
-  perror("tmpfile");
- return OK;
 }
-int closeTMP() {
+int closeTmp() {
 	close(tmpfp);
 	return OK;
 }
@@ -293,21 +284,23 @@ int writeHistory(char *command) {
 	fprintf(tmpfp,command);
 }
 int readHistory() {
+    int buffsize = BIGBUFF;
+    int i = 0;
 	char buffer[BIGBUFF] = {0};
 	while (fgets(buffer, BIGBUFF, tmpfp)) {
-		printf("%s",buffer);
+		printf("\n%s",buffer);
 		i++;		
 		if (i == 24) {// Paging Functionality 
-			printf("Press Any Key to Continue");
+			printf("\nPress Any Key to Continue");
 			err = sys_req(READ, TERMINAL, buffer, &bufsize);
 			i = 0;
 		}
 	}
 }
 int clearHistory() {
-	closeTMP();
+	closeTmp();
 	tmpfp = NULL;
-	openTMP();
+	openTmp();
 }
 
 /** Procedure Name: disp_dir
@@ -560,6 +553,7 @@ int valid_date(int yr, int mo, int day) {
 int init_r1() {
   _getdcwd(3,wd,sizeof(wd));
   resetAlias();
+  openTmp();
   return 0;
 }
 
@@ -571,7 +565,7 @@ int init_r1() {
  * \brief Description/Purpose: none for now
  */
 int cleanup_r1() {
-  closeTMP();
+  closeTmp();
   return 0;
 }
 
