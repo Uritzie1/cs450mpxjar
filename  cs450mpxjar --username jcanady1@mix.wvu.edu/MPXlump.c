@@ -1507,9 +1507,9 @@ int cleanup_f() {
 
 /*
  */
-int IOschedule() {
+void IOschedule() {
 	int retq = 0;
-	int device_id = param_p->device_id;
+	int dev_id = param_p->device_id;
 	struct IOD * newIOD = createIOD();
 
     cop->state = BLOCKED;
@@ -1523,9 +1523,6 @@ int IOschedule() {
 	    retq = enqueue(newIOD,terminal);
 		if(retq == 1) process_trm();
     }
-    else return ERR_UNKN_DEVICE;
-
-    return OK;
 }
 
 /*
