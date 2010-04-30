@@ -241,9 +241,9 @@ int changePrompt() {
 	if ((err = sys_req(READ, TERMINAL, cmd, &bufsize)) < OK) return err;
 	alPrompt = cmd;
 	while(i<=10) {
-	  if(!strncmp(alPrompt+i,"\n",1)) *(alPrompt+i) = '\0';
+	  if(alPrompt+i == '\n') *(alPrompt+i) = '\0';
 	  i++;
-   }
+    }
 }
 void resetPrompt() {
   alPrompt = prompt;
@@ -257,10 +257,14 @@ int alias() {
 
 	printf("\nEnter the command to be aliased:  ");
 	if ((err = sys_req(READ, TERMINAL, cmd, &bufsize)) < OK) return err;
-	for(i;i<NUMFCNS;i++) {
+    trim(cmd);
+    toLowerCase(cmd);
+	for(i;i<NUMFCNS-2;i++) {
 		if(!strncmp(cmd,alfcns[i],strlen(alfcns[i]+1))) {
 			printf("\nEnter the command's new name:  ");
 			if ((err = sys_req(READ, TERMINAL, ncmd, &bufsize)) < OK) return err;
+			trim(ncmd);
+            toLowerCase(ncmd);
 			alfcns[i] = ncmd;
 		}
 	}
