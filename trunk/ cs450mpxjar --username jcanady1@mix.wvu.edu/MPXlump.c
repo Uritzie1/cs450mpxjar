@@ -254,7 +254,7 @@ int alias() {
 	if ((err = sys_req(READ, TERMINAL, cmd, &bufsize)) < OK) return err;
 	for(i;i<NUMFCNS;i++) {
 		if(strncmp(cmd,alfcns[i],length(alfcns[i]+1))) {
-			printf("\nEnter the command's new name:  ")
+			printf("\nEnter the command's new name:  ");
 			if (err = sys_req(READ, TERMINAL, ncmd, &bufsize) < OK) return err);
 			alfcns[i] = ncmd;
 		}
@@ -291,7 +291,7 @@ int readHistory() {
 		i++;		
 		if (i == 24) {// Paging Functionality 
 			printf("\nPress Any Key to Continue");
-			err = sys_req(READ, TERMINAL, buffer, &bufsize);
+			err = sys_req(READ, TERMINAL, buffer, &buffsize);
 			i = 0;
 		}
 	}
