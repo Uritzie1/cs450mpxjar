@@ -101,7 +101,7 @@ int cleanup_r1();
 int disp_dir();
 int comhan();
 void terminate_mpx();
-int help(char * cmdName);
+int help();
 void get_Version();
 int date();
 int valid_date(int yr, int mo, int day);
