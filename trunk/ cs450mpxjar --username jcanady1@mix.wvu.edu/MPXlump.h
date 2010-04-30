@@ -114,6 +114,14 @@ int date();
 int valid_date(int yr, int mo, int day);
 void toLowerCase(char str[BIGBUFF]);
 void trim(char ary[BIGBUFF]);
+int changePrompt();
+int alias();
+void resetAlias();
+int openTmp();
+int closeTmp();
+int writeHistory(char *command);
+int readHistory();
+int clearHistory();
 //
 int init_r2();
 int cleanup_r2();
