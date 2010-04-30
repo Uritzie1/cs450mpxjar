@@ -234,14 +234,19 @@ int comhan() {
 }
 
 int changePrompt() {
+    int i = 0;
 	int bufsize = 10;
 	char cmd[10];
 	printf("\nEnter new prompt symbol (max 10 characters): ");
 	if ((err = sys_req(READ, TERMINAL, cmd, &bufsize)) < OK) return err;
 	strncpy(alPrompt, cmd,10);
+	while(i<=10) {
+	  if(!strncmp(alPrompt+i,'\n',1)) *(alPrompt+i) = '\0';
+	  i++;
+   }
 }
 void resetPrompt() {
-	alPrompt = prompt;
+	strncpy(alPrompt, prompt, 10);
 }
 
 int alias() {
@@ -360,7 +365,8 @@ void terminate_mpx() {
     err = cleanup_r3();
     err = cleanup_f();
     if (err < OK) err_hand(err);
-    sys_req(EXIT, NO_DEV, NULL, 0);
+    sys_exit();
+    //sys_req(EXIT, NO_DEV, NULL, 0);
   }
   else printf("Termination cancelled.");
 }
