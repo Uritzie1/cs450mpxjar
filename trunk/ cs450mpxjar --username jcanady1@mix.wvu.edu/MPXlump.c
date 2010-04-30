@@ -47,10 +47,10 @@ static unsigned short sp_save_temp;
 static unsigned short new_ss;
 static unsigned short new_sp;
 static unsigned char sys_stack[SYS_STACK_SIZE]={0};
-static struct PCB *cop;
-static struct PCB *tempnode;
-struct context *context_p;
-struct params *param_p;
+static struct PCB * cop;
+static struct PCB * tempnode;
+struct context * context_p;
+struct params * param_p;
 int err3=0;
 int err4 = 0;
 struct IOCB *comport;
@@ -1513,7 +1513,7 @@ void IOschedule() {
 	struct IOD * newIOD = createIOD();
 
     cop->state = BLOCKED;
-    insert(cop, BLOCKED-1);
+    insert(cop, BLOCKED);
 
 	if(device_id == COM_PORT) {
 		retq = enqueue(newIOD,comport);
