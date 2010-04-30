@@ -169,22 +169,22 @@ int comhan() {
       if(err < OK) err_hand(err);
     }
     //R2 commands
-    else if (!strncmp(cmd,alfcns[CREATEPCB],strlen(alfcns[CREATEPCB])+1)) {
+    /*else if (!strncmp(cmd,alfcns[CREATEPCB],strlen(alfcns[CREATEPCB])+1)) {
       err = create_PCB();
       if(err < OK) err_hand(err);
     }
     else if (!strncmp(cmd,alfcns[DELPCB],strlen(alfcns[DELPCB])+1)) {
       err = delete_PCB();
       if(err < OK) err_hand(err);
-    }
-    else if (!strncmp(cmd,alfcns[BLOCK],strlen(alfcns[BLOCK])+1)) {
+    }*/
+    /*else if (!strncmp(cmd,alfcns[BLOCK],strlen(alfcns[BLOCK])+1)) {
       err = block();
       if(err < OK) err_hand(err);
     }
     else if (!strncmp(cmd,alfcns[UNBLOCK],strlen(alfcns[UNBLOCK])+1)) {
       err = unblock();
       if(err < OK) err_hand(err);
-    }
+    }*/
     else if (!strncmp(cmd,alfcns[SUSPEND],strlen(alfcns[SUSPEND])+1)) {
       err = suspend();
       if(err < OK) err_hand(err);
@@ -214,11 +214,11 @@ int comhan() {
       if(err < OK) err_hand(err);
     }
     //R3 commands
-    else if (!strncmp(cmd,alfcns[DISPATCH],strlen(alfcns[DISPATCH])+1)) dispatcher();
+    /*else if (!strncmp(cmd,alfcns[DISPATCH],strlen(alfcns[DISPATCH])+1)) dispatcher();
     else if (!strncmp(cmd,alfcns[LOADPROCS],strlen(alfcns[LOADPROCS])+1)) {
       err = load_test();
       if(err < OK) err_hand(err);
-    }
+    }*/
     //R4 commands
     else if (!strncmp(cmd,alfcns[LOAD],strlen(alfcns[LOAD])+1)) {
       err = load();
@@ -902,9 +902,9 @@ int show_Ready() {
 	printf("\nPROCESS PROPERTIES------------------------");
 	  while(temppcb != NULL) {
         printf("\n\nName: %s", temppcb->name);
-	    printf("\nPriority: %d",temppcb->priority);
-		if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
-		else printf("\nSuspended?: No\n");
+	    printf("     Priority: %d",temppcb->priority);
+		if(temppcb->suspended == SUSP) printf("     Suspended?: Yes");
+		else printf("     Suspended?: No\n");
 		temppcb = temppcb->next;
 		i=i+4;
 		if(i > 20) {        //paging
@@ -963,8 +963,8 @@ int show_Blocked() {
 	printf("\nPROCESS PROPERTIES------------------------");
 	  while(temppcb != NULL) {
         printf("\n\nName: %s", temppcb->name);
-		if(temppcb->suspended == SUSP) printf("\nSuspended?: Yes");
-		else printf("\nSuspended?: No\n");
+		if(temppcb->suspended == SUSP) printf("     Suspended?: Yes");
+		else printf("     Suspended?: No\n");
 		temppcb = temppcb->next;
 		i=i+4;
 		if(i > 20) {        //paging
