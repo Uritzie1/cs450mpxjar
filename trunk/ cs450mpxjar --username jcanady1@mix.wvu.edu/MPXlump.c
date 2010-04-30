@@ -1242,7 +1242,6 @@ void interrupt sys_call() {
         tempnode = qRemove((comport->active)->requestor->name, tempnode);
         tempnode->state = READY;
         insert(tempnode, READY+1);
-        tmpIOD = dequeue(0);
 		sys_free_mem(comport->active);
 		comport->active = NULL;
 	}
@@ -1264,7 +1263,7 @@ void interrupt sys_call() {
 		terminal->active = term_Dequeue();
 		process_trm();
 	}
-	IOScheduler();
+	IOSchedule();
 	dispatcher();
 }
 
