@@ -24,7 +24,7 @@
 #define ERR_UTDSC  (-211)    //Unable to Delete System Class
 #define ERR_UNKN_REQUEST (-212)  //Unknown Request
 #define ERR_UNKN_DEVICE  (-213)  //Unknown Device
-#define ERR_CNESP (-214)
+#define ERR_CNESP (-214)         //Cannot edit system processes
 #define NO_DEV		0
 #define	TERMINAL	1
 #define	PRINTER		2
@@ -103,6 +103,7 @@
 #define EOI 0x20
 
 // Function Prototypes
+//R1
 void err_hand(int err_code);
 int init_r1();
 int cleanup_r1();
@@ -124,7 +125,7 @@ int closeTmp();
 int writeHistory(char *command);
 int readHistory();
 int clearHistory();
-//
+//R2
 int init_r2();
 int cleanup_r2();
 int block();
@@ -148,7 +149,7 @@ struct PCB * qRemove(char * name, struct PCB * set);
 void toLowerCasex(char str[BIGBUFF]);
 void trimx(char ary[BIGBUFF]);
 struct PCB * getRHead();
-//
+//R3
 int init_r3();
 int cleanup_r3();
 void test1_R3();
@@ -159,20 +160,11 @@ void test5_R3();
 void interrupt sys_call();
 void interrupt dispatcher();
 int load_test();
-//
+//R4
 int load_prog(char * fname, int pri, int procClass);
 int terminate();
 int load();
-//
-int init_f();
-int cleanup_f();
-void IOschedule();
-int process_com();
-int process_trm();
-int enqueue(struct IOD * nIOD, struct IOCB * queue);
-struct IOD * dequeue(struct IOCB * queue);
-struct IOD * createIOD();
-//
+//R5
 int com_open (int * eflag_p, int baud_rate);
 int com_close();
 int com_read(char * buf_p, int * count_p);
@@ -181,6 +173,16 @@ void interrupt com_check();
 void readCom();
 void writeCom();
 void stop_com_request();
+//R6
+int init_f();
+int cleanup_f();
+void IOschedule();
+int process_com();
+int process_trm();
+int enqueue(struct IOD * nIOD, struct IOCB * queue);
+struct IOD * dequeue(struct IOCB * queue);
+struct IOD * createIOD();
+
 
 //Structures
 typedef struct PCB {
@@ -217,15 +219,15 @@ typedef struct DCB {
 	int flagOpen;          //is COM open
 	int * eventFlagp;	   //
 	int status;		       //COM current status
-	char * in_buff;	       //
-	int * in_count;	       //
-	int in_done;	       //
+	char * in_buff;	       //buffer of requestor
+	int * in_count;	       //in_buff limit
+	int in_done;	       //# chars actually put into in_buff
 	char * out_buff;        //
 	int * out_count;	       //
 	int out_done;	       //
 	char ring_buffer[RING_SIZE];    //
-	int ring_buffer_in;    //
-	int ring_buffer_out;   //
+	int ring_buffer_in;    //index for next write
+	int ring_buffer_out;   //index for next read
 	int ring_buffer_count; //
 };
 
@@ -233,7 +235,7 @@ typedef struct IOD {
 	char name[PROCESS_NAME_LENGTH];
 	struct PCB * requestor;
 	int request;
-	char * tran_buff;
+	char * tran_buff; //transfer buffer
 	int * buff_count;
 	struct IOD * next;
 };
