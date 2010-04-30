@@ -1237,8 +1237,8 @@ void interrupt sys_call() {
 	
     trm_getc();
     //check for comport request completion
-	if(comport->event_flag == 1 && comport->active != NULL) {
-        comport->event_flag = 0;
+	if(*(comport->event_flag) == 1 && comport->active != NULL) {
+        *(comport->event_flag) = 0;
         tmpIOD = dequeue(comport);
         tempnode = qRemove((tmpIOD->requestor)->name, tempnode);
         tempnode->state = READY;
@@ -1247,8 +1247,8 @@ void interrupt sys_call() {
         if(comport->count > 0) process_com();
 	}
 	//check for terminal request completion
-	if(terminal->event_flag == 1) {
-		terminal->event_flag = 0;
+	if(*(terminal->event_flag) == 1) {
+		*(terminal->event_flag) = 0;
 		tmpIOD = dequeue(terminal);
         tempnode = qRemove((tmpIOD->requestor)->name, tempnode);
         tempnode->state = READY;
@@ -1465,18 +1465,18 @@ int terminate() {
  */
 int init_f() {
   tmpIOD=NULL;  
-  terminal->event_flag = 1;
+  *(terminal->event_flag) = 1;
   terminal->count = 0;
   terminal->head = NULL;
   terminal->tail = NULL;
 	
-  comport->event_flag = 1;
+  *(comport->event_flag) = 1;
   comport->count = 0;
   comport->head = NULL;
   comport->tail = NULL;
   
-  trm_open(&terminal->event_flag);
-  com_open(&comport->event_flag, 1200);
+  trm_open(terminal->event_flag);
+  com_open(comport->event_flag, 1200);
   return 0;
 }
 
@@ -1526,7 +1526,7 @@ void IOschedule() {
 /*
  */
 int process_com() {
-  comport->event_flag = 0;
+  *(comport->event_flag) = 0;
   switch((comport->head)->request) {
   case READ: {
 		com_read((comport->head)->tran_buff, (comport->head)->buff_count);
@@ -1543,7 +1543,7 @@ int process_com() {
 /*
  */
 int process_trm() {
-  terminal->event_flag = 0;
+  *(terminal->event_flag) = 0;
   switch((terminal->head)->request) {
   case READ: {
 		trm_read((terminal->head)->tran_buff, (terminal->head)->buff_count);

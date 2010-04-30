@@ -222,7 +222,7 @@ typedef struct IOD {
 };
 
 typedef struct IOCB {	
-    int event_flag;
+    int * event_flag;
 	int count;
 	struct IOD * head;
 	struct IOD * tail;
