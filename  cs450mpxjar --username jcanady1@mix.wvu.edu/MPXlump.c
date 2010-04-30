@@ -1242,8 +1242,7 @@ void interrupt sys_call() {
         tmpIOD = dequeue(comport);
         tempnode = qRemove((tmpIOD->requestor)->name, tempnode);
         tempnode->state = READY;
-	    insert(tempnode, READY+1);
-        sys_free_mem(tmpIOD);	    
+	    insert(tempnode, READY+1);	    
         //process nxt IO req for this dev
         if(comport->count > 0) process_com();
 	}
@@ -1253,8 +1252,7 @@ void interrupt sys_call() {
 		tmpIOD = dequeue(terminal);
         tempnode = qRemove((tmpIOD->requestor)->name, tempnode);
         tempnode->state = READY;
-	    insert(tempnode, READY+1);
-        sys_free_mem(tmpIOD);	    
+	    insert(tempnode, READY+1);	    
         //process nxt IO req for this dev
         if(terminal->count > 0) process_trm();
 	}
