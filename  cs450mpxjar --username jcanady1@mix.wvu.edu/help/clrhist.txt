@@ -1,0 +1,9 @@
+			 JAROS General Commands Manual
+
+NAME
+	clrhist : clear history
+SYNOPSIS
+	***NONE***
+
+DESCRIPTION
+	CLears the current history

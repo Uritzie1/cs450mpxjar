@@ -1,0 +1,9 @@
+			 JAROS General Commands Manual
+
+NAME
+	rsalias - Reset Alias
+SYNOPSIS
+	***NONE***
+
+DESCRIPTION
+	returns commomands to their defualt name

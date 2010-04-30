@@ -1,0 +1,8 @@
+			 JAROS General Commands Manual
+
+NAME rdhist: display history
+SYNOPSIS
+	***NONE***
+
+DESCRIPTION
+	display history shows all of the previous commands
