@@ -1,44 +1,31 @@
-			 JAROS General Commands Manual
+COMMAND				DESCRIPTION
+date				display and/or change the system date
 
-COMMAND					DESCRIPTION
-block					block a PCB
+dir				display info on MPX files in the
+				MPXFILES folder
 
-cpcb					create a new PCB
+help				display info on a command
 
-date					display and change the system date
+load				allocate and setup a new process
 
-dir					display information about all files 					present in a specific directory
+quit				stop execution of MPX
 
-dispat					identify the next READY process, if 					any, and load its context from its 					PCB
+resume				resume a process
 
-dpcb					delete a PCB
+suspend				suspends a process
 
-help					display information about a command
+setpri				change the priority of a process
 
-ldprocs					load five, pre-defined processes
+shall				display info on all processes
 
-list					display all available commands
+shlock				display info on all blocked processes
 
-load					allocate and setup a new PCB
+shpcb				display details about a single process
 
-quit					stop execution of MPX
+shready				display info on all ready processes
 
-resume					resume a process	
+term				stop a process
 
-setpri					change the priority of a specified 					process
+chgprom				change the command prompt
 
-shall					display information about all PCBs 					which are currently in use
-
-shlock					display information about all 						processes which are currently in 					the BLOCKED or the SUSPENDED-						BLOCKED state
-
-shpcb					display all information contained 					in a single PCB for a process 						specified by name
-
-shready					display information about all 						processes which are currently in 					the READY state or SUSPENDED-READY
-
-suspend					place a specified process in a 						suspended state
-
-term					terminate a process by deallocating 					its PCB and releasing its allocated 					program memory
-
-unblock					place a specified process in a 						READY state; its SUSPENDED status 					is not be changed
-
-ver					display a brief description of the 					version of MPX that is currently 					running
+rstprom				reset the command prompt
